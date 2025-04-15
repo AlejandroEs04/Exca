@@ -1,0 +1,31 @@
+USE ExcaDb
+GO
+
+CREATE TABLE BusinessTurn (
+    id INT NOT NULL IDENTITY(1,1) PRIMARY KEY, 
+    description VARCHAR(45) NOT NULL
+)
+
+CREATE TABLE Client (
+    id INT NOT NULL IDENTITY(1,1) PRIMARY KEY, 
+    name VARCHAR(100) NOT NULL, 
+    email VARCHAR(150) NULL,
+    turnId INT NOT NULL, 
+    FOREIGN KEY (turnId) REFERENCES BusinessTurn (id)
+)
+
+CREATE TABLE Land (
+    id INT NOT NULL IDENTITY(1,1) PRIMARY KEY, 
+    area DECIMAL(10,2) NULL, 
+    priceBySquareMeter DECIMAL(10,2) NULL
+)
+
+CREATE TABLE Agreement (
+    id INT NOT NULL IDENTITY(1,1) PRIMARY KEY
+)
+
+CREATE TABLE CadastralFile (
+    id INT NOT NULL IDENTITY(1,1) PRIMARY KEY
+)
+
+SELECT * FROM Client
