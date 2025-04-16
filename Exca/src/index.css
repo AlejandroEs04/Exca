@@ -84,3 +84,25 @@ button, input, textarea, select {
   outline: none;
   background: none;
 }
+
+.container {
+  margin: 1rem auto;
+  width: 100%;
+  max-width: 1500px;
+}
+
+.input-group {
+
+}
+
+.checkbox-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+input {
+  border: 1px solid var(--light-gray);
+  padding: 0.2rem;
+  border-radius: 0.5rem;
+}
