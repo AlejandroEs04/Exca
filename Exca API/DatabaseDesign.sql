@@ -70,7 +70,11 @@ CREATE TABLE individual (
 
 CREATE TABLE land (
     id INT NOT NULL IDENTITY(1,1) PRIMARY KEY, 
-    cadastral_file VARCHAR(45) NOT NULL UNIQUE
+    cadastral_file VARCHAR(45) NOT NULL UNIQUE,
+    area DECIMAL(10,2) NOT NULL, 
+    price_per_area DECIMAL(10,2) NOT NULL, 
+    address VARCHAR(200) NOT NULL, 
+    residential_development VARCHAR(100) NOT NULL
 )
 
 CREATE TABLE stage (

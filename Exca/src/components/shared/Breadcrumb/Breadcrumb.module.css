@@ -1,0 +1,11 @@
+.breadcrumb {
+    display: flex;
+}
+.breadcrumb li:last-of-type {
+    color: var(--primary);
+}
+.breadcrumb li+li:before {
+    padding: 8px;
+    color: black;
+    content: "/\00a0";
+}

@@ -12,7 +12,7 @@
   --green: #16a34a;
   --green-dark: #15803d;
   --bg-touched: #c7c7c73d;
-  --bg-hover-touched: #c7c7c770;
+  --bg-hover-touched: #c7c7c754;
   --gray-opacity: #17171760;
 }
 * {
@@ -46,6 +46,9 @@ a {
   text-decoration: none; 
   color: inherit;
 }
+h3 {
+  font-weight: 500;
+}
 ul, ol {
   list-style: none;
 }
@@ -56,12 +59,23 @@ img, video {
 table {
   border-collapse: collapse;
   width: 100%;
+  border: 1px solid var(--bg-touched);
 }
 table th {
   text-align: start;
+  background-color: var(--bg-touched);
 }
 table th, table td {
-  padding: 5px;
+  padding: 5px 8px;
+}
+table tr {
+  border-bottom: 1px solid var(--bg-hover-touched);
+}
+table tbody tr:hover {
+  background-color: var(--bg-hover-touched);
+}
+table tr:last-of-type {
+  border: none;
 }
 table .border-top th {
   padding-top: 5px;
@@ -84,25 +98,76 @@ button, input, textarea, select {
   outline: none;
   background: none;
 }
-
+.m-1 {
+  margin: 0.5rem;
+}
+.m-2 {
+  margin: 1rem;
+}
+.mt-1 {
+  margin-top: 0.5rem;
+}
+.mt-2 {
+  margin-top: 1rem;
+}
+.icon {
+  width: 1.2rem;
+}
 .container {
   margin: 1rem auto;
   width: 100%;
   max-width: 1500px;
 }
-
-.input-group {
-
+.btn {
+  padding: 0.3rem 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+  border-radius: 0.5rem;
+  transition: all ease-in-out 0.2s;
+  width: min-content;
 }
-
+.btn-primary {
+  background-color: var(--primary);
+  color: var(--white);
+}
+.btn-primary:hover {
+  background-color: var(--primary-dark);
+}
+.btn-success {
+  background-color: var(--green);
+  color: var(--white);
+}
+.btn-success:hover {
+  background-color: var(--green-dark);
+}
 .checkbox-group {
   display: flex;
   align-items: center;
   gap: 0.5rem;
 }
-
-input {
+.input-group {
+  display: flex;
+  flex-direction: column;
+}
+.input-group label {
+  font-weight: 600;
+  font-size: 1.05rem;
+}
+.input-group input {
   border: 1px solid var(--light-gray);
-  padding: 0.2rem;
+  padding: 0.4rem 0.4rem;
   border-radius: 0.5rem;
+  background-color: var(--white);
+}
+
+.grid {
+  display: grid;
+  gap: 0.4rem;
+}
+.grid-cols-2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+.grid-cols-3 {
+  grid-template-columns: repeat(3, 1fr);
 }
