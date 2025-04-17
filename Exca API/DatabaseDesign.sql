@@ -56,7 +56,7 @@ VALUES ('Arrendador'), ('Arrendatario')
 -- Companies (arrendador, arrendatario, asignado)
 CREATE TABLE company (
     id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
-    business_name VARCHAR(45) NOT NULL, 
+    business_name VARCHAR(100) NOT NULL, 
     email VARCHAR(100) NULL,
     phone_number VARCHAR(15) NULL,
     tax_id VARCHAR(20) NULL, 
@@ -67,7 +67,7 @@ CREATE TABLE company (
 
 CREATE TABLE client (
     id INT NOT NULL PRIMARY KEY IDENTITY(1,1), 
-    name VARCHAR(45) NOT NULL,
+    name VARCHAR(100) NOT NULL,
     company_id INT NOT NULL, 
     FOREIGN KEY (company_id) REFERENCES company (id)
 )
