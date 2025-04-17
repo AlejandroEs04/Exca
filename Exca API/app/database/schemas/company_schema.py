@@ -2,7 +2,7 @@ from pydantic import BaseModel, EmailStr
 from typing import Optional
 
 class CompanyBase(BaseModel):
-    name: str
+    business_name: str
     email: Optional[EmailStr]
     phone_number: Optional[str]
     tax_id: Optional[str]

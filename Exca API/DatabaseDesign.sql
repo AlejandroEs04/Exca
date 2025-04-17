@@ -18,6 +18,7 @@ DROP TABLE IF EXISTS [status]
 DROP TABLE IF EXISTS stage
 DROP TABLE IF EXISTS land
 DROP TABLE IF EXISTS individual
+DROP TABLE IF EXISTS client
 DROP TABLE IF EXISTS company
 DROP TABLE IF EXISTS company_type
 DROP TABLE IF EXISTS [user]
@@ -49,16 +50,26 @@ CREATE TABLE company_type (
     name VARCHAR(45) NOT NULL
 )
 
+INSERT INTO company_type (name)
+VALUES ('Arrendador'), ('Arrendatario')
+
 -- Companies (arrendador, arrendatario, asignado)
 CREATE TABLE company (
     id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
-    name VARCHAR(45) NOT NULL, 
+    business_name VARCHAR(45) NOT NULL, 
     email VARCHAR(100) NULL,
     phone_number VARCHAR(15) NULL,
     tax_id VARCHAR(20) NULL, 
     address TEXT,
     type_id INT NOT NULL, 
     FOREIGN KEY (type_id) REFERENCES company_type (id)
+)
+
+CREATE TABLE client (
+    id INT NOT NULL PRIMARY KEY IDENTITY(1,1), 
+    name VARCHAR(45) NOT NULL,
+    company_id INT NOT NULL, 
+    FOREIGN KEY (company_id) REFERENCES company (id)
 )
 
 -- Guarantors (obligado solidario)
@@ -93,7 +104,7 @@ CREATE TABLE project (
     client_id INT NOT NULL,
     stage_id INT NOT NULL,
     originator_id INT NOT NULL,
-    FOREIGN KEY (client_id) REFERENCES company (id),
+    FOREIGN KEY (client_id) REFERENCES client (id),
     FOREIGN KEY (stage_id) REFERENCES stage (id), 
     FOREIGN KEY (originator_id) REFERENCES [user] (id)
 )

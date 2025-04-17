@@ -6,7 +6,7 @@ class Company(Base):
     __tablename__ = "company"
     
     id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, nullable=False)
+    business_name = Column(String, nullable=False)
     email = Column(String, nullable=True)
     phone_number = Column(String, nullable=True)
     tax_id = Column(String, nullable=True)
@@ -14,3 +14,4 @@ class Company(Base):
     type_id = Column(Integer, ForeignKey("company_type.id"), nullable=False)
     
     company_type = relationship("CompanyType", back_populates="companies")
+    clients = relationship("Client", back_populates="company")

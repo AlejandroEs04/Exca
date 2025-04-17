@@ -7,7 +7,7 @@ from app.database.models.company import Company
 from app.database.schemas.company_schema import CompanyCreate, CompanyResponse
 
 from app.database.models.company_type import CompanyType
-from app.database.schemas.company_type_schema import CompanyTypeCreate, CompanyTypeResponse
+from app.database.schemas.company_type_schema import CompanyTypeResponse
 
 router = APIRouter(prefix="/company", tags=["Companies"])
 
@@ -22,8 +22,6 @@ def get_db():
         
 @router.post("/", response_model=CompanyResponse)
 def create_company(company: CompanyCreate, db: Session = Depends(get_db)):
-    print(company.name)
-    
     new_company = Company(**company.model_dump())
     db.add(new_company)
     db.commit()
