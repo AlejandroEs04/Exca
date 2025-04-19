@@ -15,7 +15,7 @@ export default function Breadcrumb({ list }: BreadcrumbProps) {
         <nav>
             <ol className={styles.breadcrumb}>
                 {list.map(item => ((
-                    <li><Link to={item.url}>{item.name}</Link></li>
+                    <li key={item.name}><Link to={item.url}>{item.name}</Link></li>
                 )))}
             </ol>
         </nav>

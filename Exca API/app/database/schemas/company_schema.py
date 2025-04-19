@@ -1,5 +1,6 @@
 from pydantic import BaseModel, EmailStr
-from typing import Optional
+from typing import Optional, List
+from app.database.schemas.client_schema import ClientResponse
 
 class CompanyBase(BaseModel):
     business_name: str
@@ -14,6 +15,7 @@ class CompanyCreate(CompanyBase):
 
 class CompanyResponse(CompanyBase):
     id: int
+    clients: List[ClientResponse] = []
     
     class config:
         orm_mode = True

@@ -3,6 +3,9 @@ import MainLayout from "./layouts/MainLayout"
 import Index from "./views/Index"
 import Projects from "./views/Projects/Projects"
 import CreateProject from "./views/Projects/CreateProject"
+import Companies from "./views/Company/Companies"
+import Lands from "./views/Land/Lands"
+import CreateLand from "./views/Land/CreateLand"
 
 function App() {
   return (
@@ -13,6 +16,11 @@ function App() {
 
           <Route path="/projects" element={<Projects />} />
           <Route path="/projects/create" element={<CreateProject />} />
+
+          <Route path="/companies" element={<Companies />} />
+
+          <Route path="/lands" element={<Lands />} />
+          <Route path="/lands/create" element={<CreateLand />} />
         </Route>
       </Routes>
     </BrowserRouter>

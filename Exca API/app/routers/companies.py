@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 
 from app.database.connection import SessionLocal
 
@@ -34,4 +34,5 @@ def get_companies(db: Session = Depends(get_db)):
         
 @router.get("/types", response_model=list[CompanyTypeResponse])
 def get_company_types(db: Session = Depends(get_db)):
-    return db.query(CompanyType).all()
+    companies = db.query(CompanyType).options(joinedload(Company.clients)).all()
+    return companies
