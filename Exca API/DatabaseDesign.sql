@@ -18,11 +18,14 @@ DROP TABLE IF EXISTS [status]
 DROP TABLE IF EXISTS stage
 DROP TABLE IF EXISTS land
 DROP TABLE IF EXISTS individual
+DROP TABLE IF EXISTS brand
 DROP TABLE IF EXISTS client
+DROP TABLE IF EXISTS client_type
 DROP TABLE IF EXISTS company
 DROP TABLE IF EXISTS company_type
 DROP TABLE IF EXISTS [user]
 DROP TABLE IF EXISTS user_area
+DROP TABLE IF EXISTS area
 DROP TABLE IF EXISTS [user_rol]
 
 CREATE TABLE user_rol (
@@ -30,10 +33,16 @@ CREATE TABLE user_rol (
     name VARCHAR(45) NOT NULL
 )
 
-CREATE TABLE user_area (
+INSERT INTO user_rol (name)
+VALUES ('Originator'), ('Approver'), ('Administrator')
+
+CREATE TABLE area (
     id INT NOT NULL IDENTITY(1,1) PRIMARY KEY, 
     name VARCHAR(45) NOT NULL
 )
+
+INSERT INTO area (name)
+VALUES ('Comercial'), ('Legal'), ('Proyectos')
 
 CREATE TABLE [user] (
     id INT NOT NULL IDENTITY(1,1) PRIMARY KEY, 
@@ -41,20 +50,21 @@ CREATE TABLE [user] (
     email VARCHAR(150) NOT NULL, 
     rol_id INT NOT NULL,
     area_id INT NOT NULL, 
+    hashed_password VARCHAR(100) NOT NULL
     FOREIGN KEY (rol_id) REFERENCES user_rol (id), 
-    FOREIGN KEY (area_id) REFERENCES user_area (id)
+    FOREIGN KEY (area_id) REFERENCES area (id)
 )
 
-CREATE TABLE company_type (
+CREATE TABLE client_type (
     id INT NOT NULL PRIMARY KEY IDENTITY(1,1), 
     name VARCHAR(45) NOT NULL
 )
 
-INSERT INTO company_type (name)
+INSERT INTO client_type (name)
 VALUES ('Arrendador'), ('Arrendatario')
 
 -- Companies (arrendador, arrendatario, asignado)
-CREATE TABLE company (
+CREATE TABLE client (
     id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
     business_name VARCHAR(100) NOT NULL, 
     email VARCHAR(100) NULL,
@@ -62,14 +72,14 @@ CREATE TABLE company (
     tax_id VARCHAR(20) NULL, 
     address TEXT,
     type_id INT NOT NULL, 
-    FOREIGN KEY (type_id) REFERENCES company_type (id)
+    FOREIGN KEY (type_id) REFERENCES client_type (id)
 )
 
-CREATE TABLE client (
+CREATE TABLE brand (
     id INT NOT NULL PRIMARY KEY IDENTITY(1,1), 
     name VARCHAR(100) NOT NULL,
-    company_id INT NOT NULL, 
-    FOREIGN KEY (company_id) REFERENCES company (id)
+    client_id INT NOT NULL, 
+    FOREIGN KEY (client_id) REFERENCES client (id)
 )
 
 -- Guarantors (obligado solidario)
@@ -93,6 +103,9 @@ CREATE TABLE stage (
     name VARCHAR(45) NOT NULL
 )
 
+INSERT INTO stage (name)
+VALUES ('Negociación'), ('Solicitud'), ('En Proceso'), ('Ratificación'), ('Cerrado')
+
 CREATE TABLE [status] (
     id INT NOT NULL IDENTITY(1,1) PRIMARY KEY, 
     name VARCHAR(45) NOT NULL
@@ -101,15 +114,18 @@ CREATE TABLE [status] (
 CREATE TABLE project (
     id INT NOT NULL PRIMARY KEY IDENTITY(1,1), 
     name VARCHAR(45) NOT NULL, 
-    client_id INT NOT NULL,
+    brand_id INT NOT NULL,
     stage_id INT NOT NULL,
     originator_id INT NOT NULL,
-    FOREIGN KEY (client_id) REFERENCES client (id),
+    created_at DATETIME NOT NULL DEFAULT GETDATE(),
+    updated_at DATETIME NOT NULL DEFAULT GETDATE(),
+    FOREIGN KEY (brand_id) REFERENCES Brand (id),
     FOREIGN KEY (stage_id) REFERENCES stage (id), 
     FOREIGN KEY (originator_id) REFERENCES [user] (id)
 )
 
 CREATE TABLE project_land (
+    id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
     project_id INT NOT NULL,
     land_id INT NOT NULL, 
     area DECIMAL(10,2) NOT NULL, 

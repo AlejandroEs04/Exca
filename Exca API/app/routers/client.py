@@ -1,10 +1,13 @@
 from fastapi import APIRouter, Depends
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 
 from app.database.connection import SessionLocal
 
 from app.database.models.client import Client
 from app.database.schemas.client_schema import ClientCreate, ClientResponse
+
+from app.database.models.client_type import ClientType
+from app.database.schemas.client_type_schema import ClientTypeResponse
 
 router = APIRouter(prefix="/client", tags=["Clients"])
 
@@ -18,13 +21,18 @@ def get_db():
         db.close()
         
 @router.post("/", response_model=ClientResponse)
-def create_client(client: ClientCreate, db: Session = Depends(get_db)):
-    new_client = Client(**client.model_dump())
-    db.add(new_client)
+def create_company(company: ClientCreate, db: Session = Depends(get_db)):
+    new_company = Client(**company.model_dump())
+    db.add(new_company)
     db.commit()
-    db.refresh(new_client)
-    return new_client
+    db.refresh(new_company)
+    return new_company
 
 @router.get("/", response_model=list[ClientResponse])
-def get_clients(db: Session = Depends(get_db)):
-    return db.query(Client).all()
+def get_companies(db: Session = Depends(get_db)):
+    clients =  db.query(Client).options(joinedload(Client.brands)).all()
+    return clients
+        
+@router.get("/types", response_model=list[ClientTypeResponse])
+def get_company_types(db: Session = Depends(get_db)):
+    return db.query(ClientType).all()

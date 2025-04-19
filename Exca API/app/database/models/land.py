@@ -11,3 +11,5 @@ class Land(Base):
     price_per_area = Column(Float, nullable=False)
     address = Column(String, nullable=False)
     residential_development = Column(String, nullable=False)
+    
+    projects = relationship("ProjectLand", back_populates="land")

@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from app.routers import companies, land, client
+from app.routers import brand, client, land, project, user
 from app.database.connection import Base, engine
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -19,6 +19,8 @@ app.add_middleware(
 
 Base.metadata.create_all(bind=engine)
 
-app.include_router(companies.router)
-app.include_router(land.router)
 app.include_router(client.router)
+app.include_router(land.router)
+app.include_router(brand.router)
+app.include_router(project.router)
+app.include_router(user.router)

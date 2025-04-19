@@ -6,7 +6,12 @@ class Client(Base):
     __tablename__ = "client"
     
     id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, nullable=False)
-    company_id = Column(Integer, ForeignKey("company.id"), nullable=False)
+    business_name = Column(String, nullable=False)
+    email = Column(String, nullable=True)
+    phone_number = Column(String, nullable=True)
+    tax_id = Column(String, nullable=True)
+    address = Column(String, nullable=True)
+    type_id = Column(Integer, ForeignKey("client_type.id"), nullable=False)
     
-    company = relationship("Company", back_populates="clients")
+    client_type = relationship("ClientType", back_populates="clients")
+    brands = relationship("Brand", back_populates="client")
