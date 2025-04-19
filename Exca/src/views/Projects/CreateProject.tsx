@@ -1,7 +1,8 @@
 import { ChangeEvent, useState } from "react"
 import Breadcrumb from "../../components/shared/Breadcrumb/Breadcrumb"
-import InputGroup from "../../components/forms/InputGroup"
+import InputGroup, { PushEvent } from "../../components/forms/InputGroup"
 import SaveIcon from "../../components/shared/Icons/SaveIcon"
+import { useAppContext } from "../../hooks/AppContext"
 
 export default function CreateProject() {
     const list = [
@@ -10,19 +11,26 @@ export default function CreateProject() {
         {name:"Registrar Proyecto",url:'/projects/create'},
     ]
 
+    const { state } = useAppContext()
     const [project, setProject] = useState({
         name: '', 
         client: '',
         business_name: ''
     })
 
+    const companiesOptions = state.companies.map(company => {
+        return {
+            label: company.business_name,
+            value: company.id
+        }
+    })
 
     const [cadastralFile, setCadastralFile] = useState({
         cadastral_file: '', 
         area: 0
     })
 
-    const onChangeProject = (e: ChangeEvent<HTMLInputElement>) => {
+    const onChangeProject = (e: ChangeEvent<HTMLInputElement> | PushEvent) => {
         const { value, name } = e.target
 
         setProject({
@@ -31,8 +39,7 @@ export default function CreateProject() {
         })
     }
 
-
-    const onChangeCadastralFile = (e: ChangeEvent<HTMLInputElement>) => {
+    const onChangeCadastralFile = (e: ChangeEvent<HTMLInputElement> | PushEvent) => {
         const { value, name } = e.target
 
         setCadastralFile({
@@ -57,7 +64,7 @@ export default function CreateProject() {
                 </div>
 
                 <div className="grid grid-cols-2 mt-2">
-                    <InputGroup name="business_name" label="Razón social" value={project.business_name} placeholder="Razón social" onChangeFnc={onChangeProject} />
+                    <InputGroup name="business_name" label="Razón social" value={project.business_name} placeholder="Razón social" onChangeFnc={onChangeProject} options={companiesOptions} />
                     <InputGroup name="client" label="Cliente" value={project.client} placeholder="Nombre del cliente" onChangeFnc={onChangeProject} />
                 </div>
 
