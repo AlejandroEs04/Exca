@@ -1,12 +1,15 @@
 import { Link } from "react-router-dom"
 import Breadcrumb from "../../components/shared/Breadcrumb/Breadcrumb"
 import PlusIcon from "../../components/shared/Icons/PlusIcon"
+import { useAppContext } from "../../hooks/AppContext"
 
 export default function Projects() {
     const list = [
         {name:"Dashboard",url:'/'},
         {name:"Proyectos",url:'/projects'},
     ]
+
+    const { state } = useAppContext()
     
     return (
         <>
@@ -30,20 +33,22 @@ export default function Projects() {
                 </thead>
 
                 <tbody>
-                    <tr>
-                        <td>1</td>
-                        <td>Hola mundo</td>
-                        <td>1</td>
-                        <td>1</td>
-                        <td>1</td>
-                    </tr>
-                    <tr>
-                        <td>1</td>
-                        <td>Hola mundo</td>
-                        <td>1</td>
-                        <td>1</td>
-                        <td>1</td>
-                    </tr>
+                    {state.projects.map(project => (
+                        <tr>
+                            <td>{project.id}</td>
+                            <td>{project.name}</td>
+                            <td>
+                                {project.lands.map(land => land.land.residential_development).join(', ')}
+                            </td>
+                            <td>{project.stage.name}</td>
+                            <td>
+                                <div>
+                                    <Link to={`/projects/${project.id}`} className="btn btn-secondary">Ver</Link>
+                                    <Link to={`/projects/${project.id}/edit`} className="btn btn-secondary">Editar</Link>
+                                </div>
+                            </td>
+                        </tr>
+                    ))}
                 </tbody>
             </table>
         </>

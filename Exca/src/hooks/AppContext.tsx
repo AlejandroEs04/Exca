@@ -1,7 +1,8 @@
 import React, { createContext, useContext, ReactNode, useReducer, Dispatch, useEffect } from 'react';
 import { AppActions, AppReducer, AppState, initialState } from "../reducers/app-reducer";
-import { getCompanies } from '../api/CompanyApi';
 import { getLands } from '../api/LandApi';
+import { getClient } from '../api/ClientApi';
+import { getProjects } from '../api/ProjectApi';
 
 interface AppContextProps {
     state: AppState
@@ -15,13 +16,15 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
     useEffect(() => {
         const getInitials = async() => {
-            const companies = await getCompanies()
+            const clients = await getClient()
             const lands = await getLands()
+            const projects = await getProjects()
 
-            if (!companies || !lands) return
+            if (!clients || !lands || !projects) return
 
-            dispatch({ type: 'set-companies', paypload: { companies } })
+            dispatch({ type: 'set-clients', paypload: { clients } })
             dispatch({ type: 'set-lands', paypload: { lands } })
+            dispatch({ type: 'set-projects', paypload: { projects } })
         }
 
         getInitials()

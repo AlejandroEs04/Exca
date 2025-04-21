@@ -85,6 +85,14 @@ table .border-top th {
 table .border-left {
   padding: 5px;
 }
+table .table-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+}
+table .table-actions svg {
+  width: 1.5rem;
+}
 .border-left {
   border-left: 1px solid var(--light-gray);
 }
@@ -177,13 +185,33 @@ button, input, textarea, select {
 }
 .input-options {
   position: absolute;
-  bottom: -3.2rem;
+  display: flex;
+  top: 100%;
+  margin-top: 0.6rem;
+  flex-direction: column;
+  align-items: start;
   background-color: var(--white);
   width: 100%;
-  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  border: 1px solid var(--light-gray);
   z-index: 10;
-  padding: 10px;
   border-radius: 10px;
+}
+.input-options button {
+  padding: 0.5rem 0.5rem;
+  width: 100%;
+  text-align: start;
+}
+.input-options button:hover {
+  background-color: var(--bg-touched);
+}
+.flex {
+  display: flex;
+}
+.flex-col {
+  flex-direction: column;
+}
+.flex-ror {
+  flex-direction: row;
 }
 .grid {
   display: grid;
@@ -195,7 +223,12 @@ button, input, textarea, select {
 .grid-cols-3 {
   grid-template-columns: repeat(3, 1fr);
 }
-
+.text-blue {
+  color: var(--primary)
+}
+.text-red {
+  color: var(--red)
+}
 .main-layout {
   display: flex;
 }

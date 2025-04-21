@@ -3,10 +3,11 @@ import MainLayout from "./layouts/MainLayout"
 import Index from "./views/Index"
 import Projects from "./views/Projects/Projects"
 import CreateProject from "./views/Projects/CreateProject"
-import Companies from "./views/Company/Companies"
 import Lands from "./views/Land/Lands"
 import CreateLand from "./views/Land/CreateLand"
-import CreateCompany from "./views/Company/CreateCompany"
+import Clients from "./views/Client/Clients"
+import CreateClient from "./views/Client/CreateClient"
+import EditClient from "./views/Client/EditClient"
 
 function App() {
   return (
@@ -18,8 +19,9 @@ function App() {
           <Route path="/projects" element={<Projects />} />
           <Route path="/projects/create" element={<CreateProject />} />
 
-          <Route path="/companies" element={<Companies />} />
-          <Route path="/companies/create" element={<CreateCompany />} />
+          <Route path="/clients" element={<Clients />} />
+          <Route path="/clients/create" element={<CreateClient />} />
+          <Route path="/clients/edit/:id" element={<EditClient />} />
 
           <Route path="/lands" element={<Lands />} />
           <Route path="/lands/create" element={<CreateLand />} />

@@ -16,7 +16,7 @@ type InputGroupProps = {
     id?: string
     name: string
     value: string | number
-    type?: 'text' | 'number'
+    type?: 'text' | 'number' | 'email' | 'password' | 'date' | 'tel'
     placeholder: string
     label: string
     options?: Option[]
@@ -37,6 +37,7 @@ export default function InputGroup({
     } : InputGroupProps) 
 {
     const [show, setShow] = useState(false)
+    const [optionsFiltered, setOptionsFiltered] = useState<Option[]>(options)
 
     const onPushOption = (value: string) => {
         const e : PushEvent = {
@@ -46,6 +47,12 @@ export default function InputGroup({
             }
         }
         onChangeFnc(e);
+    }
+
+    const onChange = (e: ChangeEvent<HTMLInputElement> | PushEvent) => {
+        onChangeFnc(e)
+
+        setOptionsFiltered(options.filter(option => option.label.toLowerCase().includes((e as ChangeEvent<HTMLInputElement>).target.value.toLowerCase())))
     }
     
     return (
@@ -60,12 +67,12 @@ export default function InputGroup({
                 id={id} 
                 value={value} 
                 placeholder={placeholder}
-                onChange={onChangeFnc}
+                onChange={onChange}
             />
 
             {options.length > 0 && show && (
                 <div className="input-options">
-                    {options.map(option => (
+                    {optionsFiltered.map(option => (
                         <button type="button" key={option.value} onClick={() => onPushOption(option.label)}>{option.label}</button>
                     ))}
                 </div>

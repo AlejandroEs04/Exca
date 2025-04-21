@@ -1,10 +1,10 @@
-export type Client = {
+export type Brand = {
     id: number
     name: string 
-    company_id: number
+    client_id: number
 }
 
-export type Company = {
+export type Client = {
     id: number 
     business_name: string
     email?: string
@@ -12,10 +12,10 @@ export type Company = {
     tax_id?: string
     address?: string
     type_id?: number
-    clients: Client[]
+    brands?: Client[]
 }
 
-export type CompanyCreate = Pick<Company, 'business_name' | 'email' | 'address' | 'phone_number' | 'tax_id' | 'type_id'>
+export type ClientCreate = Pick<Client, 'business_name' | 'email' | 'address' | 'phone_number' | 'tax_id' | 'type_id'>
 
 export type Land = {
     id: number
@@ -28,9 +28,21 @@ export type Land = {
 
 export type LandCreate = Pick<Land, 'cadastral_file' | 'area' | 'price_per_area' | 'address' | 'residential_development'>
 
+export type Stage = {
+    id: number
+    name: string
+}
+
 export type RentLand = {
     land_id: number
     area: number
+}
+
+export type ProjectLand = {
+    id: number
+    land_id: number
+    area: number
+    land: Land
 }
 
 export type Project = {
@@ -38,7 +50,15 @@ export type Project = {
     name: string
     client: string
     brand: string
-    lands: RentLand[]
+    brand_id: number
+    stage_id: number
+    origitnator_id: number
+    created_at: string
+    updated_at: string
+    lands: ProjectLand[]
+    stage: Stage
 }
 
-export type ProjectCreate = Pick<Project, 'name' | 'client' | 'brand' | 'lands'> 
+export type ProjectCreate = Pick<Project, 'name' | 'client' | 'brand'> &  {
+    lands: RentLand[]
+}

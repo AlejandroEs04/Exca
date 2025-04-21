@@ -27,10 +27,10 @@ export default function CreateProject() {
     })
     const [lands, setLands] = useState<RentLand[]>([])
 
-    const companiesOptions = state.companies.map(company => {
+    const clientsOptions = state.clients.map(client => {
         return {
-            label: company.business_name,
-            value: company.id
+            label: client.business_name,
+            value: client.id
         }
     })
 
@@ -110,7 +110,7 @@ export default function CreateProject() {
                 </div>
 
                 <div className="grid grid-cols-2 mt-2">
-                    <InputGroup name="client" label="Razón social" value={project.client} placeholder="Razón social" onChangeFnc={onChangeProject} options={companiesOptions} />
+                    <InputGroup name="client" label="Razón social" value={project.client} placeholder="Razón social" onChangeFnc={onChangeProject} options={clientsOptions} />
                     <InputGroup name="brand" label="Marca" value={project.brand} placeholder="Nombre de la marca" onChangeFnc={onChangeProject} />
                 </div>
 
