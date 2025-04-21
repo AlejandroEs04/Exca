@@ -129,6 +129,10 @@ button, input, textarea, select {
   border-radius: 0.5rem;
   transition: all ease-in-out 0.2s;
   width: min-content;
+  font-size: 1rem;
+}
+.btn-sm {
+  font-size: 0.8rem;
 }
 .btn-primary {
   background-color: var(--primary);
@@ -147,6 +151,9 @@ button, input, textarea, select {
 .btn-success:disabled {
   background-color: var(--green-disable);
 }
+.btn-sm .icon {
+  width: 0.8rem;
+}
 .checkbox-group {
   display: flex;
   align-items: center;
@@ -161,7 +168,8 @@ button, input, textarea, select {
   font-weight: 600;
   font-size: 1.05rem;
 }
-.input-group input {
+.input-group input,
+.input-group select {
   border: 1px solid var(--light-gray);
   padding: 0.4rem 0.4rem;
   border-radius: 0.5rem;

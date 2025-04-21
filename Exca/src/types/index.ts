@@ -27,3 +27,18 @@ export type Land = {
 }
 
 export type LandCreate = Pick<Land, 'cadastral_file' | 'area' | 'price_per_area' | 'address' | 'residential_development'>
+
+export type RentLand = {
+    land_id: number
+    area: number
+}
+
+export type Project = {
+    id: number
+    name: string
+    client: string
+    brand: string
+    lands: RentLand[]
+}
+
+export type ProjectCreate = Pick<Project, 'name' | 'client' | 'brand' | 'lands'> 

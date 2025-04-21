@@ -4,8 +4,7 @@ import { Company } from "../types"
 
 export async function getCompanies() {
     try {
-        const { data } = await api<Company[]>('/company')
-        console.log(data)
+        const { data } = await api<Company[]>('/client')
         return data
     } catch (error) {
         if(isAxiosError(error) && error.response) {

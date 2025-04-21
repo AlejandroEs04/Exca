@@ -20,6 +20,7 @@ type InputGroupProps = {
     placeholder: string
     label: string
     options?: Option[]
+    disable?: boolean
     onChangeFnc: (e: ChangeEvent<HTMLInputElement> | PushEvent) => void
 }
 
@@ -32,6 +33,7 @@ export default function InputGroup({
         label,
         onChangeFnc, 
         options = [],
+        disable = false
     } : InputGroupProps) 
 {
     const [show, setShow] = useState(false)
@@ -43,7 +45,6 @@ export default function InputGroup({
                 value
             }
         }
-
         onChangeFnc(e);
     }
     
@@ -51,8 +52,9 @@ export default function InputGroup({
         <div className="input-group">
             <label htmlFor={id}>{label}</label>
             <input 
+                disabled={disable}
                 onFocus={() => setShow(true)}
-                onBlur={() => (setTimeout(() => setShow(false), 100))}
+                onBlur={() => (setTimeout(() => setShow(false), 200))}
                 type={type} 
                 name={name} 
                 id={id} 
