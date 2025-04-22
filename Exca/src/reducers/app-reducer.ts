@@ -1,14 +1,14 @@
-import { Client, Land, Project } from "../types";
+import { Client, LandResponse, ProjectView } from "../types";
 
 export type AppActions =
-    { type: 'set-lands', paypload: { lands: Land[] } } |
+    { type: 'set-lands', paypload: { lands: LandResponse[] } } |
     { type: 'set-clients', paypload: { clients: Client[] } } | 
-    { type: 'set-projects', paypload: { projects: Project[] } } 
+    { type: 'set-projects', paypload: { projects: ProjectView[] } } 
 
 export type AppState = {
     clients: Client[]
-    lands: Land[]
-    projects: Project[]
+    lands: LandResponse[]
+    projects: ProjectView[]
 }
 
 export const initialState: AppState = {

@@ -2,6 +2,8 @@ import { Link } from "react-router-dom";
 import Breadcrumb from "../../components/shared/Breadcrumb/Breadcrumb";
 import PlusIcon from "../../components/shared/Icons/PlusIcon";
 import { useAppContext } from "../../hooks/AppContext";
+import TrashIcon from "../../components/shared/Icons/TrashIcon";
+import EditIcon from "../../components/shared/Icons/EditIcon";
 
 export default function Lands() {
     const list = [
@@ -14,7 +16,7 @@ export default function Lands() {
     return (
         <>
             <Breadcrumb list={list} />
-            <h1>Proyectos</h1>
+            <h1>Terrenos</h1>
             
             <Link to={'create'} className="btn btn-primary">
                 <PlusIcon />
@@ -40,8 +42,13 @@ export default function Lands() {
                             <td>{land.cadastral_file}</td>
                             <td>{land.area}</td>
                             <td>{land.price_per_area}</td>
-                            <td>{land.residential_development}</td>
-                            <td></td>
+                            <td>{land.residential_development.name}</td>
+                            <td>
+                                <div className="table-actions">
+                                    <Link to={`/lands/edit/${land.id}`} className="text-blue"><EditIcon /></Link>
+                                    <button className="text-red"><TrashIcon /></button>
+                                </div>
+                            </td>
                         </tr>
                     ))}
                 </tbody>

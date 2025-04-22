@@ -12,6 +12,7 @@ type InputGroupProps = {
     placeholder: string
     label: string
     options?: Option[]
+    disable?: boolean
     onChangeFnc: (e: ChangeEvent<HTMLSelectElement>) => void
 }
 
@@ -23,11 +24,12 @@ export default function SelectGroup({
     label,
     onChangeFnc, 
     options = [],
+    disable = false
 } : InputGroupProps) {
     return (
         <div className="input-group">
             <label htmlFor={id}>{label}</label>
-            <select value={value} onChange={onChangeFnc} name={name} id={id}>
+            <select disabled={disable} value={value} onChange={onChangeFnc} name={name} id={id}>
                 <option value="">{placeholder}</option>
                 {options.map((option, index) => (
                     <option key={index} value={option.value}>

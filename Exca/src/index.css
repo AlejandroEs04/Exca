@@ -70,6 +70,9 @@ table th {
 table th, table td {
   padding: 5px 8px;
 }
+table tbody tr {
+  background-color: #fff;
+}
 table tr {
   border-bottom: 1px solid var(--bg-hover-touched);
 }
@@ -215,13 +218,17 @@ button, input, textarea, select {
 }
 .grid {
   display: grid;
-  gap: 0.4rem;
+  column-gap: 2rem;
 }
 .grid-cols-2 {
   grid-template-columns: repeat(2, 1fr);
 }
 .grid-cols-3 {
   grid-template-columns: repeat(3, 1fr);
+}
+.date {
+  color: var(--light-gray);
+  font-weight: 600;
 }
 .text-blue {
   color: var(--primary)
@@ -234,9 +241,11 @@ button, input, textarea, select {
 }
 .main-layout .aside-navigation {
   width: 100%;
-  max-width: 18rem;
+  max-width: 15rem;
   display: flex;
   flex-direction: column;
+  position: sticky;
+  top: 0;
 }
 .main-layout .main-container {
   width: 100%;
@@ -284,4 +293,50 @@ button, input, textarea, select {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+}
+
+.conditions-list {
+  columns: 2 400px; 
+  column-gap: 2rem;
+  max-height: none;
+  overflow-y: auto;
+  row-gap: 1rem;
+}
+@media (min-width: 1200px) {
+  .conditions-list {
+    max-height: 90vh;
+  }
+}
+.condition-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  margin-top: 0.5rem;
+  align-items: center;
+}
+.condition-container input, 
+.condition-container select {
+  border: 1px solid var(--light-gray);
+  padding: 5px;
+  width: 100%;
+  background-color: var(--white);
+}
+.condition-container input[type="checkbox"] {
+  width: min-content;
+}
+.condition-container label {
+  font-weight: 600;
+}
+.condition-container .checkbox {
+  display: flex;
+  width: 100%;
+  justify-content: start;
+}
+.w-min {
+  width: min-content;
+}
+.w-max {
+  width: max-content;
+}
+.w-full {
+  width: 100%;
 }

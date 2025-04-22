@@ -1,11 +1,12 @@
-import { ChangeEvent, FormEvent, useMemo, useState } from "react"
+import { ChangeEvent, FormEvent, useEffect, useMemo, useState } from "react"
 import Breadcrumb from "../../components/shared/Breadcrumb/Breadcrumb"
 import SaveIcon from "../../components/shared/Icons/SaveIcon"
-import InputGroup, { PushEvent } from "../../components/forms/InputGroup"
-import { registerLand } from "../../api/LandApi"
+import InputGroup, { Option, PushEvent } from "../../components/forms/InputGroup"
+import { getResidentialDevelopments, registerLand } from "../../api/LandApi"
 import { useNavigate } from "react-router-dom"
 import { isNullOrEmpty } from "../../utils"
 import { useAppContext } from "../../hooks/AppContext"
+import { LandCreate } from "../../types"
 
 export default function CreateLand() {
     const list = [
@@ -14,7 +15,8 @@ export default function CreateLand() {
         {name:"Registrar Terreno",url:'/lands/create'},
     ]
 
-    const [land, setLand] = useState({
+    const [residentialOptions, setResidentialOptions] = useState<Option[]>([])
+    const [land, setLand] = useState<LandCreate>({
         cadastral_file: '', 
         area: 0,
         price_per_area: 0, 
@@ -50,6 +52,21 @@ export default function CreateLand() {
     const isDisable = useMemo(() => 
         isNullOrEmpty(land.cadastral_file) || isNullOrEmpty(land.residential_development) || isNullOrEmpty(land.address) || +land.area === 0 || +land.price_per_area === 0, [land])
 
+    useEffect(() => {
+        const getInfo = async() => {
+            const data = await getResidentialDevelopments()
+            const options = data!.map(residential => {
+                return {
+                    label: residential.name,
+                    value: residential.id
+                }
+            })
+            setResidentialOptions(options)
+        }
+
+        getInfo()
+    }, [])
+
     return (
         <>
             <Breadcrumb list={list} />
@@ -66,7 +83,7 @@ export default function CreateLand() {
                     <InputGroup name="area" label="Área en m2" value={land.area} placeholder="Área en m2" onChangeFnc={onChange} type='number' />
                     <InputGroup name="price_per_area" label="Precio por m2" value={land.price_per_area} placeholder="Precio por m2" onChangeFnc={onChange} type='number' />
                     <InputGroup name="address" label="Dirección" value={land.address} placeholder="Dirección" onChangeFnc={onChange} />
-                    <InputGroup name="residential_development" label="Fraccionamiento" value={land.residential_development} placeholder="Fraccionamiento" onChangeFnc={onChange} />
+                    <InputGroup name="residential_development" label="Fraccionamiento" value={land.residential_development} options={residentialOptions} placeholder="Fraccionamiento" onChangeFnc={onChange} />
                 </div>
             </form> 
         </>

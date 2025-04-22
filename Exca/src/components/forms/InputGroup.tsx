@@ -1,6 +1,6 @@
-import { ChangeEvent, useState } from "react"
+import { ChangeEvent, useEffect, useState } from "react"
 
-type Option = {
+export type Option = {
     label: string
     value: string | number
 }
@@ -52,8 +52,19 @@ export default function InputGroup({
     const onChange = (e: ChangeEvent<HTMLInputElement> | PushEvent) => {
         onChangeFnc(e)
 
+        if(e.target.value === '') {
+            setOptionsFiltered(options)
+            return
+        }
+
         setOptionsFiltered(options.filter(option => option.label.toLowerCase().includes((e as ChangeEvent<HTMLInputElement>).target.value.toLowerCase())))
     }
+
+    useEffect(() => {
+        if(options.length > 0) {
+            setOptionsFiltered(options)
+        }
+    }, [options])
     
     return (
         <div className="input-group">
@@ -61,7 +72,7 @@ export default function InputGroup({
             <input 
                 disabled={disable}
                 onFocus={() => setShow(true)}
-                onBlur={() => (setTimeout(() => setShow(false), 200))}
+                onBlur={() => (setTimeout(() => setShow(false), 100))}
                 type={type} 
                 name={name} 
                 id={id} 
@@ -70,7 +81,7 @@ export default function InputGroup({
                 onChange={onChange}
             />
 
-            {options.length > 0 && show && (
+            {optionsFiltered.length > 0 && show && (
                 <div className="input-options">
                     {optionsFiltered.map(option => (
                         <button type="button" key={option.value} onClick={() => onPushOption(option.label)}>{option.label}</button>

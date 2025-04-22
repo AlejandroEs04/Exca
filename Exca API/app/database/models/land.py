@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Float
+from sqlalchemy import Column, Integer, String, Float, ForeignKey
 from sqlalchemy.orm import relationship
 from app.database.connection import Base
 
@@ -10,6 +10,7 @@ class Land(Base):
     area = Column(Float, nullable=False)
     price_per_area = Column(Float, nullable=False)
     address = Column(String, nullable=False)
-    residential_development = Column(String, nullable=False)
+    residential_development_id = Column(Integer, ForeignKey("residential_development.id"), nullable=False)
     
     projects = relationship("ProjectLand", back_populates="land")
+    residential_development = relationship("ResidentialDevelopment", back_populates="land")

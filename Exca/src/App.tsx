@@ -8,6 +8,9 @@ import CreateLand from "./views/Land/CreateLand"
 import Clients from "./views/Client/Clients"
 import CreateClient from "./views/Client/CreateClient"
 import EditClient from "./views/Client/EditClient"
+import Project from "./views/Projects/Project"
+import EditProject from "./views/Projects/EditProject"
+import ContractRequest from "./views/ContractRequest/ContractRequest"
 
 function App() {
   return (
@@ -17,7 +20,9 @@ function App() {
           <Route index element={<Index />} />
 
           <Route path="/projects" element={<Projects />} />
+          <Route path="/projects/:id" element={<Project />} />
           <Route path="/projects/create" element={<CreateProject />} />
+          <Route path="/projects/edit/:id" element={<EditProject />} />
 
           <Route path="/clients" element={<Clients />} />
           <Route path="/clients/create" element={<CreateClient />} />
@@ -25,6 +30,8 @@ function App() {
 
           <Route path="/lands" element={<Lands />} />
           <Route path="/lands/create" element={<CreateLand />} />
+
+          <Route path="/contract-request/:projectId" element={<ContractRequest />} />
         </Route>
       </Routes>
     </BrowserRouter>

@@ -17,6 +17,7 @@ DROP TABLE IF EXISTS project
 DROP TABLE IF EXISTS [status]
 DROP TABLE IF EXISTS stage
 DROP TABLE IF EXISTS land
+DROP TABLE IF EXISTS residential_development
 DROP TABLE IF EXISTS individual
 DROP TABLE IF EXISTS brand
 DROP TABLE IF EXISTS client
@@ -89,13 +90,19 @@ CREATE TABLE individual (
     taxt_id VARCHAR(20) NULL
 )
 
+CREATE TABLE residential_development (
+    id INT NOT NULL PRIMARY KEY IDENTITY(1,1), 
+    name VARCHAR(60) NOT NULL
+)
+
 CREATE TABLE land (
     id INT NOT NULL IDENTITY(1,1) PRIMARY KEY, 
     cadastral_file VARCHAR(45) NOT NULL UNIQUE,
     area DECIMAL(10,2) NOT NULL, 
     price_per_area DECIMAL(10,2) NOT NULL, 
     address VARCHAR(200) NOT NULL, 
-    residential_development VARCHAR(100) NOT NULL
+    residential_development_id INT NOT NULL,
+    FOREIGN KEY (residential_development_id) REFERENCES residential_development (id)
 )
 
 CREATE TABLE stage (
@@ -149,11 +156,15 @@ CREATE TABLE condition_category (
     id INT NOT NULL IDENTITY(1,1) PRIMARY KEY, 
     name VARCHAR(45) NOT NULL
 )
+INSERT INTO condition_category (name)
+VALUES ('Condiciones Comerciales'), ('Condiciones Generales'), ('Contención de riesgos económicos'), ('Contención de riesgos'), ('Mitgación de riesgos'), ('Construcción por GP')
 
 CREATE TABLE condition_type (
     id INT NOT NULL IDENTITY(1,1) PRIMARY KEY, 
     name VARCHAR(45) NOT NULL
 )
+INSERT INTO condition_type (name)
+VALUES ('text'), ('number'), ('date'), ('boolean'), ('Two Options')
 
 -- conditions types // Otras
 CREATE TABLE condition (

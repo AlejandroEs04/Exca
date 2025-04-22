@@ -14,7 +14,7 @@ export default function EditClient() {
     const list = [
         {name:"Dashboard",url:'/'},
         {name:"Clientes",url:'/clients'},
-        {name:"Editat Cliente",url:`/clients/edit`},
+        {name:"Editat Cliente",url:`/clients/edit/${id}`},
     ]
 
     const { state, dispatch } = useAppContext()

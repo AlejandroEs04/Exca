@@ -1,6 +1,6 @@
 import { isAxiosError } from "axios"
 import api from "../lib/axios"
-import { Project, ProjectCreate } from "../types"
+import { ProjectCreate, ProjectView } from "../types"
 
 export async function registerProject (project: ProjectCreate) {
     try {
@@ -15,7 +15,7 @@ export async function registerProject (project: ProjectCreate) {
 
 export async function getProjects () {
     try {
-        const { data } = await api.get<Project[]>('/project')
+        const { data } = await api.get<ProjectView[]>('/project')
         return data
     } catch (error) {
         if(isAxiosError(error) && error.response) {

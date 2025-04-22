@@ -91,5 +91,5 @@ def create_project(project: ProjectCreate, db: Session = Depends(get_db)):
 
 @router.get("/", response_model=list[ProjectResponse])
 def get_projects(db: Session = Depends(get_db)):
-    projects = db.query(Project).options(joinedload(Project.lands).joinedload(ProjectLand.land), joinedload(Project.stage)).all()
+    projects = db.query(Project).options(joinedload(Project.lands).joinedload(ProjectLand.land), joinedload(Project.stage), joinedload(Project.originator), joinedload(Project.brand).joinedload(Brand.client)).all()
     return projects
