@@ -17,3 +17,4 @@ class Project(Base):
     brand = relationship("Brand", back_populates="projects")
     stage = relationship("Stage", back_populates="projects")
     lands = relationship("ProjectLand", back_populates="project")
+    lease_request = relationship("LeaseRequest", back_populates="project")

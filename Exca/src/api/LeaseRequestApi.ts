@@ -1,10 +1,10 @@
 import { isAxiosError } from "axios"
 import api from "../lib/axios"
-import { ProjectCreate, ProjectLandType, ProjectView } from "../types"
+import { LeaseRequestCreate, LeaseRequestResponse } from "../types"
 
-export async function registerProject (project: ProjectCreate) {
+export async function registerRequest(request: LeaseRequestCreate) {
     try {
-        const { data } = await api.post('/project', project)
+        const { data } = await api.post("/lease-request", request)
         return data
     } catch (error) {
         if(isAxiosError(error) && error.response) {
@@ -13,9 +13,9 @@ export async function registerProject (project: ProjectCreate) {
     }
 }
 
-export async function getProjects () {
+export async function getRequests() {
     try {
-        const { data } = await api.get<ProjectView[]>('/project')
+        const { data } = await api<LeaseRequestResponse[]>("/lease-request")
         return data
     } catch (error) {
         if(isAxiosError(error) && error.response) {
@@ -24,9 +24,9 @@ export async function getProjects () {
     }
 }
 
-export async function updateProject(id: number, project: ProjectCreate) {
+export async function updateRequest(id: number, request: LeaseRequestCreate) {
     try {
-        const { data } = await api.put(`/project/${id}`, project)
+        const { data } = await api.put(`/lease-request/${id}`, request)
         return data
     } catch (error) {
         if(isAxiosError(error) && error.response) {
@@ -35,9 +35,9 @@ export async function updateProject(id: number, project: ProjectCreate) {
     }
 }
 
-export async function getProjectLandTypes () {
+export async function getLeaseByProject(id: number) {
     try {
-        const { data } = await api.get<ProjectLandType[]>('/project/rent-type')
+        const { data } = await api.get(`/lease-request/project/${id}`)
         return data
     } catch (error) {
         if(isAxiosError(error) && error.response) {

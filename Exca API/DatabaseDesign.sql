@@ -131,15 +131,24 @@ CREATE TABLE project (
     FOREIGN KEY (originator_id) REFERENCES [user] (id)
 )
 
+CREATE TABLE project_land_type (
+    id INT NOT NULL PRIMARY KEY IDENTITY(1,1), 
+    name VARCHAR(45) NOT NULL
+)
+INSERT INTO project_land_type (name)
+VALUES ('Local Construido'), ('Terreno en breña'), ('Terreno con mejoras')
+
 CREATE TABLE project_land (
     id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
     project_id INT NOT NULL,
     land_id INT NOT NULL, 
     area DECIMAL(10,2) NOT NULL, 
+    type_id INT NULL,
     created_at DATETIME NOT NULL DEFAULT GETDATE(),
     updated_at DATETIME NOT NULL DEFAULT GETDATE(),
     FOREIGN KEY (project_id) REFERENCES project (id), 
-    FOREIGN KEY (land_id) REFERENCES land (id)
+    FOREIGN KEY (land_id) REFERENCES land (id),
+    FOREIGN KEY (type_id) REFERENCES project_land_type (id)
 )
 
 CREATE TABLE project_event (
@@ -182,12 +191,13 @@ CREATE TABLE lease_request (
     project_id INT NOT NULL, 
     created_at DATETIME NOT NULL DEFAULT GETDATE(), 
     updated_at DATETIME NOT NULL DEFAULT GETDATE(),
-    status_id INT NOT NULL, 
+    status_id INT NOT NULL DEFAULT 1, 
     FOREIGN KEY (project_id) REFERENCES project (id), 
     FOREIGN KEY (status_id) REFERENCES status (id)
 )
 
 CREATE TABLE lease_request_condition (
+    id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
     condition_id INT NOT NULL,
     lease_request_id INT NOT NULL,
     value TEXT,

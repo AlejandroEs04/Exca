@@ -12,3 +12,5 @@ from app.database.models.user_rol import UserRol
 from app.database.models.condition_category import ConditionCategory
 from app.database.models.condition_type import ConditionType
 from app.database.models.condition import Condition
+from app.database.models.project_land_type import ProjectLandType
+from app.database.models.status import Status

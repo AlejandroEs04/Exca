@@ -25,3 +25,7 @@ export const dateFormat = (date: string) => {
     const prettyFormat = newDate.toLocaleString('es-ES', options);
     return prettyFormat
 }
+
+export const isInputHelper = (target: EventTarget): target is HTMLInputElement => {
+    return (target as HTMLInputElement).checked !== undefined;
+};

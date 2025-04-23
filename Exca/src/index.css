@@ -218,13 +218,20 @@ button, input, textarea, select {
 }
 .grid {
   display: grid;
-  column-gap: 2rem;
+  column-gap: 0.5rem;
+  row-gap: 0.5rem;
 }
 .grid-cols-2 {
   grid-template-columns: repeat(2, 1fr);
 }
 .grid-cols-3 {
   grid-template-columns: repeat(3, 1fr);
+}
+.g-1 {
+  gap: 0.5rem;
+}
+.g-2 {
+  gap: 1rem;
 }
 .date {
   color: var(--light-gray);

@@ -8,6 +8,8 @@ from app.database.models.brand import Brand
 from app.database.models.project_land import ProjectLand
 from app.database.models.project import Project
 from app.database.schemas.project_schema import ProjectCreate, ProjectResponse
+from app.database.models.project_land_type import ProjectLandType
+from app.database.schemas.project_land_type_schema import ProjectLandTypeResponse
 
 router = APIRouter(prefix="/project", tags=["Projects"])
 
@@ -89,7 +91,36 @@ def create_project(project: ProjectCreate, db: Session = Depends(get_db)):
     new_project.lands = new_lands
     return new_project
 
+@router.put("/{project_id}", response_model=ProjectResponse)
+def update_project(project_id: int, project_update: ProjectCreate, db: Session = Depends(get_db)):
+    project = db.get(Project, project_id)
+    if not project:
+        raise HTTPException(status_code=404, detail="Project not found")
+    
+    project.name = project_update.name
+    # TODO: I HAVE TO ADD ORIGINATOR AND STAGE
+    
+    # Updates lands
+    db.query(ProjectLand).filter(ProjectLand.project_id == project.id).delete()
+    
+    for land_data in project_update.lands:
+        new_land = ProjectLand(
+            project_id = project.id,
+            land_id = land_data.land_id,
+            area=land_data.area, 
+            type_id=land_data.type_id
+        )
+        db.add(new_land)
+        
+    db.commit()
+    db.refresh(project)
+    return project
+
 @router.get("/", response_model=list[ProjectResponse])
 def get_projects(db: Session = Depends(get_db)):
     projects = db.query(Project).options(joinedload(Project.lands).joinedload(ProjectLand.land), joinedload(Project.stage), joinedload(Project.originator), joinedload(Project.brand).joinedload(Brand.client)).all()
     return projects
+
+@router.get("/rent-type", response_model=list[ProjectLandTypeResponse])
+def get_rent_type(db: Session = Depends(get_db)):
+    return db.query(ProjectLandType).all()

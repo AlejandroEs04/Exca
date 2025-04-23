@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from app.routers import brand, client, land, project, user, condition
+from app.routers import brand, client, land, project, user, condition, lease_request
 from app.database.connection import Base, engine
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -25,3 +25,4 @@ app.include_router(brand.router)
 app.include_router(project.router)
 app.include_router(user.router)
 app.include_router(condition.router)
+app.include_router(lease_request.router)

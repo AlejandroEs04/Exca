@@ -25,6 +25,7 @@ class ProjectLandBase(BaseModel):
     area: float
     id: int
     land: LandResponse
+    type_id: int | None = None
     
 class BrandResponse(BaseModel):
     id: int

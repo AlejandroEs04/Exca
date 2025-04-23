@@ -48,12 +48,14 @@ export type Stage = {
 export type RentLand = {
     land_id: number
     area: number
+    type_id: number
 }
 
 export type ProjectLand = {
     id: number
     land_id: number
     area: number
+    type_id: number
     land: LandResponse
 }
 
@@ -88,4 +90,36 @@ export type Condition = {
     type_id: number
     category_id: number
     options: string
+}
+
+export type LeaseRequestCondition = {
+    id: number
+    condition_id: number
+    lease_request_id: number
+    value: string
+    is_active: boolean
+    condition: Condition
+}
+
+export type LeaseRequestConditionCreate = Pick<LeaseRequestCondition, 'id' | 'condition_id' | 'value' | 'is_active'>
+
+export type LeaseRequest = {
+    id: number
+    project_id: number
+}
+
+export type LeaseRequestCreate = Pick<LeaseRequest, 'project_id'> & {
+    conditions: LeaseRequestConditionCreate[]
+}
+
+export type LeaseRequestResponse = LeaseRequest & {
+    created_at: string
+    updated_at: string
+    conditions: LeaseRequestCondition[]
+}
+
+export type ProjectLandType = {
+    id: number
+    name: string
+
 }

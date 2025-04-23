@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom"
 import { isNullOrEmpty } from "../../utils"
 import { useAppContext } from "../../hooks/AppContext"
 import { LandCreate } from "../../types"
+import { toast } from "react-toastify"
 
 export default function CreateLand() {
     const list = [
@@ -44,6 +45,8 @@ export default function CreateLand() {
             const newLand = await registerLand(land)
             dispatch({ type: 'set-lands', paypload: { lands : [...state.lands, newLand!] } })
             navigate('/lands')
+
+            toast.success("Terreno creado correctamente")
         } catch (error) {
             console.log(error)
         }

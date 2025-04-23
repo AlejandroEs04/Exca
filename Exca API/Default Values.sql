@@ -1,5 +1,7 @@
 USE ExcaDb
 
+DELETE FROM condition
+
 INSERT INTO condition (name, options, category_id, type_id)
 VALUES 
 ('Tipo de contrato', '["Primer Contrato", "Renovación"]', 1, 5),

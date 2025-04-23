@@ -7,14 +7,10 @@ import SelectGroup from "../../components/forms/SelectGroup"
 import PlusIcon from "../../components/shared/Icons/PlusIcon"
 import { currencyFormat } from "../../utils"
 import { getResidentialDevelopments } from "../../api/LandApi"
-import { ResidentialDevelopment } from "../../types"
+import { ProjectCreate, RentLand, ResidentialDevelopment } from "../../types"
 import { registerProject } from "../../api/ProjectApi"
 import { useNavigate } from "react-router-dom"
-
-type RentLand = {
-    land_id: number
-    area: number
-}
+import { toast } from "react-toastify"
 
 export default function CreateProject() {
     const list = [
@@ -45,7 +41,8 @@ export default function CreateProject() {
 
     const [cadastralFile, setCadastralFile] = useState({
         land_id: 0, 
-        area: 0
+        area: 0,
+        type_id: 1
     })
 
     const onChangeProject = (e: ChangeEvent<HTMLInputElement> | PushEvent) => {
@@ -109,16 +106,18 @@ export default function CreateProject() {
         e.preventDefault()
 
         try {
-            const projectObj = {
+            const projectObj : ProjectCreate = {
                 name: project.name,
                 client: project.client,
                 brand: project.brand,
                 lands
             }
 
-            const newProject = await registerProject(projectObj)
+            const newProject = await registerProject(projectObj!)
             dispatch({ type: 'set-projects', paypload: { projects: [...state.projects, newProject] }})
             navigate('/projects')
+
+            toast.success("Projecto creado correctamente")
         } catch (error) {
             console.log(error)
         }
@@ -171,7 +170,7 @@ export default function CreateProject() {
                     <SelectGroup value={residential} name="residentialId" label="Fraccionamiento" placeholder="Seleccione un fraccionamiento" onChangeFnc={onChangeResidential} options={residentialOptions} />
                 </div>
 
-                <div className="grid grid-cols-2 mt-2">
+                <div className="grid grid-cols-3 g-1 mt-2">
                     <SelectGroup disable={landsSelectDisable} name="land_id" label="Expediente Catastral" value={cadastralFile.land_id} placeholder="Seleccione un terreno" onChangeFnc={onChangeCadastralFile} options={landOptions} />
                     <InputGroup name="area" label="Superficie arrendamiento" value={cadastralFile.area} placeholder="Superficie. ej. 180" onChangeFnc={onChangeCadastralFile} disable={areaDisable} /> 
                 </div>

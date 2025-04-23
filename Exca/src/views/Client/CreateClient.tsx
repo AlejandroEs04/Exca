@@ -6,6 +6,7 @@ import { createClient } from "../../api/ClientApi";
 import { isNullOrEmpty } from "../../utils";
 import { useAppContext } from "../../hooks/AppContext";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 export default function CreateClient() {
     const list = [
@@ -42,6 +43,8 @@ export default function CreateClient() {
             const newClient = await createClient(client)
             dispatch({ type: 'set-clients', paypload: { clients : [...state.clients, newClient!] } })
             navigate('/clients')
+
+            toast.success("Cliente creado correctamente")
         } catch (error) {
             console.error(error)    
         }

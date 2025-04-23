@@ -4,8 +4,7 @@ from datetime import datetime
 class ProjectLandBase(BaseModel):
     land_id: int
     area: float
-    
-    
+    type_id: int | None = None
 class ProjectLandCreate(ProjectLandBase):
     pass
     

@@ -7,6 +7,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { isNullOrEmpty } from "../../utils";
 import { Client } from "../../types";
 import { updateClient } from "../../api/ClientApi";
+import { toast } from "react-toastify";
 
 export default function EditClient() {
     const { id } = useParams()
@@ -57,6 +58,8 @@ export default function EditClient() {
 
             dispatch({ type: 'set-clients', paypload: { clients : newClients } })
             navigate('/clients')
+
+            toast.success("Cliente actualizado correctamente")
         } catch (error) {
             console.error(error)    
         }
