@@ -11,6 +11,9 @@ import EditClient from "./views/Client/EditClient"
 import Project from "./views/Projects/Project"
 import EditProject from "./views/Projects/EditProject"
 import ContractRequest from "./views/ContractRequest/ContractRequest"
+import Users from "./views/User/Users"
+import CreateUser from "./views/User/CreateUser"
+import ApprovalFlow from "./views/ApprovalFlow/ApprovalFlow"
 
 function App() {
   return (
@@ -18,6 +21,9 @@ function App() {
       <Routes>
         <Route path="/" element={<MainLayout />}>
           <Route index element={<Index />} />
+
+          <Route path="/users" element={<Users />} />
+          <Route path="/users/create" element={<CreateUser />} />
 
           <Route path="/projects" element={<Projects />} />
           <Route path="/projects/:id" element={<Project />} />
@@ -32,6 +38,8 @@ function App() {
           <Route path="/lands/create" element={<CreateLand />} />
 
           <Route path="/contract-request/:projectId" element={<ContractRequest />} />
+
+          <Route path="/test" element={<ApprovalFlow />} />
         </Route>
       </Routes>
     </BrowserRouter>

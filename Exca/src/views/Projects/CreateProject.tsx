@@ -8,7 +8,7 @@ import PlusIcon from "../../components/shared/Icons/PlusIcon"
 import { currencyFormat } from "../../utils"
 import { getResidentialDevelopments } from "../../api/LandApi"
 import { ProjectCreate, RentLand, ResidentialDevelopment } from "../../types"
-import { registerProject } from "../../api/ProjectApi"
+import { getProjectLandTypes, registerProject } from "../../api/ProjectApi"
 import { useNavigate } from "react-router-dom"
 import { toast } from "react-toastify"
 
@@ -30,6 +30,7 @@ export default function CreateProject() {
     const [residentialOptions, setResidentialOptions] = useState<Option[]>([])
     const [residentialDevelopments, setResidentialDevelopments] = useState<ResidentialDevelopment[]>([])
     const [landOptions, setLandOptions] = useState<Option[]>([])
+    const [rentOptions, setRentOptions] = useState<Option[]>([])
     const navigate = useNavigate()
 
     const clientsOptions = state.clients.map(client => {
@@ -42,7 +43,8 @@ export default function CreateProject() {
     const [cadastralFile, setCadastralFile] = useState({
         land_id: 0, 
         area: 0,
-        type_id: 1
+        type_id: 0, 
+        initial_area: 0
     })
 
     const onChangeProject = (e: ChangeEvent<HTMLInputElement> | PushEvent) => {
@@ -92,7 +94,7 @@ export default function CreateProject() {
         if (landExists) {
             setLands(lands.map(land => land.land_id === newLand.land_id ? newLand : land))
         } else {
-            setLands([...lands, newLand])
+            setLands([...lands, {...newLand}])
         }
     }
 
@@ -126,7 +128,8 @@ export default function CreateProject() {
     useEffect(() => {
         setCadastralFile({
             ...cadastralFile, 
-            area: state.lands.find(land => +land.id === +cadastralFile.land_id)?.area || 0
+            area: state.lands.find(land => +land.id === +cadastralFile.land_id)?.area || 0, 
+            initial_area: state.lands.find(land => +land.id === +cadastralFile.land_id)?.area || 0, 
         })
     }, [cadastralFile.land_id])
 
@@ -141,10 +144,21 @@ export default function CreateProject() {
             })
             setResidentialOptions(options)
             setResidentialDevelopments(data!)
+
+            const rentTypes = await getProjectLandTypes()
+            const rentOptions = rentTypes!.map(t => {
+                return {
+                    label: t.name, 
+                    value: t.id
+                }
+            })
+            setRentOptions(rentOptions)
         }
     
         getInfo()
     }, [])
+
+    console.log(rentOptions)
 
     return (
         <>
@@ -172,7 +186,8 @@ export default function CreateProject() {
 
                 <div className="grid grid-cols-3 g-1 mt-2">
                     <SelectGroup disable={landsSelectDisable} name="land_id" label="Expediente Catastral" value={cadastralFile.land_id} placeholder="Seleccione un terreno" onChangeFnc={onChangeCadastralFile} options={landOptions} />
-                    <InputGroup name="area" label="Superficie arrendamiento" value={cadastralFile.area} placeholder="Superficie. ej. 180" onChangeFnc={onChangeCadastralFile} disable={areaDisable} /> 
+                    <InputGroup limit={cadastralFile.initial_area} name="area" label="Superficie arrendamiento" value={cadastralFile.area} placeholder="Superficie. ej. 180" onChangeFnc={onChangeCadastralFile} disable={areaDisable} /> 
+                    <SelectGroup disable={areaDisable} name="type_id" label="Tipo de arrendamiento" value={cadastralFile.type_id} placeholder="Seleccione un tipo" onChangeFnc={onChangeCadastralFile} options={rentOptions} />
                 </div>
 
                 <button className="btn btn-sm btn-primary mt-1" onClick={() => addLand(cadastralFile)} type="button">
@@ -187,6 +202,7 @@ export default function CreateProject() {
                             <th>Precio/m<sup>2</sup></th>
                             <th>Metros<sup>2</sup></th>
                             <th>Renta mensual</th>
+                            <th>Tipo</th>
                         </tr>
                     </thead>
 
@@ -197,6 +213,7 @@ export default function CreateProject() {
                                 <td>{currencyFormat(state.lands.find(l => l.id === land.land_id)?.price_per_area!)}</td>
                                 <td>{land.area}</td>
                                 <td>{currencyFormat(+((state.lands.find(l => l.id === land.land_id)?.price_per_area || 0) * land.area).toFixed(2))}</td>
+                                <td>{rentOptions.find(r => r.value === land.type_id)?.label}</td>
                             </tr>
                         ))}
                     </tbody>

@@ -1,4 +1,4 @@
-import { ChangeEvent, useEffect, useState } from "react"
+import { ChangeEvent, useState } from "react"
 
 export type Option = {
     label: string
@@ -21,6 +21,7 @@ type InputGroupProps = {
     label: string
     options?: Option[]
     disable?: boolean
+    limit?: number | null
     onChangeFnc: (e: ChangeEvent<HTMLInputElement> | PushEvent) => void
 }
 
@@ -33,10 +34,12 @@ export default function InputGroup({
         label,
         onChangeFnc, 
         options = [],
-        disable = false
+        disable = false, 
+        limit = null
     } : InputGroupProps) 
 {
     const [show, setShow] = useState(false)
+    const [isError, setIsError] = useState<string | null>(null)
     const [optionsFiltered, setOptionsFiltered] = useState<Option[]>(options)
 
     const onPushOption = (value: string) => {
@@ -50,6 +53,14 @@ export default function InputGroup({
     }
 
     const onChange = (e: ChangeEvent<HTMLInputElement> | PushEvent) => {
+        if(limit) {
+            if(limit < +e.target.value) {
+                setIsError('Este valor supera el limite')
+            } else {
+                setIsError(null)
+            }
+        }
+
         onChangeFnc(e)
 
         if(e.target.value === '') {
@@ -57,14 +68,9 @@ export default function InputGroup({
             return
         }
 
-        setOptionsFiltered(options.filter(option => option.label.toLowerCase().includes((e as ChangeEvent<HTMLInputElement>).target.value.toLowerCase())))
+        const filtered = options.filter(option => option.label.toLowerCase().includes((e as ChangeEvent<HTMLInputElement>).target.value.toLowerCase()))
+        setOptionsFiltered(filtered)
     }
-
-    useEffect(() => {
-        if(options.length > 0) {
-            setOptionsFiltered(options)
-        }
-    }, [options])
     
     return (
         <div className="input-group">
@@ -79,7 +85,13 @@ export default function InputGroup({
                 value={value} 
                 placeholder={placeholder}
                 onChange={onChange}
+                autoComplete="off"
+                className={isError ? 'input-error' : ''}
             />
+
+            {isError && (
+                <p className="input-error-message">{isError}</p>
+            )}
 
             {optionsFiltered.length > 0 && show && (
                 <div className="input-options">

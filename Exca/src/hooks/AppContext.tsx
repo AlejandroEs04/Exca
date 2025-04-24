@@ -4,6 +4,7 @@ import { getLands } from '../api/LandApi';
 import { getClient } from '../api/ClientApi';
 import { getProjects } from '../api/ProjectApi';
 import { getRequests } from '../api/LeaseRequestApi';
+import { getUsers } from '../api/UserApi';
 
 interface AppContextProps {
     state: AppState
@@ -21,13 +22,15 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
             const lands = await getLands()
             const projects = await getProjects()
             const requests = await getRequests()
+            const users = await getUsers()
 
-            if (!clients || !lands || !projects || !requests) return
+            if (!clients || !lands || !projects || !requests || !users) return
 
             dispatch({ type: 'set-clients', paypload: { clients } })
             dispatch({ type: 'set-lands', paypload: { lands } })
             dispatch({ type: 'set-projects', paypload: { projects } })
             dispatch({ type: 'set-lease-request', paypload: { requests } })
+            dispatch({ type: 'set-users', paypload: { users } })
         }
 
         getInitials()

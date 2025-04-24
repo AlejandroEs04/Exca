@@ -81,7 +81,8 @@ def create_project(project: ProjectCreate, db: Session = Depends(get_db)):
         new_land = ProjectLand(
             project_id=new_project.id,
             land_id=land.land_id,
-            area=land.area
+            area=land.area,
+            type_id=land.type_id
         )
         db.add(new_land)
         db.commit()

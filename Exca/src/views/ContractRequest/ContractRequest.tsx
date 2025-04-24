@@ -210,39 +210,41 @@ export default function ContractRequest() {
 
             <h2 className='mt-2'>Datos inmueble objeto de arrendamiento</h2>
             {project.lands.map((land, index) => (
-                <div className='grid grid-cols-2' key={land.id}>
-                    <div className='condition-container'>
-                        <label htmlFor="landType">Inmueble a arrendar</label>
-                        <select value={land.type_id} onChange={handleProjectChange} name={`land[${index}].type_id`} id="landType">
-                            <option value="">Seleccione una opción</option>
-                            {types.map(type => (
-                                <option value={type.id} key={type.id}>{type.name}</option>
-                            ))}
-                        </select>
-                    </div>
-                    <div className='condition-container'>
-                        <label htmlFor="type">Escritura en compraventa</label>
-                        <div className='checkbox'>
-                            <input type='checkbox' name='' id='' />
+                <>
+                    <div className={`${index !== 0 && 'pt-3'} grid grid-cols-2`} key={land.id}>
+                        <div className='condition-container'>
+                            <label htmlFor="landType">Inmueble a arrendar</label>
+                            <select value={land.type_id} onChange={handleProjectChange} name={`land[${index}].type_id`} id="landType">
+                                <option value="">Seleccione una opción</option>
+                                {types.map(type => (
+                                    <option value={type.id} key={type.id}>{type.name}</option>
+                                ))}
+                            </select>
+                        </div>
+                        <div className='condition-container'>
+                            <label htmlFor="type">Escritura en compraventa</label>
+                            <div className='checkbox'>
+                                <input type='checkbox' name='' id='' />
+                            </div>
+                        </div>
+                        <div className='condition-container'>
+                            <label htmlFor="cadastralFile">Expediente Catastral</label>
+                            <input type="text" id='cadastralFile' disabled readOnly value={land.land.cadastral_file} placeholder='Expediente Catastral' />
+                        </div>
+                        <div className='condition-container'>
+                            <label htmlFor="residentialDevelopment">Domicilio inmueble</label>
+                            <input type="text" id='residentialDevelopment' disabled readOnly value={land.land.address} placeholder='Domicilio inmueble' />
+                        </div>
+                        <div className='condition-container'>
+                            <label htmlFor="totalArea">Superficie total</label>
+                            <input type="number" disabled readOnly value={land.land.area} id='totalArea' placeholder='Superficie total' />
+                        </div>
+                        <div className='condition-container'>
+                            <label htmlFor="areaForLease">Superficie en arrendamiento</label>
+                            <input type="number" onChange={handleProjectChange} name={`land[${index}].area`} value={land.area} id='areaForLease' placeholder='Superficie en arrendamiento' />
                         </div>
                     </div>
-                    <div className='condition-container'>
-                        <label htmlFor="cadastralFile">Expediente Catastral</label>
-                        <input type="text" id='cadastralFile' disabled readOnly value={land.land.cadastral_file} placeholder='Expediente Catastral' />
-                    </div>
-                    <div className='condition-container'>
-                        <label htmlFor="residentialDevelopment">Domicilio inmueble</label>
-                        <input type="text" id='residentialDevelopment' disabled readOnly value={land.land.address} placeholder='Domicilio inmueble' />
-                    </div>
-                    <div className='condition-container'>
-                        <label htmlFor="totalArea">Superficie total</label>
-                        <input type="number" disabled readOnly value={land.land.area} id='totalArea' placeholder='Superficie total' />
-                    </div>
-                    <div className='condition-container'>
-                        <label htmlFor="areaForLease">Superficie en arrendamiento</label>
-                        <input type="number" onChange={handleProjectChange} name={`land[${index}].area`} value={land.area} id='areaForLease' placeholder='Superficie en arrendamiento' />
-                    </div>
-                </div>
+                </>
             ))}
 
             <h2 className='mt-2'>Condiciones Comerciales Autorizadas</h2>

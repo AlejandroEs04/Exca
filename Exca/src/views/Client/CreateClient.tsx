@@ -7,6 +7,7 @@ import { isNullOrEmpty } from "../../utils";
 import { useAppContext } from "../../hooks/AppContext";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import SelectGroup from "../../components/forms/SelectGroup";
 
 export default function CreateClient() {
     const list = [
@@ -22,7 +23,7 @@ export default function CreateClient() {
         email: '', 
         phone_number: '', 
         address: '',
-        type_id: 2
+        type_id: 0
     })
 
     const navigate = useNavigate()
@@ -53,6 +54,17 @@ export default function CreateClient() {
     const isDisable = useMemo(() => 
         isNullOrEmpty(client.business_name), [client])
 
+    const options = [
+        {
+            label: "Persona Moral", 
+            value: 1
+        },
+        {
+            label: "Persona Fisica", 
+            value: 2
+        },
+    ]
+
     return (
         <>
             <Breadcrumb list={list} />
@@ -70,6 +82,7 @@ export default function CreateClient() {
                     <InputGroup type="email" name="email" label="Correo de contacto" value={client.email} placeholder="Ej. correo@correo.com" onChangeFnc={onChange} />
                     <InputGroup name="tax_id" label="RFC" value={client.tax_id} placeholder="RFC" onChangeFnc={onChange} />
                     <InputGroup name="address" label="Dirección" value={client.address} placeholder="Dirección" onChangeFnc={onChange} />
+                    <SelectGroup name="type_id" label="Tipo de cliente" value={client.type_id} options={options} onChangeFnc={onChange} placeholder="Seleccione tipo" />
                 </div>         
             </form>
         </>

@@ -16,9 +16,6 @@ class ProjectCreate(BaseModel):
     client: str
     brand: str
     lands: list[ProjectLandCreate] = []
-    
-    class Config:
-        from_attributes = True  
         
 class ProjectLandBase(BaseModel):
     land_id: int

@@ -5,22 +5,33 @@ DROP TABLE IF EXISTS lease_lessee
 DROP TABLE IF EXISTS lease_lessor
 DROP TABLE IF EXISTS lease
 DROP TABLE IF EXISTS rent_assigment
-DROP TABLE IF EXISTS lease_request_approvation
+DROP TABLE IF EXISTS approval_request
+DROP TABLE IF EXISTS approval_step
+DROP TABLE IF EXISTS approval_flow
 DROP TABLE IF EXISTS lease_request_condition
 DROP TABLE IF EXISTS lease_request
+DROP TABLE IF EXISTS owner
+DROP TABLE IF EXISTS guarantee_type
 DROP TABLE IF EXISTS condition
 DROP TABLE IF EXISTS condition_type
 DROP TABLE IF EXISTS condition_category
 DROP TABLE IF EXISTS project_event
 DROP TABLE IF EXISTS project_land
+DROP TABLE IF EXISTS project_land_type
 DROP TABLE IF EXISTS project
 DROP TABLE IF EXISTS [status]
 DROP TABLE IF EXISTS stage
 DROP TABLE IF EXISTS land
 DROP TABLE IF EXISTS residential_development
+DROP TABLE IF EXISTS individual_document
 DROP TABLE IF EXISTS individual
 DROP TABLE IF EXISTS brand
+DROP TABLE IF EXISTS client_document
 DROP TABLE IF EXISTS client
+DROP TABLE IF EXISTS document_entity
+DROP TABLE IF EXISTS document
+DROP TABLE IF EXISTS business_turn
+DROP TABLE IF EXISTS document_type
 DROP TABLE IF EXISTS client_type
 DROP TABLE IF EXISTS company
 DROP TABLE IF EXISTS company_type
@@ -62,9 +73,33 @@ CREATE TABLE client_type (
 )
 
 INSERT INTO client_type (name)
-VALUES ('Arrendador'), ('Arrendatario')
+VALUES ('Persona Moral'), ('Persona Física')
 
--- Companies (arrendador, arrendatario, asignado)
+CREATE TABLE business_turn (
+    id INT NOT NULL PRIMARY KEY IDENTITY(1,1), 
+    name VARCHAR(45) NOT NULL
+)
+
+CREATE TABLE document_type (
+    id INT NOT NULL PRIMARY KEY IDENTITY(1,1), 
+    name VARCHAR(45) NOT NULL
+)
+INSERT INTO document_type (name)
+VALUES ('Company (Legal Entity)'), ('Company (Physical person)'), ('Individual')
+
+CREATE TABLE document (
+    id INT NOT NULL PRIMARY KEY IDENTITY(1,1), 
+    name VARCHAR(45) NOT NULL
+)
+
+CREATE TABLE document_entity (
+    document_type_id INT NOT NULL, 
+    document_id INT NOT NULL, 
+    FOREIGN KEY (document_type_id) REFERENCES document_type (id),
+    FOREIGN KEY (document_id) REFERENCES document (id),
+    PRIMARY KEY (document_type_id, document_id)
+)
+
 CREATE TABLE client (
     id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
     business_name VARCHAR(100) NOT NULL, 
@@ -73,7 +108,16 @@ CREATE TABLE client (
     tax_id VARCHAR(20) NULL, 
     address TEXT,
     type_id INT NOT NULL, 
-    FOREIGN KEY (type_id) REFERENCES client_type (id)
+    turn_id INT NULL,
+    FOREIGN KEY (type_id) REFERENCES client_type (id), 
+    FOREIGN KEY (turn_id) REFERENCES business_turn (id)
+)
+
+CREATE TABLE client_document (
+    client_id INT NOT NULL, 
+    document_id INT NOT NULL, 
+    FOREIGN KEY (client_id) REFERENCES client (id),
+    FOREIGN KEY (document_id) REFERENCES document (id)
 )
 
 CREATE TABLE brand (
@@ -87,7 +131,15 @@ CREATE TABLE brand (
 CREATE TABLE individual (
     id INT NOT NULL PRIMARY KEY IDENTITY(1,1), 
     full_name VARCHAR(100) NOT NULL, 
-    taxt_id VARCHAR(20) NULL
+    taxt_id VARCHAR(20) NULL,
+    address VARCHAR(100) NULL
+)
+
+CREATE TABLE individual_document (
+    individual_id INT NOT NULL, 
+    document_id INT NOT NULL, 
+    FOREIGN KEY (individual_id) REFERENCES individual (id),
+    FOREIGN KEY (document_id) REFERENCES document (id)
 )
 
 CREATE TABLE residential_development (
@@ -117,6 +169,9 @@ CREATE TABLE [status] (
     id INT NOT NULL IDENTITY(1,1) PRIMARY KEY, 
     name VARCHAR(45) NOT NULL
 )
+
+INSERT INTO status (name)
+VALUES ('Nuevo'), ('En firmas'), ('Aceptado'), ('Cancelado')
 
 CREATE TABLE project (
     id INT NOT NULL PRIMARY KEY IDENTITY(1,1), 
@@ -186,14 +241,37 @@ CREATE TABLE condition (
     FOREIGN KEY (category_id) REFERENCES condition_category (id)
 )
 
+CREATE TABLE guarantee_type (
+    id INT NOT NULL IDENTITY(1,1) PRIMARY KEY, 
+    name VARCHAR(45) NOT NULL
+)
+INSERT INTO guarantee_type (name) 
+VALUES ('Propiedad libre de gravamen'), ('Estados financieros / contables'), ('Obligado Solidario'), ('Rentas Anticipadas'), ('Sin garantia')
+
+CREATE TABLE owner (
+    id INT NOT NULL IDENTITY(1,1) PRIMARY KEY, 
+    name VARCHAR(45) NOT NULL
+)
+INSERT INTO [owner] (name)
+VALUES ('FIMSA'), ('FEISA'), ('FIMSA / FEISA'), ('Otro')
+
 CREATE TABLE lease_request (
     id INT NOT NULL IDENTITY(1,1) PRIMARY KEY, 
     project_id INT NOT NULL, 
+    guarantee_id INT NOT NULL, 
+    guarantee_type_id INT NOT NULL, 
+    owner_id INT NOT NULL,
+    commission_agreement BIT NOT NULL, 
+    assignment_income BIT NOT NULL, 
+    property_file VARCHAR(20) NOT NULL,
     created_at DATETIME NOT NULL DEFAULT GETDATE(), 
     updated_at DATETIME NOT NULL DEFAULT GETDATE(),
     status_id INT NOT NULL DEFAULT 1, 
     FOREIGN KEY (project_id) REFERENCES project (id), 
-    FOREIGN KEY (status_id) REFERENCES status (id)
+    FOREIGN KEY (status_id) REFERENCES status (id),
+    FOREIGN KEY (guarantee_id) REFERENCES individual (id), 
+    FOREIGN KEY (guarantee_type_id) REFERENCES guarantee_type (id),
+    FOREIGN KEY (owner_id) REFERENCES owner (id)
 )
 
 CREATE TABLE lease_request_condition (
@@ -202,18 +280,66 @@ CREATE TABLE lease_request_condition (
     lease_request_id INT NOT NULL,
     value TEXT,
     is_active BIT NOT NULL DEFAULT 1,
-    FOREIGN KEY (condition_id) REFERENCES condition_type (id), 
+    FOREIGN KEY (condition_id) REFERENCES condition (id), 
     FOREIGN KEY (lease_request_id) REFERENCES lease_request (id)
 )
 
-CREATE TABLE lease_request_approvation (
-    id INT NOT NULL IDENTITY(1,1) PRIMARY KEY, 
-    signator_id INT NOT NULL, 
-    response BIT NOT NULL,
-    lease_request_id INT NOT NULL, 
-    FOREIGN KEY (signator_id) REFERENCES [user] (id), 
-    FOREIGN KEY (lease_request_id) REFERENCES lease_request (id)
+CREATE TABLE approval_flow (
+    id INT NOT NULL PRIMARY KEY IDENTITY(1,1), 
+    name VARCHAR(45)
 )
+INSERT INTO approval_flow (name)
+VALUES ('Solicitud de contrato'), ('Caratula legal')
+
+CREATE TABLE approval_step (
+    id INT NOT NULL PRIMARY KEY IDENTITY(1,1), 
+    next_step_id INT NULL, 
+    flow_id INT NOT NULL, 
+    -- Settings
+    signator_id INT NOT NULL, 
+    FOREIGN KEY (next_step_id) REFERENCES approval_step (id), 
+    FOREIGN KEY (flow_id) REFERENCES approval_flow (id), 
+    FOREIGN KEY (signator_id) REFERENCES [user] (id)
+)
+
+CREATE TABLE approval_request (
+    id INT NOT NULL IDENTITY(1,1) PRIMARY KEY, 
+    response BIT NOT NULL,
+    item_id VARCHAR(10) NOT NULL, 
+    step_id INT NOT NULL, 
+    FOREIGN KEY (step_id) REFERENCES approval_step (id)
+)
+
+INSERT INTO condition (name, options, category_id, type_id)
+VALUES 
+('Tipo de contrato', '["Primer Contrato", "Renovación"]', 1, 5),
+('Renta Mensual', null, 1, 2), 
+('Renta Anterior', null, 1, 2), 
+('Precio por m2 (LOCA)', null, 1, 2),
+('Porcentaje de incremento', null, 1, 2),
+('Referencia lista precios (Breña)', null, 1, 2), 
+('Cuota de mantenimiento', null, 1, 2),
+('¿Cumple lo mínimo autorizado', null, 1, 4),
+('Vigencia', null, 1, 2),
+('Prorroga', null, 1, 4),
+('¿Automática?', null, 1, 4),
+('Plazo forzoso GPV', null, 1, 2),
+('Plazo forzoso arrendatario', null, 1, 2),
+('Incremento anual', null, 1, 1),
+('Incremento a partir de', '["Fecha de firma", "Obtención de permisos", "Inicio de operaciones"]', 1, 5),
+('Incremento adicional', null, 1, 1),
+('¿Cuándo?', null, 1, 1),
+('Fecha de firma de contrato', null, 1, 3),
+('Deposito de garantía (meses)', '[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, "NO"]', 1, 5),
+('Renta anticipada (meses)', null, 1, 2),
+('Inicio de pago de renta', null, 1, 3),
+('Periodo de gracia (meses)', '[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, "NO"]', 1, 5),
+('¿Cumple con la tabla autorizada de PG?', null, 1, 4),
+('¿Cúando inicia el PG?', null, 1, 1),
+('¿Hay que firmar acta de entrega?', null, 1, 4),
+('¿Paga predial proporcional?', null, 1, 4),
+('Derecho de preferencia en venta', '["No tiene derecho de preferencia, no se le tiene que avisar", "No tiene derecho de preferencia, si se le tiene que avisar", "Si tiene derecho, no aplica entre filiales GP, no se le avisa", "Si tiene derecho, no aplica entre filiales GP, si se le avisa"]', 1, 5)
+
 
 -- HASTA AQUIIIII
 /**

@@ -8,6 +8,7 @@ import { isNullOrEmpty } from "../../utils";
 import { Client } from "../../types";
 import { updateClient } from "../../api/ClientApi";
 import { toast } from "react-toastify";
+import SelectGroup from "../../components/forms/SelectGroup";
 
 export default function EditClient() {
     const { id } = useParams()
@@ -80,10 +81,21 @@ export default function EditClient() {
         }
     }, [id, state.clients])
 
+    const options = [
+        {
+            label: "Persona Moral", 
+            value: 1
+        },
+        {
+            label: "Persona Fisica", 
+            value: 2
+        },
+    ]
+
     return (
         <>
             <Breadcrumb list={list} />
-            <h1>Registrar Cliente</h1>
+            <h1>Editar Cliente</h1>
             
             <form onSubmit={onSubmit}>
                 <button disabled={isDisable} className="btn btn-success">
@@ -97,6 +109,7 @@ export default function EditClient() {
                     <InputGroup type="email" name="email" label="Correo de contacto" value={client.email ?? ''} placeholder="Ej. correo@correo.com" onChangeFnc={onChange} />
                     <InputGroup name="tax_id" label="RFC" value={client.tax_id ?? ''} placeholder="RFC" onChangeFnc={onChange} />
                     <InputGroup name="address" label="Dirección" value={client.address ?? ''} placeholder="Dirección" onChangeFnc={onChange} />
+                    <SelectGroup name="type_id" label="Tipo de cliente" value={client.type_id!} options={options} onChangeFnc={onChange} placeholder="Seleccione tipo" />
                 </div>         
             </form>
         </>

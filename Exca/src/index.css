@@ -123,6 +123,24 @@ button, input, textarea, select {
 .mt-2 {
   margin-top: 1rem;
 }
+.mb-1 {
+  margin-bottom: 0.5rem;
+}
+.mb-2 {
+  margin-bottom: 1rem;
+}
+.pt-2 {
+  padding-top: 1rem;
+}
+.pt-3 {
+  padding-top: 1.5rem;
+}
+.pt-4 {
+  padding-top: 2rem;
+}
+.pb-2 {
+  padding-bottom: 1rem;
+}
 .icon {
   width: 1.2rem;
 }
@@ -162,6 +180,13 @@ button, input, textarea, select {
 .btn-success:disabled {
   background-color: var(--green-disable);
 }
+.btn-danger {
+  background-color: var(--red);
+  color: var(--white);
+}
+.btn-danger:hover {
+  background-color: var(--red-dark);
+}
 .btn-sm .icon {
   width: 0.8rem;
 }
@@ -190,10 +215,10 @@ button, input, textarea, select {
   position: absolute;
   display: flex;
   top: 100%;
-  margin-top: 0.6rem;
+  margin-top: 0.2rem;
   flex-direction: column;
   align-items: start;
-  background-color: var(--white);
+  background-color: #f5f5f5;
   width: 100%;
   border: 1px solid var(--light-gray);
   z-index: 10;
@@ -206,6 +231,14 @@ button, input, textarea, select {
 }
 .input-options button:hover {
   background-color: var(--bg-touched);
+}
+input.input-error {
+  border: 1px solid var(--red);
+  color: var(--red);
+}
+.input-error-message {
+  font-size: 0.8rem;
+  color: var(--red);
 }
 .flex {
   display: flex;
@@ -277,6 +310,9 @@ button, input, textarea, select {
 }
 .nav-container {
   height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 .aside-navigation .nav-container a {
   font-size: 1rem;
@@ -288,6 +324,9 @@ button, input, textarea, select {
   margin: 0 1rem;
   transition: all ease-in-out 0.2s;
   border-left: 4px solid var(--primary);
+}
+.p-nav {
+  padding: 0.4rem 0.6rem;
 }
 .aside-navigation .nav-container a:hover {
   background-color: var(--bg-touched);
@@ -346,4 +385,29 @@ button, input, textarea, select {
 }
 .w-full {
   width: 100%;
+}
+
+.drag-item {
+  width: 100%;
+  background-color: var(--white);
+  transition: all ease-in-out 0.2s;
+  padding: 0.6rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.6rem;
+  font-size: 1.1rem;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  border-radius: 0.5rem;
+}
+.drag-item .icon {
+  width: 1.4rem;
+}
+.drag-item:hover {
+  background-color: var(--bg-hover-touched);
+}
+.drag-item div {
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
 }

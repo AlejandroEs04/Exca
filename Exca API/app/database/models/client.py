@@ -12,6 +12,8 @@ class Client(Base):
     tax_id = Column(String, nullable=True)
     address = Column(String, nullable=True)
     type_id = Column(Integer, ForeignKey("client_type.id"), nullable=False)
+    turn_id = Column(Integer, ForeignKey("business_turn.id"), nullable=True)
     
     client_type = relationship("ClientType", back_populates="clients")
     brands = relationship("Brand", back_populates="client")
+    turn = relationship("BusinessTurn", back_populates="clients")

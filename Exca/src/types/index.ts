@@ -121,5 +121,28 @@ export type LeaseRequestResponse = LeaseRequest & {
 export type ProjectLandType = {
     id: number
     name: string
+}
 
+export type Rol = {
+    id: number
+    name: string
+}
+
+export type Area = {
+    id: number
+    name: string
+}
+
+export type User = {
+    full_name: string
+    email: string
+    rol_id: number
+    area_id: number
+    id: number
+    area: Area
+    rol: Rol
+}
+
+export type UserCreate = Pick<User, 'full_name' | 'email' | 'area_id' | 'rol_id'> & {
+    password: string
 }
