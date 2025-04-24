@@ -1,5 +1,6 @@
 import { Link, Outlet } from 'react-router-dom'
 import { ToastContainer } from 'react-toastify'
+import ApprovalFlow from '../components/shared/Icons/ApprovalFlow'
 
 export default function MainLayout() {
     return (
@@ -42,7 +43,10 @@ export default function MainLayout() {
                                 </svg>
                                 Users
                             </Link>
-
+                            <Link to={'/approval-flows'}>
+                                <ApprovalFlow />
+                                Flujos
+                            </Link>
                         </nav>
 
                         <div className='p-nav mb-2'>

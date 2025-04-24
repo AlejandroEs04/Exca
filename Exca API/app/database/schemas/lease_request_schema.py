@@ -4,6 +4,12 @@ from app.database.schemas.lease_request_condition_schema import LeaseRequestCond
 
 class LeaseRequestBase(BaseModel):
     project_id: int
+    guarantee_id: int
+    guarantee_type_id: int
+    owner_id: int
+    commission_agreement: bool
+    assignment_income: bool
+    property_file: bool
 
 class LeaseRequestCreate(LeaseRequestBase):
     conditions: list[LeaseRequestConditionCreate]

@@ -1,22 +1,35 @@
 import { useState } from "react"
+import styles from './index.module.css'
+import { Link } from "react-router-dom"
 
 export default function Index() {
     const [show, setShow] = useState(false)
 
     return (
         <div>
-            <div>
-                <div className="checkbox-group">
-                    <label htmlFor="show">Intereses Moratorios</label>
-                    <input type="checkbox" name="show" id="show" onChange={e => setShow(e.target.checked)} />
+            <div className={styles.dashboardNav}>
+                <div className={`${styles.dashboardCard} ${styles.cardBlue}`}>
+                    <Link to="/users/create">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className={styles.icon}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M18 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0ZM3 19.235v-.11a6.375 6.375 0 0 1 12.75 0v.109A12.318 12.318 0 0 1 9.374 21c-2.331 0-4.512-.645-6.374-1.766Z" />
+                        </svg>
+                        Registrar Usuario                    
+                    </Link>
                 </div>
 
-                {show && (
-                    <div>
-                        <input type="text" name="condition" id="condition" placeholder="condition" />
-                    </div>
-                )}
+                <div className={`${styles.dashboardCard} ${styles.cardPurple}`}>
+                    <Link to="#">Registrar Terrenos</Link>
+                </div>
+
+                <div className={`${styles.dashboardCard} ${styles.cardGreen}`}>
+                    <Link to="#">Ver Proyectos</Link>
+                </div>
+
+                <div className={`${styles.dashboardCard} ${styles.cardOrange}`}>
+                    <Link to="#">Revisar Aprobaciones</Link>
+                </div>
             </div>
+
         </div>
     )
 }

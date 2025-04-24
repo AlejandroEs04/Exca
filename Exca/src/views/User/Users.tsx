@@ -4,6 +4,7 @@ import { useAppContext } from "../../hooks/AppContext"
 import TrashIcon from "../../components/shared/Icons/TrashIcon"
 import EditIcon from "../../components/shared/Icons/EditIcon"
 import PlusIcon from "../../components/shared/Icons/PlusIcon"
+import Loader from "../../components/shared/Loader/Loader"
 
 export default function Users() {
     const list = [
@@ -11,7 +12,9 @@ export default function Users() {
         {name:"Usuarios",url:'/users'},
     ]
 
-    const { state } = useAppContext()
+    const { state, isLoading } = useAppContext()
+
+    if(isLoading) return <Loader />
 
     return (
         <>

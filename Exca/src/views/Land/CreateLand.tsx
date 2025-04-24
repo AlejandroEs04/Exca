@@ -8,6 +8,7 @@ import { isNullOrEmpty } from "../../utils"
 import { useAppContext } from "../../hooks/AppContext"
 import { LandCreate } from "../../types"
 import { toast } from "react-toastify"
+import Loader from "../../components/shared/Loader/Loader"
 
 export default function CreateLand() {
     const list = [
@@ -25,7 +26,7 @@ export default function CreateLand() {
         residential_development: ''
     })
 
-    const { state, dispatch } = useAppContext()
+    const { state, dispatch, isLoading } = useAppContext()
 
     const navigate = useNavigate()
 
@@ -69,6 +70,8 @@ export default function CreateLand() {
 
         getInfo()
     }, [])
+
+    if(isLoading) return <Loader />
 
     return (
         <>

@@ -4,6 +4,7 @@ import PlusIcon from "../../components/shared/Icons/PlusIcon";
 import { useAppContext } from "../../hooks/AppContext";
 import TrashIcon from "../../components/shared/Icons/TrashIcon";
 import EditIcon from "../../components/shared/Icons/EditIcon";
+import Loader from "../../components/shared/Loader/Loader";
 
 export default function Lands() {
     const list = [
@@ -11,8 +12,10 @@ export default function Lands() {
         {name:"Terrenos",url:'/lands'},
     ]
 
-    const { state } = useAppContext()
+    const { state, isLoading } = useAppContext()
 
+    if(isLoading) return <Loader />
+    
     return (
         <>
             <Breadcrumb list={list} />

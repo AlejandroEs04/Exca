@@ -11,3 +11,4 @@ class Individual(Base):
     address = Column(String, nullable=True)
     
     documents = relationship("IndividualDocument", back_populates="individual")
+    lease_requests = relationship("LeaseRequest", back_populates="guarantee")

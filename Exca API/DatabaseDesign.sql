@@ -93,11 +93,11 @@ CREATE TABLE document (
 )
 
 CREATE TABLE document_entity (
+    id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
     document_type_id INT NOT NULL, 
     document_id INT NOT NULL, 
     FOREIGN KEY (document_type_id) REFERENCES document_type (id),
-    FOREIGN KEY (document_id) REFERENCES document (id),
-    PRIMARY KEY (document_type_id, document_id)
+    FOREIGN KEY (document_id) REFERENCES document (id)
 )
 
 CREATE TABLE client (
@@ -114,6 +114,7 @@ CREATE TABLE client (
 )
 
 CREATE TABLE client_document (
+    id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
     client_id INT NOT NULL, 
     document_id INT NOT NULL, 
     FOREIGN KEY (client_id) REFERENCES client (id),
@@ -131,11 +132,12 @@ CREATE TABLE brand (
 CREATE TABLE individual (
     id INT NOT NULL PRIMARY KEY IDENTITY(1,1), 
     full_name VARCHAR(100) NOT NULL, 
-    taxt_id VARCHAR(20) NULL,
+    tax_id VARCHAR(20) NULL,
     address VARCHAR(100) NULL
 )
 
 CREATE TABLE individual_document (
+    id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
     individual_id INT NOT NULL, 
     document_id INT NOT NULL, 
     FOREIGN KEY (individual_id) REFERENCES individual (id),

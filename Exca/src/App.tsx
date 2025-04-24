@@ -14,6 +14,7 @@ import ContractRequest from "./views/ContractRequest/ContractRequest"
 import Users from "./views/User/Users"
 import CreateUser from "./views/User/CreateUser"
 import ApprovalFlow from "./views/ApprovalFlow/ApprovalFlow"
+import ApprovalFlows from "./views/ApprovalFlow/ApprovalFlows"
 
 function App() {
   return (
@@ -39,7 +40,8 @@ function App() {
 
           <Route path="/contract-request/:projectId" element={<ContractRequest />} />
 
-          <Route path="/test" element={<ApprovalFlow />} />
+          <Route path="/approval-flows" element={<ApprovalFlows />} />
+          <Route path="/approval-flows/edit/:id" element={<ApprovalFlow />} />
         </Route>
       </Routes>
     </BrowserRouter>

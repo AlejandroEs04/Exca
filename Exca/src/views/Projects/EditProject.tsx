@@ -2,12 +2,14 @@ import { useParams } from "react-router-dom"
 import { useAppContext } from "../../hooks/AppContext"
 import { ChangeEvent, useEffect, useMemo, useState } from "react"
 import Breadcrumb from "../../components/shared/Breadcrumb/Breadcrumb"
-import InputGroup, { PushEvent } from "../../components/forms/InputGroup"
+import InputGroup, { PushEvent, Option } from "../../components/forms/InputGroup"
 import SaveIcon from "../../components/shared/Icons/SaveIcon"
 import SelectGroup from "../../components/forms/SelectGroup"
-import { ProjectView, RentLand } from "../../types"
+import { ProjectView, RentLand, ResidentialDevelopment } from "../../types"
 import PlusIcon from "../../components/shared/Icons/PlusIcon"
 import { currencyFormat } from "../../utils"
+import { getResidentialDevelopments } from "../../api/LandApi"
+import { getProjectLandTypes } from "../../api/ProjectApi"
 
 export default function EditProject() {
     const { id } = useParams()
@@ -20,6 +22,9 @@ export default function EditProject() {
 
     const { state } = useAppContext()
     const [project, setProject] = useState<ProjectView | null>(null)
+    const [rentOptions, setRentOptions] = useState<Option[]>([])
+    const [residentialOptions, setResidentialOptions] = useState<Option[]>([])
+    const [residentialDevelopments, setResidentialDevelopments] = useState<ResidentialDevelopment[]>([])
     const [lands, setLands] = useState<RentLand[]>([])
     
     const clientsOptions = state.clients.map(client => {
@@ -38,7 +43,8 @@ export default function EditProject() {
     
     const [cadastralFile, setCadastralFile] = useState({
         land_id: 0, 
-        area: 0
+        area: 0,
+        type_id: 0
     })
 
     const onChangeProject = (e: ChangeEvent<HTMLInputElement> | PushEvent) => {
@@ -78,6 +84,31 @@ export default function EditProject() {
         setProject(project)
     }, [id, state.projects])
 
+    useEffect(() => {
+        const getInfo = async() => {
+            const data = await getResidentialDevelopments()
+            const options = data!.map(residential => {
+                return {
+                    label: residential.name,
+                    value: residential.id
+                }
+            })
+            setResidentialOptions(options)
+            setResidentialDevelopments(data!)
+    
+            const rentTypes = await getProjectLandTypes()
+            const rentOptions = rentTypes!.map(t => {
+                return {
+                    label: t.name, 
+                    value: t.id
+                }
+            })
+            setRentOptions(rentOptions)
+        }
+        
+        getInfo()
+    }, [])
+
     if(!project) return <div>Cargando...</div>
 
     return (
@@ -103,6 +134,7 @@ export default function EditProject() {
                 <div className="grid grid-cols-2 mt-2">
                     <SelectGroup name="land_id" label="Expediente Catastral" value={cadastralFile.land_id} placeholder="Seleccione un terreno" onChangeFnc={onChangeCadastralFile} options={landsOptions} />
                     <InputGroup name="area" label="Superficie arrendamiento" value={cadastralFile.area} placeholder="Superficie. ej. 180" onChangeFnc={onChangeCadastralFile} disable={areaDisable} /> 
+                    <SelectGroup disable={areaDisable} name="type_id" label="Tipo de arrendamiento" value={cadastralFile.type_id} placeholder="Seleccione un tipo" onChangeFnc={onChangeCadastralFile} options={rentOptions} />               
                 </div>
             
                 <button className="btn btn-sm btn-primary mt-1" onClick={() => addLand(cadastralFile)} type="button">

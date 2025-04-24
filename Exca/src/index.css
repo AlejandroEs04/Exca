@@ -62,6 +62,7 @@ table {
   border-collapse: collapse;
   width: 100%;
   border: 1px solid var(--bg-touched);
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
 }
 table th {
   text-align: start;
@@ -410,4 +411,114 @@ input.input-error {
   display: flex;
   align-items: center;
   gap: 0.2rem;
+}
+
+.loader {
+  width: 64px;
+  height: 48px;
+  position: relative;
+  animation: split 1s ease-in infinite alternate;
+}
+.loader::before , .loader::after {
+  content: '';
+  position: absolute;
+  height: 48px;
+  width: 48px;
+  border-radius: 50%;
+  left: 0;
+  top: 0;
+  transform: translateX(-10px);
+  background: var(--primary);
+  opacity: 0.75;
+  backdrop-filter: blur(20px);
+}
+
+.loader::after {
+  left: auto;
+  right: 0;
+  background: #424242;
+  transform: translateX(10px);
+}
+
+@keyframes split {
+ 0% , 25%{ width: 64px }
+ 100%{ width: 148px }
+}
+.loader-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.dashboard-card {
+  position: relative;
+  width: 300px;
+  height: 150px;
+  border-radius: 16px;
+  overflow: hidden;
+  background-color: #767a7e;
+  color: white;
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.dashboard-card:hover {
+  transform: scale(1.02);
+}
+
+.dashboard-card::before {
+  content: "";
+  position: absolute;
+  width: 150px;
+  height: 150px;
+  top: 0;
+  right: 0;
+  background: radial-gradient(circle at center, #112038, #03103a); /* Degradado azul */
+  border-radius: 50%;
+  opacity: 0.3;
+  z-index: 0;
+  animation: moveAround 20s linear infinite alternate;
+}
+
+.dashboard-card a {
+  position: relative;
+  z-index: 1;
+  color: white;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+@keyframes moveAround {
+  0% {
+    top: -30px;
+    left: -30px;
+    background: radial-gradient(circle at center, #142135, #282c38);
+  }
+  25% {
+    top: -30px;
+    left: calc(100% - 120px);
+    background: radial-gradient(circle at center, #2e2f3d, #1e2b46);
+  }
+  50% {
+    top: calc(100% - 120px);
+    left: calc(100% - 120px);
+    background: radial-gradient(circle at center, #0a101a, #040e2c);
+  }
+  75% {
+    top: calc(100% - 120px);
+    left: -30px;
+    background: radial-gradient(circle at center, #2e2f3d, #1e2b46);
+  }
+  100% {
+    top: -30px;
+    left: -30px;
+    background: radial-gradient(circle at center, #142135, #282c38);
+  }
 }

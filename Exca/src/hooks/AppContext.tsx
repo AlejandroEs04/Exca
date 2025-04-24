@@ -1,4 +1,4 @@
-import React, { createContext, useContext, ReactNode, useReducer, Dispatch, useEffect } from 'react';
+import React, { createContext, useContext, ReactNode, useReducer, Dispatch, useEffect, useState } from 'react';
 import { AppActions, AppReducer, AppState, initialState } from "../reducers/app-reducer";
 import { getLands } from '../api/LandApi';
 import { getClient } from '../api/ClientApi';
@@ -9,35 +9,46 @@ import { getUsers } from '../api/UserApi';
 interface AppContextProps {
     state: AppState
     dispatch: Dispatch<AppActions>
+    isLoading: boolean
+    setIsLoading: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 const AppContext = createContext<AppContextProps | undefined>(undefined);
 
 export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     const [state, dispatch] = useReducer(AppReducer, initialState)
+    const [isLoading, setIsLoading] = useState(false)
 
     useEffect(() => {
         const getInitials = async() => {
-            const clients = await getClient()
-            const lands = await getLands()
-            const projects = await getProjects()
-            const requests = await getRequests()
-            const users = await getUsers()
+            setIsLoading(true)
 
-            if (!clients || !lands || !projects || !requests || !users) return
-
-            dispatch({ type: 'set-clients', paypload: { clients } })
-            dispatch({ type: 'set-lands', paypload: { lands } })
-            dispatch({ type: 'set-projects', paypload: { projects } })
-            dispatch({ type: 'set-lease-request', paypload: { requests } })
-            dispatch({ type: 'set-users', paypload: { users } })
+            try {
+                const clients = await getClient()
+                const lands = await getLands()
+                const projects = await getProjects()
+                const requests = await getRequests()
+                const users = await getUsers()
+    
+                if (!clients || !lands || !projects || !requests || !users) return
+    
+                dispatch({ type: 'set-clients', paypload: { clients } })
+                dispatch({ type: 'set-lands', paypload: { lands } })
+                dispatch({ type: 'set-projects', paypload: { projects } })
+                dispatch({ type: 'set-lease-request', paypload: { requests } })
+                dispatch({ type: 'set-users', paypload: { users } })
+            } catch(error) {
+                console.log(error)
+            } finally {
+                setIsLoading(false)
+            }
         }
 
         getInitials()
     }, [])
 
     return (
-        <AppContext.Provider value={{ state, dispatch }}>
+        <AppContext.Provider value={{ state, dispatch, isLoading, setIsLoading }}>
             {children}
         </AppContext.Provider>
     );

@@ -11,6 +11,7 @@ import { ProjectCreate, RentLand, ResidentialDevelopment } from "../../types"
 import { getProjectLandTypes, registerProject } from "../../api/ProjectApi"
 import { useNavigate } from "react-router-dom"
 import { toast } from "react-toastify"
+import Loader from "../../components/shared/Loader/Loader"
 
 export default function CreateProject() {
     const list = [
@@ -19,7 +20,7 @@ export default function CreateProject() {
         {name:"Registrar Proyecto",url:'/projects/create'},
     ]
 
-    const { state, dispatch } = useAppContext()
+    const { state, dispatch, isLoading } = useAppContext()
     const [project, setProject] = useState({
         name: '', 
         client: '',
@@ -158,7 +159,7 @@ export default function CreateProject() {
         getInfo()
     }, [])
 
-    console.log(rentOptions)
+    if(isLoading) return <Loader />
 
     return (
         <>

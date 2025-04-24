@@ -13,15 +13,19 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { ChangeEvent, useEffect, useState } from "react";
-import { User } from "../../types";
+import { ApprovalFlowCreate, ApprovalFlow as ApprovalFlowType, User } from "../../types";
 import { useAppContext } from "../../hooks/AppContext";
 import Breadcrumb from "../../components/shared/Breadcrumb/Breadcrumb";
 import SaveIcon from "../../components/shared/Icons/SaveIcon";
-import { Option } from "../../components/forms/InputGroup";
+import InputGroup, { Option, PushEvent } from "../../components/forms/InputGroup";
 import SelectGroup from "../../components/forms/SelectGroup";
 import TrashIcon from "../../components/shared/Icons/TrashIcon";
+import { useNavigate, useParams } from "react-router-dom";
+import Loader from "../../components/shared/Loader/Loader";
+import { getFlows, updateFlow } from "../../api/ApprovalFlowApi";
+import { toast } from "react-toastify";
 
-const SortableApproverItem = ({ approver, deleteUser }: { approver: User, deleteUser: (id: number) => void }) => {
+const SortableApproverItem = ({ approver, deleteUser, i }: { approver: User, deleteUser: (id: number) => void, i:number }) => {
     const {
         attributes,
         listeners,
@@ -29,7 +33,6 @@ const SortableApproverItem = ({ approver, deleteUser }: { approver: User, delete
         transform,
         transition,
     } = useSortable({ id: approver.id });
-  
     const style = {
         transform: CSS.Transform.toString(transform),
         transition,
@@ -48,6 +51,7 @@ const SortableApproverItem = ({ approver, deleteUser }: { approver: User, delete
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="icon">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 15 12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9" />
                 </svg>
+                {i+1 + ' : '}
                 {approver.full_name}
             </div>
             
@@ -61,13 +65,20 @@ const SortableApproverItem = ({ approver, deleteUser }: { approver: User, delete
 export default function ApprovalFlow() {
     const [approvers, setApprovers] = useState<User[]>([]);
     const [userOprions, setUserOptions] = useState<Option[]>([])
+    const [flow, setFlow] = useState<ApprovalFlowType>({
+        id: 0,
+        name: '', 
+        steps: []
+    })
     const [userId, setUserId] = useState(0)
-    const { state } = useAppContext()
+    const { state, setIsLoading, isLoading, dispatch } = useAppContext()
+    const { id } = useParams()
+    const navigate = useNavigate()
 
     const list = [
         {name:"Dashboard",url:'/'},
-        {name:"Flujos de aprobación",url:'/lands'},
-        {name:"Editar Flujo",url:'/lands/create'},
+        {name:"Flujos de aprobación",url:'/approval-flows'},
+        {name:"Editar Flujo",url:`/approval-flows/edit/${id}`},
     ]
     
     const sensors = useSensors(useSensor(PointerSensor));
@@ -81,8 +92,18 @@ export default function ApprovalFlow() {
         }
     };
 
-    const handleChange = (e: ChangeEvent<HTMLSelectElement>) => {
-        setUserId(+e.target.value)
+    const handleChange = (e: ChangeEvent<HTMLSelectElement | HTMLInputElement> | PushEvent) => {
+        const { value, name } = e.target
+
+        if(name === "userId") {
+            setUserId(+value)
+            return
+        }
+
+        setFlow({
+            ...flow, 
+            [name]: value
+        })
     }
 
     const addUser = () => {
@@ -95,38 +116,91 @@ export default function ApprovalFlow() {
     }
 
     const deleteUser = (id: number) => {
-        console.log(id)
         setApprovers(approvers.filter(a => a.id !== id))
     }
     
-    const handleSubmit = () => {
+    const handleSubmit = async() => {
         const payload = approvers.map((a, index) => ({
-          id: a.id,
-          order: index + 1,
+            signator_id: a.id,
+            order: index + 1,
         }));
-    
-        fetch("/api/approval-flow", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ approvers: payload }),
-        });
+
+        const flowForUpdate : ApprovalFlowCreate = {
+            name: flow.name, 
+            steps: payload
+        }
+
+        try {
+            await updateFlow(+id!, flowForUpdate)
+            toast.success("Flujo actualizado correctamente")
+        } catch (error) {
+            console.log(error)
+        }
     };
     
     useEffect(() => {
         setUserOptions(state.users.map(u => { return { value: u.id, label: u.full_name } }))
     }, [state.users])
+
+    useEffect(() => {
+        if(state.users.length) {
+            const stepsById = Object.fromEntries(flow.steps.map(s => [s.id, s]));
+            const allNextIds = new Set(flow.steps.map(step => step.next_step_id).filter(id => id !== null));
+            const firstStep = flow.steps.find(step => !allNextIds.has(step.id));
+    
+            const orderedSteps = [];
+            let currentStep = firstStep;
+    
+            while (currentStep) {
+                orderedSteps.push(currentStep);
+                currentStep = stepsById[currentStep.next_step_id!];
+            }
+    
+            const users = orderedSteps.map(s => {
+                return state.users.find(u => u.id === s.signator_id)!
+            })
+            setApprovers(users)
+        }
+    }, [state.users, flow])
+
+    useEffect(() => {
+        const getInfo = async() => {
+            setIsLoading(true)
+            try {
+                const flows = await getFlows()
+                if(!flows) return
+
+                const currentFlow = flows.find(f => f.id === +id!)
+                if(!currentFlow) {
+                    navigate('/flows')
+                    return
+                }
+                setFlow(currentFlow)
+            } catch (error) {
+                console.log(error)
+            } finally {
+                setIsLoading(false)
+            }
+        }
+        getInfo()
+    }, [])
+
+    if(isLoading) return <Loader />
     
     return (
         <>
             <Breadcrumb list={list} />
             <h1>Editar Flujo</h1>
 
-            <button type="submit" className="btn btn-success">
+            <button type="button" onClick={handleSubmit} className="btn btn-success">
                 <SaveIcon />
                 Guardar
             </button>
 
             <div className="mt-2">
+                <InputGroup placeholder="Nombre" label="Nombre" value={flow.name} onChangeFnc={handleChange} name="name" />
+
+                <h2 className="mt-2">Usuarios</h2>
                 <SelectGroup value={userId} id="userId" label="Usuario" options={userOprions} onChangeFnc={handleChange} name="userId" placeholder="Seleccione un usuario" />
                 <button className="btn btn-primary mt-1" onClick={addUser}>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="icon">
@@ -141,8 +215,8 @@ export default function ApprovalFlow() {
                 <p className="mb-1">Arrastra para asignar un flujo, haz doble click para eliminar</p>
                 <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
                     <SortableContext items={approvers.map((a) => a.id)} strategy={verticalListSortingStrategy}>
-                        {approvers.map((approver) => (
-                            <SortableApproverItem deleteUser={deleteUser} key={approver.id} approver={approver} />
+                        {approvers.map((approver, i) => (
+                            <SortableApproverItem i={i} deleteUser={deleteUser} key={approver.id} approver={approver} />
                         ))}
                     </SortableContext>
                 </DndContext>

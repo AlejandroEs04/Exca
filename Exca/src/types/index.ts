@@ -146,3 +146,24 @@ export type User = {
 export type UserCreate = Pick<User, 'full_name' | 'email' | 'area_id' | 'rol_id'> & {
     password: string
 }
+
+export type ApprovalStep = {
+    id: number
+    next_step_id: number | null
+    flow_id: number
+    signator_id: number
+}
+
+export type ApprovalStepCreate = Pick<ApprovalStep, 'signator_id'> & {
+    order: number
+}
+
+export type ApprovalFlow = {
+    id: number
+    name: string
+    steps: ApprovalStep[]
+}
+
+export type ApprovalFlowCreate = Pick<ApprovalFlow, 'name'> & {
+    steps: ApprovalStepCreate[]
+}

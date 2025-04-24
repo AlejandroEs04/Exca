@@ -18,3 +18,10 @@ from app.database.models.business_turn import BusinessTurn
 from app.database.models.client_document import ClientDocument
 from app.database.models.approval_flow import ApprovalFlow
 from app.database.models.approval_step import ApprovalStep
+from app.database.models.guarantee_type import GuaranteeType
+from app.database.models.owner import Owner
+from app.database.models.individual import Individual
+from app.database.models.individual_document import IndividualDocument
+from app.database.models.document import Document
+from app.database.models.document_entity import DocumentEntity
+from app.database.models.document_type import DocumentType
