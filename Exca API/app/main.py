@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from app.routers import brand,client,land,project,user,condition,lease_request,area,rol,approval_flow,owner,individual
+from app.routers import brand,client,land,project,user,condition,lease_request,area,rol,approval_flow,owner,individual,auth
 from app.database.connection import Base, engine
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -31,3 +31,4 @@ app.include_router(rol.router)
 app.include_router(approval_flow.router)
 app.include_router(owner.router)
 app.include_router(individual.router)
+app.include_router(auth.router)

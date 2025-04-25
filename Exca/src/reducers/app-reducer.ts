@@ -5,14 +5,16 @@ export type AppActions =
     { type: 'set-clients', paypload: { clients: Client[] } } | 
     { type: 'set-projects', paypload: { projects: ProjectView[] } } |
     { type: 'set-lease-request', paypload: { requests: LeaseRequestResponse[] } } |
-    { type: 'set-users', paypload: { users: User[] } } 
+    { type: 'set-users', paypload: { users: User[] } } |
+    { type: 'set-auth', paypload: { auth: User } } 
 
 export type AppState = {
     clients: Client[]
     lands: LandResponse[]
     projects: ProjectView[]
     requests: LeaseRequestResponse[]
-    users: User[]
+    users: User[],
+    auth: User | null
 }
 
 export const initialState: AppState = {
@@ -20,7 +22,8 @@ export const initialState: AppState = {
     lands: [], 
     projects: [], 
     requests: [], 
-    users: []
+    users: [], 
+    auth: null
 }
 
 export const AppReducer = (state: AppState, action: AppActions): AppState => {
@@ -35,6 +38,8 @@ export const AppReducer = (state: AppState, action: AppActions): AppState => {
             return { ...state, requests: action.paypload.requests }
         case 'set-users':
             return { ...state, users: action.paypload.users }
+        case 'set-auth':
+            return { ...state, auth: action.paypload.auth }
         default:
             return state
     }

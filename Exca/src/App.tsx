@@ -15,6 +15,8 @@ import Users from "./views/User/Users"
 import CreateUser from "./views/User/CreateUser"
 import ApprovalFlow from "./views/ApprovalFlow/ApprovalFlow"
 import ApprovalFlows from "./views/ApprovalFlow/ApprovalFlows"
+import AuthLayout from "./layouts/AuthLayout"
+import Login from "./views/Auth/Login"
 
 function App() {
   return (
@@ -42,6 +44,10 @@ function App() {
 
           <Route path="/approval-flows" element={<ApprovalFlows />} />
           <Route path="/approval-flows/edit/:id" element={<ApprovalFlow />} />
+        </Route>
+
+        <Route path="/" element={<AuthLayout />}>
+          <Route path="/login" element={<Login />} />
         </Route>
       </Routes>
     </BrowserRouter>

@@ -143,6 +143,11 @@ export type User = {
     rol: Rol
 }
 
+export type Auth = {
+    email: string
+    password: string
+}
+
 export type UserCreate = Pick<User, 'full_name' | 'email' | 'area_id' | 'rol_id'> & {
     password: string
 }
@@ -166,4 +171,9 @@ export type ApprovalFlow = {
 
 export type ApprovalFlowCreate = Pick<ApprovalFlow, 'name'> & {
     steps: ApprovalStepCreate[]
+}
+
+export type AuthResponse = {
+    access_token: string
+    token_type: string
 }

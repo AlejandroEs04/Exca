@@ -1,8 +1,27 @@
-import { Link, Outlet } from 'react-router-dom'
+import { Link, Outlet, useNavigate } from 'react-router-dom'
 import { ToastContainer } from 'react-toastify'
 import ApprovalFlow from '../components/shared/Icons/ApprovalFlow'
+import { useEffect } from 'react'
+import { getAuth } from '../api/AuthApi'
+import { useAppContext } from '../hooks/AppContext'
 
 export default function MainLayout() {
+    const navigate = useNavigate()
+    const { dispatch, state } = useAppContext()
+
+    useEffect(() => {
+        const isAuth = async() => {
+            const token = localStorage.getItem('token')
+            if(!token) navigate('/login');
+
+            const response = await getAuth();
+            if(!response) navigate('/login');
+
+            dispatch({ type: 'set-auth', paypload: { auth: response! } })
+        }
+        isAuth()
+    }, [])
+    
     return (
         <>
             <div className='main-layout'>

@@ -196,7 +196,29 @@ export default function ContractRequest() {
                 </button>
             </div>
 
-            <h2 className='mt-1'>Datos del arrendador</h2>
+            <h2 className='mt-2'>I. Datos del arrendatario</h2>
+            <div className='grid grid-cols-2'>
+                <div className='condition-container'>
+                    <label htmlFor="owner">Nombre del arrendatario</label>
+                    <input type="text" value={project.brand.client.business_name} disabled />
+                </div>
+                <div className='condition-container'>
+                    <label htmlFor="owner">Giro Comercial</label>
+                    <input type="text" value={project.brand.client.type_id} disabled />
+                </div>
+                <div className='condition-container'>
+                    <label htmlFor="owner">Fraccionamiento / Proyecto</label>
+                    <input type="text" value={project.lands[0].land.residential_development.name} disabled />
+                </div>
+                <div className='condition-container'>
+                    <label htmlFor="owner">Fecha de solicitud</label>
+                    <input type="date"  disabled />
+                </div>
+            </div>
+
+            {/* // TODO: FALTAAAAAAAA AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHHHHHHHHHHHH */}
+
+            <h2 className='mt-1'>II. Datos del arrendador</h2>
             <div className='grid grid-cols-2'>
                 <div>
                     <div className='condition-container'>
@@ -208,7 +230,7 @@ export default function ContractRequest() {
                 </div>
             </div>
 
-            <h2 className='mt-2'>Datos inmueble objeto de arrendamiento</h2>
+            <h2 className='mt-2'>III. Datos inmueble objeto de arrendamiento</h2>
             {project.lands.map((land, index) => (
                 <>
                     <div className={`${index !== 0 && 'pt-3'} grid grid-cols-2`} key={land.id}>
@@ -247,7 +269,7 @@ export default function ContractRequest() {
                 </>
             ))}
 
-            <h2 className='mt-2'>Condiciones Comerciales Autorizadas</h2>
+            <h2 className='mt-2'>IV. Condiciones Comerciales Autorizadas</h2>
             <div className='conditions-list'>
                 {conditions.map(condition => (
                     <div className='condition-container' key={condition.id}>

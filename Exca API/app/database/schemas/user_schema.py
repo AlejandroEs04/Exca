@@ -19,3 +19,11 @@ class UserResponse(UserBase):
     area: AreaResponse | None = None
     class Config:
         orm_mode = True
+        
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
+class LoginData(BaseModel):
+    email: str
+    password: str

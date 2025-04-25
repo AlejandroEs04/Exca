@@ -22,6 +22,7 @@ type InputGroupProps = {
     options?: Option[]
     disable?: boolean
     limit?: number | null
+    className?: string | null
     onChangeFnc: (e: ChangeEvent<HTMLInputElement> | PushEvent) => void
 }
 
@@ -35,7 +36,8 @@ export default function InputGroup({
         onChangeFnc, 
         options = [],
         disable = false, 
-        limit = null
+        limit = null,
+        className = null
     } : InputGroupProps) 
 {
     const [show, setShow] = useState(false)
@@ -73,7 +75,7 @@ export default function InputGroup({
     }
     
     return (
-        <div className="input-group">
+        <div className={`${className} input-group`}>
             <label htmlFor={id}>{label}</label>
             <input 
                 disabled={disable}
