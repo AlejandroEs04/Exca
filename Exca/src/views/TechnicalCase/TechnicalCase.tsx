@@ -67,8 +67,18 @@ export default function TechnicalCase() {
                 </div>
 
                 <form className="mt-4">
-                    <h2>Aspectos técnicos de arrendamiento</h2>
+                    <h2>Aspectos Técnicos de Arrendamiento</h2>
                     <ConditionsContainer conditions={conditions.filter(c => c.category_id === 10)} project={project!} />
+
+                    <h2>Servicios de Electricidad</h2>
+                    <ConditionsContainer conditions={conditions.filter(c => c.category_id === 7)} project={project!} />
+
+                    <h2>Servicios de Agua y Drenaje</h2>
+                    <ConditionsContainer conditions={conditions.filter(c => c.category_id === 8)} project={project!} />
+                    
+                    <h2>Gestiones requeridas</h2>
+                    <p>En caso de no ser necesarias, deje el espacio en blanco</p>
+                    <ConditionsContainer conditions={conditions.filter(c => c.category_id === 9)} project={project!} />
                 </form>
             </div>
         </>
