@@ -8,7 +8,7 @@ export async function registerRequest(request: LeaseRequestCreate) {
         return data
     } catch (error) {
         if(isAxiosError(error) && error.response) {
-            throw new Error(error.response.data.error)
+            throw new Error(error.response.data.detail)
         }
     }
 }
@@ -19,7 +19,7 @@ export async function getRequests() {
         return data
     } catch (error) {
         if(isAxiosError(error) && error.response) {
-            throw new Error(error.response.data.error)
+            throw new Error(error.response.data.detail)
         }
     }
 }
@@ -30,7 +30,7 @@ export async function updateRequest(id: number, request: LeaseRequestCreate) {
         return data
     } catch (error) {
         if(isAxiosError(error) && error.response) {
-            throw new Error(error.response.data.error)
+            throw new Error(error.response.data.detail)
         }
     }
 }
@@ -41,7 +41,22 @@ export async function getLeaseByProject(id: number) {
         return data
     } catch (error) {
         if(isAxiosError(error) && error.response) {
-            throw new Error(error.response.data.error)
+            throw new Error(error.response.data.detail)
+        }
+    }
+}
+
+export async function sendToApprovalRequest(id: number) {
+    try {
+        const requestData = {
+            item_id: id,
+            flow_id: 1
+        }
+        const { data } = await api.post(`/lease-request/send-to-approval`, requestData)
+        return data
+    } catch (error) {
+        if(isAxiosError(error) && error.response) {
+            throw new Error(error.response.data.detail)
         }
     }
 }

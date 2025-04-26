@@ -22,3 +22,12 @@ engine = create_engine(connection_url)
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
+
+def get_db():
+    # Start db connection
+    db = SessionLocal()
+    
+    try:
+        yield db
+    finally:
+        db.close()

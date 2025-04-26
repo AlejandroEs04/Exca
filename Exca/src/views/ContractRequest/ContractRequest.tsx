@@ -1,8 +1,8 @@
 import { ChangeEvent, useCallback, useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import { getConditions } from '../../api/ConditionApi'
 import { getProjectLandTypes, updateProject } from '../../api/ProjectApi'
-import { registerRequest, updateRequest } from '../../api/LeaseRequestApi'
+import { registerRequest, sendToApprovalRequest, updateRequest } from '../../api/LeaseRequestApi'
 import { useAppContext } from '../../hooks/AppContext'
 import { isNullOrEmpty } from '../../utils'
 import { 
@@ -10,6 +10,7 @@ import {
   LeaseRequestConditionCreate, 
   LeaseRequestCreate, 
   LeaseRequestResponse, 
+  Owner, 
   ProjectCreate, 
   ProjectLandType, 
   ProjectView 
@@ -17,17 +18,36 @@ import {
 import SaveIcon from '../../components/shared/Icons/SaveIcon'
 import SendIcon from '../../components/shared/Icons/SendIcon'
 import { toast } from 'react-toastify'
+import { getOnwers } from '../../api/OwnerApi'
+import Loader from '../../components/shared/Loader/Loader'
+import SelectGroup, { Option } from '../../components/forms/SelectGroup'
+import InputGroup, { PushEvent } from '../../components/forms/InputGroup'
+import { getGuaranteeTypes, getIndividuals } from '../../api/IndividualApi'
 
 export default function ContractRequest() {
     const { projectId } = useParams()
-    const { state, dispatch } = useAppContext()
-  
+    const { state, dispatch, isLoading } = useAppContext()
+    const [guaranteeTypes, setGuaranteeTypes] = useState<Option[]>([])
+    const [individuals, setIndividuals] = useState<Option[]>([])
+    const [owners, setOwners] = useState<Option[]>([])
+    const [isLocalLoading, setIsLocalLoading] = useState(false)
     const [requestConditions, setRequestConditions] = useState<LeaseRequestConditionCreate[]>([])
     const [conditions, setConditions] = useState<Condition[]>([])
     const [types, setTypes] = useState<ProjectLandType[]>([])
     const [project, setProject] = useState<ProjectView | null>(null)
     const [request, setRequest] = useState<LeaseRequestResponse | null>(null)
-    const [existsRequest, setExistsRequest] = useState(false)
+    const [newRequest, setNewRequest] = useState<LeaseRequestCreate>({
+        project_id: 0, 
+        guarantee: '', 
+        guarantee_type_id: 0, 
+        owner_id: 0, 
+        commission_agreement: false, 
+        assignment_income: false, 
+        property_file: false, 
+        conditions: [],
+        guarantee_address: '',
+        guarantee_property_file: ''
+    })
   
     const handleConditionChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target
@@ -95,6 +115,18 @@ export default function ContractRequest() {
             return null
         }).filter(Boolean) as LeaseRequestConditionCreate[]
     }, [conditions, requestConditions, request])
+
+    const handleChange = (e: ChangeEvent<HTMLSelectElement | HTMLInputElement> | PushEvent) => {
+        const { name, value } = e.target as HTMLInputElement | HTMLSelectElement
+        const checked = e.target instanceof HTMLInputElement ? e.target.checked : undefined
+        const isNumber = ['owner_id'].includes(name)
+        const isCheckbox = ['commission_agreement', 'assignment_income'].includes(name)
+
+        setNewRequest({
+            ...newRequest, 
+            [name] : isCheckbox ? checked : isNumber ? +value : value
+        })
+    }
   
     const handleSubmit = async () => {
         if (!project) return
@@ -116,34 +148,20 @@ export default function ContractRequest() {
                     projects: state.projects.map(p => p.id === savedProject.id ? savedProject : p) 
                 }
             })
-    
-            const newRequest: LeaseRequestCreate = {
-            project_id: project.id,
-            conditions: getConditionsToSend()
-            }
-    
-            if (existsRequest && request) {
-                const updatedRequest = await updateRequest(request.id, newRequest)
-                dispatch({ 
-                    type: 'set-lease-request', 
-                    paypload: { 
-                    requests: state.requests.map(r => r.id === updatedRequest.id ? updatedRequest : r) 
-                    }
-                })
-            } else {
-                const createdRequest = await registerRequest(newRequest)
-                dispatch({ 
-                    type: 'set-lease-request', 
-                    paypload: { 
-                    requests: state.requests.map(r => r.id === createdRequest.id ? createdRequest : r) 
-                    }
-                })
-            }
+
+            newRequest.conditions = getConditionsToSend()
+            newRequest.project_id = +projectId!
+
+            await registerRequest(newRequest)
 
             toast.success("Cambios Guardados Correctamente")
         } catch (error) {
             console.error(error)
         }
+    }
+
+    const handleSendToApproval = async() => {
+        await sendToApprovalRequest(request?.id!)
     }
   
     const getValue = (id: number) => request?.conditions.find(c => c.condition_id === id)?.value
@@ -155,18 +173,42 @@ export default function ContractRequest() {
   
     useEffect(() => {
         const fetchData = async () => {
-            const [conditionsData, typesData] = await Promise.all([
-                getConditions(),
-                getProjectLandTypes()
-            ])
-            if (conditionsData) setConditions(conditionsData)
-            if (typesData) setTypes(typesData)
+            setIsLocalLoading(true)
+            try {
+                const [conditionsData, typesData, ownersData, guaranteeData, individualsData] = await Promise.all([
+                    getConditions(),
+                    getProjectLandTypes(),
+                    getOnwers(),
+                    getGuaranteeTypes(),
+                    getIndividuals()
+                ])
+
+                if (conditionsData) setConditions(conditionsData)
+                if (typesData) setTypes(typesData)
+                if (ownersData) {
+                    const ownerOptions = ownersData.map(o => { return { value: o.id, label: o.name } })
+                    setOwners(ownerOptions)
+                }
+                if(guaranteeData) {
+                    const guaranteeOptions = guaranteeData.map(g => { return { value: g.id, label: g.name } })
+                    setGuaranteeTypes(guaranteeOptions)
+                }
+                if(individualsData) {
+                    const individualOptions = individualsData.map(i => { return { value: i.id, label: i.full_name } })
+                    console.log(individualOptions)
+                    setIndividuals(individualOptions)
+                }
+            } catch (error) {
+                console.log(error)
+            } finally {
+                setIsLocalLoading(false)
+            }
         }
         fetchData()
     }, [])
   
     useEffect(() => {
-        if (!projectId) return
+        if (!projectId || individuals.length === 0) return
         const currentProject = state.projects.find(p => p.id === +projectId)
         if (!currentProject) return
     
@@ -174,12 +216,24 @@ export default function ContractRequest() {
     
         const foundRequest = state.requests.find(r => r.project_id === +projectId)
         if (foundRequest) {
-            setExistsRequest(true)
             setRequest(foundRequest)
+
+            setNewRequest({
+                project_id: foundRequest.id, 
+                guarantee: foundRequest.guarantee.full_name, 
+                guarantee_type_id: foundRequest.guarantee_type_id, 
+                owner_id: foundRequest.owner_id, 
+                commission_agreement: foundRequest.commission_agreement, 
+                assignment_income: foundRequest.assignment_income, 
+                property_file: foundRequest.property_file, 
+                conditions: foundRequest.conditions,
+                guarantee_address: foundRequest.guarantee.address,
+                guarantee_property_file: ''
+            })
         }
-    }, [projectId, state.projects, state.requests])
+    }, [projectId, state.projects, state.requests, individuals])
   
-    if (!project) return <div>Cargando...</div>
+    if(isLoading || isLocalLoading || !project) return <Loader />
 
     return (
         <div>
@@ -190,7 +244,7 @@ export default function ContractRequest() {
                     Save Changes
                 </button>
 
-                <button className='btn btn-success w-max'>
+                <button onClick={handleSendToApproval} className='btn btn-success w-max'>
                     <SendIcon />
                     Enviar a firmas
                 </button>
@@ -216,23 +270,84 @@ export default function ContractRequest() {
                 </div>
             </div>
 
-            {/* // TODO: FALTAAAAAAAA AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHHHHHHHHHHHH */}
+            <Link className='btn btn-success w-max btn-sm mt-1' to={`/clients/${project.brand.client.id}`}>Ver cliente</Link>
 
-            <h2 className='mt-1'>II. Datos del arrendador</h2>
+            <h3 className='mt-2'>Garantiza arrendamiento con:</h3>
             <div className='grid grid-cols-2'>
-                <div>
-                    <div className='condition-container'>
-                        <label htmlFor="owner">Propietario inmueble a arrendar</label>
-                        <select name="owner" id="owner">
-                            <option value="">Seleccione una opción</option>
-                        </select>
+                <SelectGroup  
+                    isHorizontal
+                    id='guarantee_type_id' 
+                    name='guarantee_type_id' 
+                    value={newRequest.guarantee_type_id} 
+                    onChangeFnc={handleChange} 
+                    placeholder='Seleccione un tipo' 
+                    label='Tipo de garantia'
+                    options={guaranteeTypes}
+                />
+                <InputGroup 
+                    name='guarantee'
+                    value={newRequest.guarantee}
+                    id='guarantee'
+                    onChangeFnc={handleChange}
+                    placeholder='Nombre del obligado solidario'
+                    label='Nombre del obligado solidario'
+                    isHorizontal
+                    options={individuals}
+                />
+                <InputGroup 
+                    name='guarantee_address'
+                    value={newRequest.guarantee_address}
+                    id='guarantee_address'
+                    onChangeFnc={handleChange}
+                    placeholder='Dirección del obligado solidario'
+                    label='Dirección'
+                    isHorizontal
+                />
+                <InputGroup 
+                    name='guarantee_property_file'
+                    value={newRequest.guarantee_property_file}
+                    id='guarantee_property_file'
+                    onChangeFnc={handleChange}
+                    placeholder='Escritura de la propiedad'
+                    label='Escritura'
+                    isHorizontal
+                />
+            </div>
+
+            <Link className='btn btn-success w-max btn-sm mt-1' to={`/clients/${project.brand.client.id}`}>Ver obligado solidario</Link>
+
+            <h2 className='mt-2'>II. Datos del arrendador</h2>
+            <div className='grid grid-cols-2'>
+                <SelectGroup  
+                    isHorizontal
+                    id='owner_id' 
+                    name='owner_id' 
+                    value={newRequest.owner_id} 
+                    onChangeFnc={handleChange} 
+                    placeholder='Seleccione un arrendador' 
+                    label='Propietario inmueble a arrendar'
+                    options={owners}
+                />
+                <div></div>
+
+                <div className='condition-container'>
+                    <label htmlFor="commission_agreement">Pacto comisiorio</label>
+                    <div className='checkbox'>
+                        <input type='checkbox' checked={newRequest.commission_agreement} onChange={handleChange} name='commission_agreement' id='commission_agreement' />
+                    </div>
+                </div>
+
+                <div className='condition-container'>
+                    <label htmlFor="assignment_income">Cesión de renta a FIMSA</label>
+                    <div className='checkbox'>
+                        <input type='checkbox' checked={newRequest.assignment_income} onChange={handleChange} name='assignment_income' id='assignment_income' />
                     </div>
                 </div>
             </div>
 
             <h2 className='mt-2'>III. Datos inmueble objeto de arrendamiento</h2>
             {project.lands.map((land, index) => (
-                <>
+                <div key={land.id}>
                     <div className={`${index !== 0 && 'pt-3'} grid grid-cols-2`} key={land.id}>
                         <div className='condition-container'>
                             <label htmlFor="landType">Inmueble a arrendar</label>
@@ -266,7 +381,7 @@ export default function ContractRequest() {
                             <input type="number" onChange={handleProjectChange} name={`land[${index}].area`} value={land.area} id='areaForLease' placeholder='Superficie en arrendamiento' />
                         </div>
                     </div>
-                </>
+                </div>
             ))}
 
             <h2 className='mt-2'>IV. Condiciones Comerciales Autorizadas</h2>

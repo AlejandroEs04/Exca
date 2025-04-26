@@ -306,7 +306,7 @@ CREATE TABLE approval_step (
 
 CREATE TABLE approval_request (
     id INT NOT NULL IDENTITY(1,1) PRIMARY KEY, 
-    response BIT NOT NULL,
+    response BIT NULL,
     item_id VARCHAR(10) NOT NULL, 
     step_id INT NOT NULL, 
     FOREIGN KEY (step_id) REFERENCES approval_step (id)

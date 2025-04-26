@@ -19,3 +19,5 @@ class ApprovalStep(Base):
         backref="previous_step",
         uselist=False
     )
+    
+    requests = relationship("ApprovalRequest", back_populates="step")

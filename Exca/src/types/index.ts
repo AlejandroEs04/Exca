@@ -106,16 +106,25 @@ export type LeaseRequestConditionCreate = Pick<LeaseRequestCondition, 'id' | 'co
 export type LeaseRequest = {
     id: number
     project_id: number
+    guarantee_type_id: number
+    owner_id: number
+    commission_agreement: boolean
+    assignment_income: boolean
+    property_file: boolean
 }
 
-export type LeaseRequestCreate = Pick<LeaseRequest, 'project_id'> & {
+export type LeaseRequestCreate = Omit<LeaseRequest, 'id'> & {
     conditions: LeaseRequestConditionCreate[]
+    guarantee: string
+    guarantee_address: string
+    guarantee_property_file: string
 }
 
 export type LeaseRequestResponse = LeaseRequest & {
     created_at: string
     updated_at: string
     conditions: LeaseRequestCondition[]
+    guarantee: Individual
 }
 
 export type ProjectLandType = {
@@ -176,4 +185,21 @@ export type ApprovalFlowCreate = Pick<ApprovalFlow, 'name'> & {
 export type AuthResponse = {
     access_token: string
     token_type: string
+}
+
+export type Individual = {
+    id: number
+    full_name: string
+    tax_id: string
+    address: string
+}
+
+export type Owner = {
+    id: number
+    name: string
+}
+
+export type GuaranteeType = {
+    id: number
+    name: string
 }

@@ -1,6 +1,6 @@
 import { ChangeEvent } from "react"
 
-type Option = {
+export type Option = {
     label: string
     value: string | number
 }
@@ -13,6 +13,7 @@ type InputGroupProps = {
     label: string
     options?: Option[]
     disable?: boolean
+    isHorizontal?: boolean
     onChangeFnc: (e: ChangeEvent<HTMLSelectElement>) => void
 }
 
@@ -24,10 +25,11 @@ export default function SelectGroup({
     label,
     onChangeFnc, 
     options = [],
-    disable = false
+    disable = false,
+    isHorizontal = false
 } : InputGroupProps) {
     return (
-        <div className="input-group">
+        <div className={isHorizontal ? 'condition-container' : `input-group`}>
             <label htmlFor={id}>{label}</label>
             <select disabled={disable} value={value} onChange={onChangeFnc} name={name} id={id}>
                 <option value="">{placeholder}</option>

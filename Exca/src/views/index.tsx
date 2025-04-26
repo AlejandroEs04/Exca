@@ -1,9 +1,12 @@
 import styles from './index.module.css'
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { useAppContext } from "../hooks/AppContext"
 
 export default function Index() {
     const { state } = useAppContext()
+    const navigate = useNavigate()
+
+    const handleProject = (id: number) => navigate(`/projects/${id}`)
 
     return (
         <>
@@ -46,6 +49,37 @@ export default function Index() {
                     </Link>
                 </div>
             </div>
+
+            <h2 className='mt-3'>Proyectos activos</h2>
+            <table className="mt-1">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Fraccionamiento</th>
+                        <th>Cliente</th>
+                        <th>Marca</th>
+                        <th>Estatus</th>
+                    </tr>
+                </thead>
+                
+                <tbody>
+                    {state.projects.map(project => (
+                        <tr onDoubleClick={() => handleProject(project.id)} key={project.id}>
+                            <td>{project.id}</td>
+                            <td>{project.name}</td>
+                            <td>
+                                {project.lands.map(land => land.land.residential_development.name).join(', ')}
+                            </td>
+                            <td>{project.brand.client.business_name}</td>
+                            <td>{project.brand.name}</td>
+                            <td>{project.stage.name}</td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+
+            <h2 className='mt-2'>Cumplimiento de pagos</h2>
         </>
     )
 }

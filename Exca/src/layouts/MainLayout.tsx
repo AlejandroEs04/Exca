@@ -1,23 +1,38 @@
 import { Link, Outlet, useNavigate } from 'react-router-dom'
 import { ToastContainer } from 'react-toastify'
 import ApprovalFlow from '../components/shared/Icons/ApprovalFlow'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { getAuth } from '../api/AuthApi'
 import { useAppContext } from '../hooks/AppContext'
+import { motion } from 'framer-motion'
+import Loader from '../components/shared/Loader/Loader'
 
 export default function MainLayout() {
     const navigate = useNavigate()
-    const { dispatch, state } = useAppContext()
+    const { dispatch } = useAppContext()
+    const [isLocalLoading, setIsLocalLoading] = useState(false)
+
+    const handleLogOut = () => {
+        localStorage.removeItem('token')
+        navigate('/login');
+    }
 
     useEffect(() => {
         const isAuth = async() => {
-            const token = localStorage.getItem('token')
-            if(!token) navigate('/login');
-
-            const response = await getAuth();
-            if(!response) navigate('/login');
-
-            dispatch({ type: 'set-auth', paypload: { auth: response! } })
+            setIsLocalLoading(true)
+            try {
+                const token = localStorage.getItem('token')
+                if(!token) navigate('/login');
+    
+                const response = await getAuth();
+                if(!response) navigate('/login');
+    
+                dispatch({ type: 'set-auth', paypload: { auth: response! } })
+            } catch (error) {
+                navigate('/login');
+            } finally {
+                setIsLocalLoading(false)
+            }
         }
         isAuth()
     }, [])
@@ -27,7 +42,7 @@ export default function MainLayout() {
             <div className='main-layout'>
                 <aside className='aside-navigation'>
                     <header className='header-container'>
-                        <h1>Exca</h1>
+                        <h1>Exca <span>System</span></h1>
                     </header>
                     
                     <div className='nav-container'>
@@ -69,7 +84,7 @@ export default function MainLayout() {
                         </nav>
 
                         <div className='p-nav mb-2'>
-                            <button className='btn btn-danger w-full'>
+                            <button onClick={handleLogOut} className='btn btn-danger w-full'>
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="icon">
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15m-3 0-3-3m0 0 3-3m-3 3H15" />
                                 </svg>
@@ -81,7 +96,16 @@ export default function MainLayout() {
 
                 <div className='main-container'>
                     <main className='container'>
-                        <Outlet />
+                        {isLocalLoading ? <Loader /> : (
+                            <motion.div
+                                initial={{ opacity: 0, x: 100 }}     
+                                animate={{ opacity: 1, x: 0 }}   
+                                exit={{ opacity: 0, x: -30 }}   
+                                transition={{ duration: 0.25, ease: "easeInOut" }}
+                            >
+                                <Outlet />
+                            </motion.div>
+                        )}
                     </main>
                 </div>
             </div>

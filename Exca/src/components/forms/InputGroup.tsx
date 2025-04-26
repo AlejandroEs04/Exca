@@ -24,6 +24,7 @@ type InputGroupProps = {
     limit?: number | null
     className?: string | null
     onChangeFnc: (e: ChangeEvent<HTMLInputElement> | PushEvent) => void
+    isHorizontal?: boolean
 }
 
 export default function InputGroup({ 
@@ -37,7 +38,8 @@ export default function InputGroup({
         options = [],
         disable = false, 
         limit = null,
-        className = null
+        className = null,
+        isHorizontal = false
     } : InputGroupProps) 
 {
     const [show, setShow] = useState(false)
@@ -75,7 +77,7 @@ export default function InputGroup({
     }
     
     return (
-        <div className={`${className} input-group`}>
+        <div className={isHorizontal ? 'condition-container' : `${className} input-group`}>
             <label htmlFor={id}>{label}</label>
             <input 
                 disabled={disable}
