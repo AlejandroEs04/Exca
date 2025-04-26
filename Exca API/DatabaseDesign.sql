@@ -342,6 +342,34 @@ VALUES
 ('¿Paga predial proporcional?', null, 1, 4),
 ('Derecho de preferencia en venta', '["No tiene derecho de preferencia, no se le tiene que avisar", "No tiene derecho de preferencia, si se le tiene que avisar", "Si tiene derecho, no aplica entre filiales GP, no se le avisa", "Si tiene derecho, no aplica entre filiales GP, si se le avisa"]', 1, 5)
 
+INSERT INTO condition_category (name)
+VALUES ('Electricidad'), ('Agua y Drenaje'), ('Gestiones requeridas')
+
+INSERT INTO condition (name, options, category_id, type_id)
+VALUES 
+('Estatus del predio', '["Lote Comercial", "Área fuera de trámite"]', 10, 5),
+('¿Está pagado el 7%?', null, 10, 4),
+('En caso de NO, tiempos estimados para pagarlo', null, 10, 1),
+('¿Tenemos el plano Ejecutivo de Ventas que ampare este proyecto?', null, 10, 4),
+
+('¿Existe infraestructura frente al predio?', null, 7, 4),
+('En caso de NO tiempos estimados para tenerlo', null, 7, 1),
+
+('¿Existe infraestructura frente al predio?', null, 8, 4),
+('Esta pagada la incorporación AyD', null, 8, 4),
+('Esta pagada la aportación de Ay D?', null, 8, 4),
+('¿El local / predio tiene o tuvo contrato de servicios?', null, 8, 4),
+('¿Tenemos que tramitar factibilidad?', null, 8, 4),
+('Tiempos para tramitarla', null, 8, 1),
+
+('CLG', null, 9, 1),
+('Alineamiento Vial', null, 9, 1),
+('Amojonamiento', null, 9, 1),
+('Licencias ', null, 9, 1),
+('Fusión', null, 9, 1),
+('Subdivisión', null, 9, 1),
+('Uso de Suelo', null, 9, 1),
+('Estudios Ambientales', null, 9, 1)
 
 -- HASTA AQUIIIII
 /**

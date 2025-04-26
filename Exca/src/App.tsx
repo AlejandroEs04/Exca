@@ -18,6 +18,7 @@ import ApprovalFlow from "./views/ApprovalFlow/ApprovalFlow"
 import ApprovalFlows from "./views/ApprovalFlow/ApprovalFlows"
 import AuthLayout from "./layouts/AuthLayout"
 import Login from "./views/Auth/Login"
+import TechnicalCase from "./views/TechnicalCase/TechnicalCase"
 
 function App() {
   const location = useLocation()
@@ -47,6 +48,8 @@ function App() {
 
           <Route path="/approval-flows" element={<ApprovalFlows />} />
           <Route path="/approval-flows/edit/:id" element={<ApprovalFlow />} />
+
+          <Route path="/technical-case/:projectId" element={<TechnicalCase />} />
         </Route>
 
         <Route path="/" element={<AuthLayout />}>

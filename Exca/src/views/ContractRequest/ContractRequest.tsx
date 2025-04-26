@@ -2,15 +2,13 @@ import { ChangeEvent, useCallback, useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { getConditions } from '../../api/ConditionApi'
 import { getProjectLandTypes, updateProject } from '../../api/ProjectApi'
-import { registerRequest, sendToApprovalRequest, updateRequest } from '../../api/LeaseRequestApi'
+import { registerRequest, sendToApprovalRequest } from '../../api/LeaseRequestApi'
 import { useAppContext } from '../../hooks/AppContext'
 import { isNullOrEmpty } from '../../utils'
 import { 
   Condition, 
   LeaseRequestConditionCreate, 
   LeaseRequestCreate, 
-  LeaseRequestResponse, 
-  Owner, 
   ProjectCreate, 
   ProjectLandType, 
   ProjectView 
@@ -23,6 +21,7 @@ import Loader from '../../components/shared/Loader/Loader'
 import SelectGroup, { Option } from '../../components/forms/SelectGroup'
 import InputGroup, { PushEvent } from '../../components/forms/InputGroup'
 import { getGuaranteeTypes, getIndividuals } from '../../api/IndividualApi'
+import Breadcrumb from '../../components/shared/Breadcrumb/Breadcrumb'
 
 export default function ContractRequest() {
     const { projectId } = useParams()
@@ -35,7 +34,6 @@ export default function ContractRequest() {
     const [conditions, setConditions] = useState<Condition[]>([])
     const [types, setTypes] = useState<ProjectLandType[]>([])
     const [project, setProject] = useState<ProjectView | null>(null)
-    const [request, setRequest] = useState<LeaseRequestResponse | null>(null)
     const [newRequest, setNewRequest] = useState<LeaseRequestCreate>({
         project_id: 0, 
         guarantee: '', 
@@ -48,6 +46,12 @@ export default function ContractRequest() {
         guarantee_address: '',
         guarantee_property_file: ''
     })
+    const list = [
+        {name:"Dashboard",url:'/'},
+        {name:"Proyectos",url:'/projects'},
+        {name:"Proyecto",url:`/projects/${projectId}`},
+        {name:"Solicitud de contrato",url:`/contract-request/${projectId}`},
+    ]
   
     const handleConditionChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target
@@ -71,14 +75,17 @@ export default function ContractRequest() {
             : [...prev, updated]
         })
     
-        if (request) {
-            setRequest(prev => prev && {
-            ...prev,
-            conditions: prev.conditions.map(c => 
-                c.condition_id === condition.id 
-                ? { ...c, value, is_active: isInput && e.target instanceof HTMLInputElement ? e.target.checked : false }
-                : c
-            )
+        if (project?.lease_request) {
+            setProject(prev => prev && {
+                ...prev,
+                lease_request: {
+                    ...prev.lease_request,
+                    conditions: prev.lease_request.conditions.map(c => 
+                        c.condition_id === condition.id 
+                        ? { ...c, value, is_active: isInput && e.target instanceof HTMLInputElement ? e.target.checked : false }
+                        : c
+                    )
+                }
             })
         }
     }
@@ -93,8 +100,8 @@ export default function ContractRequest() {
     
         setProject(prev => prev && {
             ...prev,
-            lands: prev.lands.map((land, idx) => 
-            idx === position ? { ...land, [attribute]: parsedValue } : land
+                lands: prev.lands.map((land, idx) => 
+                idx === position ? { ...land, [attribute]: parsedValue } : land
             )
         })
     }
@@ -102,7 +109,7 @@ export default function ContractRequest() {
     const getConditionsToSend = useCallback((): LeaseRequestConditionCreate[] => {
         return conditions.map(c => {
             const existingRC = requestConditions.find(rc => rc.condition_id === c.id)
-            const existingReq = request?.conditions.find(rc => rc.condition_id === c.id)
+            const existingReq = project?.lease_request?.conditions.find(rc => rc.condition_id === c.id)
             if (existingRC) return existingRC
             if (existingReq) {
                 return {
@@ -114,7 +121,7 @@ export default function ContractRequest() {
             }
             return null
         }).filter(Boolean) as LeaseRequestConditionCreate[]
-    }, [conditions, requestConditions, request])
+    }, [conditions, requestConditions, project])
 
     const handleChange = (e: ChangeEvent<HTMLSelectElement | HTMLInputElement> | PushEvent) => {
         const { name, value } = e.target as HTMLInputElement | HTMLSelectElement
@@ -161,11 +168,16 @@ export default function ContractRequest() {
     }
 
     const handleSendToApproval = async() => {
-        await sendToApprovalRequest(request?.id!)
+        try {
+            await sendToApprovalRequest(project?.lease_request?.id!)
+            toast.success("Se envio a firmas correctamente")
+        } catch (error) {
+            console.log(error)
+        }
     }
   
-    const getValue = (id: number) => request?.conditions.find(c => c.condition_id === id)?.value
-    const getChecked = (id: number) => request?.conditions.find(c => c.condition_id === id)?.is_active
+    const getValue = (id: number) => project?.lease_request?.conditions.find(c => c.condition_id === id)?.value
+    const getChecked = (id: number) => project?.lease_request?.conditions.find(c => c.condition_id === id)?.is_active
 
     const getArray = (options: string) : string[] => {
         return JSON.parse(options);
@@ -183,7 +195,7 @@ export default function ContractRequest() {
                     getIndividuals()
                 ])
 
-                if (conditionsData) setConditions(conditionsData)
+                if (conditionsData) setConditions(conditionsData.filter(c => c.category_id === 1))
                 if (typesData) setTypes(typesData)
                 if (ownersData) {
                     const ownerOptions = ownersData.map(o => { return { value: o.id, label: o.name } })
@@ -195,7 +207,6 @@ export default function ContractRequest() {
                 }
                 if(individualsData) {
                     const individualOptions = individualsData.map(i => { return { value: i.id, label: i.full_name } })
-                    console.log(individualOptions)
                     setIndividuals(individualOptions)
                 }
             } catch (error) {
@@ -216,8 +227,6 @@ export default function ContractRequest() {
     
         const foundRequest = state.requests.find(r => r.project_id === +projectId)
         if (foundRequest) {
-            setRequest(foundRequest)
-
             setNewRequest({
                 project_id: foundRequest.id, 
                 guarantee: foundRequest.guarantee.full_name, 
@@ -237,17 +246,23 @@ export default function ContractRequest() {
 
     return (
         <div>
+            <Breadcrumb list={list} />
             <h1>Solicitud de contrato</h1>
-            <div className='w-full flex g-1'>
-                <button onClick={handleSubmit} className='btn btn-primary w-max'>
-                    <SaveIcon />
-                    Save Changes
-                </button>
 
-                <button onClick={handleSendToApproval} className='btn btn-success w-max'>
-                    <SendIcon />
-                    Enviar a firmas
-                </button>
+            <div className='w-full flex g-1'>
+                {(project.lease_request === null || project.lease_request.status_id == 1) && (
+                    <>
+                        <button onClick={handleSubmit} className='btn btn-primary w-max'>
+                            <SaveIcon />
+                            Save Changes
+                        </button>
+
+                        <button onClick={handleSendToApproval} className='btn btn-success w-max'>
+                            <SendIcon />
+                            Enviar a firmas
+                        </button>
+                    </>
+                )}
             </div>
 
             <h2 className='mt-2'>I. Datos del arrendatario</h2>

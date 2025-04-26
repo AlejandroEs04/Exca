@@ -119,9 +119,8 @@ def update_project(project_id: int, project_update: ProjectCreate, db: Session =
 
 @router.get("/", response_model=list[ProjectResponse])
 def get_projects(db: Session = Depends(get_db)):
-    projects = db.query(Project).options(joinedload(Project.lands).joinedload(ProjectLand.land), joinedload(Project.stage), joinedload(Project.originator), joinedload(Project.brand).joinedload(Brand.client)).all()
+    projects = db.query(Project).all()
     return projects
-
 @router.get("/rent-type", response_model=list[ProjectLandTypeResponse])
 def get_rent_type(db: Session = Depends(get_db)):
     return db.query(ProjectLandType).all()

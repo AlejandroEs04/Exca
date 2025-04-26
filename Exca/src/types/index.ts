@@ -57,13 +57,13 @@ export type ProjectLand = {
     area: number
     type_id: number
     land: LandResponse
+    type: ProjectLandType
 }
 
 export type Project = {
     id: number
     name: string
     client: string
-    
     brand_id: number
     stage_id: number
     origitnator_id: number
@@ -82,6 +82,7 @@ export type ProjectView = Pick<Project, 'id' | 'name' | 'client' | 'stage_id' | 
     brand: Brand
     lands: ProjectLand[]
     stage: Stage
+    lease_request: LeaseRequestResponse
 }
 
 export type Condition = {
@@ -125,6 +126,7 @@ export type LeaseRequestResponse = LeaseRequest & {
     updated_at: string
     conditions: LeaseRequestCondition[]
     guarantee: Individual
+    status_id: number
 }
 
 export type ProjectLandType = {

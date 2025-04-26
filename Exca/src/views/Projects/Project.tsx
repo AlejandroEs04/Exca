@@ -1,12 +1,18 @@
 import { useEffect, useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useAppContext } from '../../hooks/AppContext'
 import { ProjectView } from '../../types'
 import Breadcrumb from '../../components/shared/Breadcrumb/Breadcrumb'
 import { currencyFormat, dateFormat } from '../../utils'
+import Loader from '../../components/shared/Loader/Loader'
+import { toast } from 'react-toastify'
+import InputGroup from '../../components/forms/InputGroup'
+import LeaseRequestInformation from '../../components/LeaseRequest/LeaseRequestInformation'
 
 export default function Project() {
     const { id } = useParams()
+    const navigate = useNavigate()
+    const { isLoading } = useAppContext()
 
     const list = [
         {name:"Dashboard",url:'/'},
@@ -18,14 +24,20 @@ export default function Project() {
     const [project, setProject] = useState<ProjectView | null>(null)
 
     useEffect(() => {
-        const project = state.projects.find(project => project.id === +id!)
-    
-        if(!project) return
-    
-        setProject(project)
+        if(state.projects.length) {
+            const project = state.projects.find(project => project.id === +id!)
+        
+            if(!project) {
+                toast.error("No existe el proyecto seleccionado")
+                navigate("/projects")
+                return
+            }
+        
+            setProject(project)
+        }
     }, [id, state.projects])
 
-    if (!project) return <div>Cargando...</div>
+    if(isLoading || !project) return <Loader />
     
     return (
         <>
@@ -34,27 +46,21 @@ export default function Project() {
             <p className='date'>Creado el: {dateFormat(project.created_at)}</p>
             <p className='mt-1'>Estatus: {project?.stage.name}</p>
 
-            {project.stage_id === 1 && (
+            {(project?.lease_request === null || project.lease_request.status_id < 3) && (
                 <Link to={`/contract-request/${id}`} className='btn btn-primary w-max mt-1'>Solicitud de contrato</Link>
+            )}
+            {(project.stage_id === 3) && (
+                <div className='mt-1'>
+                    <Link to={`/technical-case/${id}`} className='btn btn-primary w-max'>Carátula técnica</Link>
+                </div>
             )}
 
             <h2 className='mt-2'>Datos del arrendatario</h2>
-            <table>
-                <tbody>
-                    <tr>
-                        <th>Nombre del arrendatario</th>
-                        <td>{project.brand.client.business_name}</td>
-                        <th>Giro comercial</th>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <th>Fraccionamiento / Proyecto</th>
-                        <td>{project?.lands[0]?.land.residential_development_id}</td>
-                        <th>Fecha de solicitud</th>
-                        <td>{dateFormat(project.created_at)}</td>
-                    </tr>
-                </tbody>
-            </table>
+            <div className='grid grid-cols-3 g-1'>
+                <InputGroup label='Empresa' placeholder='Nombre de la empresa' value={project.brand.client.business_name} name='bussiness_name' />
+                <InputGroup label='Cliente' placeholder='Nombre del cliente' value={project.brand.name} name='brand_name' />
+                <InputGroup label='Giro de la empresa' placeholder='Giro de la empresa' value={''} name='business_turn' />
+            </div>
 
             <h2 className='mt-2'>Datos del inmueble objeto de arrendamiento</h2>
             <table>
@@ -64,6 +70,7 @@ export default function Project() {
                         <th>Área</th>
                         <th>Precio por Área</th>
                         <th>Renta Mensual</th>
+                        <th>Tipo de arrendamiento</th>
                     </tr>
                 </thead>
 
@@ -74,10 +81,15 @@ export default function Project() {
                             <td>{land.area}</td>
                             <td>{currencyFormat(land.land.price_per_area)}</td>
                             <td>{currencyFormat(land.area * land.land.price_per_area)}</td>
+                            <td>{land.type.name}</td>
                         </tr>
                     ))}
                 </tbody>
             </table>
+
+            <div className='mt-2'>
+                {project.lease_request && <LeaseRequestInformation leaseRequest={project.lease_request} />}
+            </div>
         </>
     )
 }

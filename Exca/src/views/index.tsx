@@ -65,7 +65,7 @@ export default function Index() {
                 
                 <tbody>
                     {state.projects.map(project => (
-                        <tr onDoubleClick={() => handleProject(project.id)} key={project.id}>
+                        <tr onClick={() => handleProject(project.id)} key={project.id}>
                             <td>{project.id}</td>
                             <td>{project.name}</td>
                             <td>

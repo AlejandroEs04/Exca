@@ -101,7 +101,7 @@ export default function MainLayout() {
                                 initial={{ opacity: 0, x: 100 }}     
                                 animate={{ opacity: 1, x: 0 }}   
                                 exit={{ opacity: 0, x: -30 }}   
-                                transition={{ duration: 0.25, ease: "easeInOut" }}
+                                transition={{ duration: 0.2, ease: "easeInOut" }}
                             >
                                 <Outlet />
                             </motion.div>

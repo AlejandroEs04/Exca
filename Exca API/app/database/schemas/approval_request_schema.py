@@ -13,7 +13,7 @@ class ApprovalRequestResponse(BaseModel):
 class ApprovalRequestResponse(ApprovalRequestBase):
     id: int
     response: bool | None = None
-    step_id: int
+    step_id: int | None = None
     
     class config:
         orm_mode=True

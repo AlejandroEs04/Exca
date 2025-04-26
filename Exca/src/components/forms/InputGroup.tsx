@@ -23,7 +23,7 @@ type InputGroupProps = {
     disable?: boolean
     limit?: number | null
     className?: string | null
-    onChangeFnc: (e: ChangeEvent<HTMLInputElement> | PushEvent) => void
+    onChangeFnc?: (e: ChangeEvent<HTMLInputElement> | PushEvent) => void
     isHorizontal?: boolean
 }
 
@@ -53,7 +53,8 @@ export default function InputGroup({
                 value
             }
         }
-        onChangeFnc(e);
+        if(onChangeFnc != null)
+            onChangeFnc(e);
     }
 
     const onChange = (e: ChangeEvent<HTMLInputElement> | PushEvent) => {
@@ -64,8 +65,9 @@ export default function InputGroup({
                 setIsError(null)
             }
         }
-
-        onChangeFnc(e)
+        if(onChangeFnc != null) {
+            onChangeFnc(e)
+        }
 
         if(e.target.value === '') {
             setOptionsFiltered(options)

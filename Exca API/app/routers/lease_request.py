@@ -7,6 +7,7 @@ from app.database.models.lease_request import LeaseRequest
 from app.database.schemas.lease_request_schema import LeaseRequestCreate, LeaseRequestResponse
 from app.database.models.lease_request_condition import LeaseRequestCondition
 from app.database.schemas.approval_request_schema import ApprovalRequestCreate
+from app.database.models.project import Project
 from app.database.models.approval_request import ApprovalRequest
 from app.database.models.approval_step import ApprovalStep
 from app.database.models.user import User
@@ -112,6 +113,16 @@ def send_approval(approvalRequest: ApprovalRequestCreate, db: Session = Depends(
         ) 
         
     request_exists.status_id = 2
+    
+    project_exists = db.query(Project).where(Project.id == request_exists.project_id)
+    
+    if not project_exists:
+        raise HTTPException(
+            status_code=404, 
+            detail="Proyecto no encontrado"
+        ) 
+        
+    project_exists.stage_id = 2
     db.commit()
     
     steps_query = db.query(ApprovalStep).where(ApprovalStep.flow_id == approvalRequest.flow_id)

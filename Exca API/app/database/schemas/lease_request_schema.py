@@ -19,10 +19,10 @@ class LeaseRequestCreate(LeaseRequestBase):
 class LeaseRequestResponse(LeaseRequestBase):
     id: int
     guarantee_id: int
-    conditions: list[LeaseRequestConditionResponse]
+    conditions: list[LeaseRequestConditionResponse] = []
     created_at: datetime
     updated_at: datetime
-    guarantee: IndividualResponse
+    guarantee: IndividualResponse | None = None
     status_id: int
     
     class config:

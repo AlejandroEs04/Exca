@@ -4,6 +4,7 @@ from app.database.schemas.project_land_schema import ProjectLandCreate, ProjectL
 from app.database.schemas.land_schema import LandResponse
 from app.database.schemas.stage_schema import StageResponse
 from app.database.schemas.client_schema import ClientResponse
+from app.database.schemas.lease_request_schema import LeaseRequestResponse
 
 class ProjectBase(BaseModel):
     name: str
@@ -16,6 +17,10 @@ class ProjectCreate(BaseModel):
     client: str
     brand: str
     lands: list[ProjectLandCreate] = []
+    
+class ProjectLandType(BaseModel):
+    id: int
+    name: str
         
 class ProjectLandBase(BaseModel):
     land_id: int
@@ -23,6 +28,7 @@ class ProjectLandBase(BaseModel):
     id: int
     land: LandResponse
     type_id: int | None = None
+    type: ProjectLandType
     
 class BrandResponse(BaseModel):
     id: int
@@ -37,6 +43,7 @@ class ProjectResponse(ProjectBase):
     brand: BrandResponse
     created_at: datetime
     updated_at: datetime
+    lease_request: LeaseRequestResponse | None = None
     
     class Config:
         orm_mode = True
