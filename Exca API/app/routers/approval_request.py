@@ -7,6 +7,7 @@ from app.database.models.approval_step import ApprovalStep
 from app.database.models.lease_request import LeaseRequest
 from app.database.models.project import Project
 from app.database.models.user import User
+from app.database.models.approval_step import ApprovalStep
 from app.middleware.auth import get_current_user
 from app.utils.send_approval_email import build_email_body
 from app.services.email import send_email
@@ -16,8 +17,10 @@ from app.config import FRONTEND_URL
 router = APIRouter(prefix="/approval-request", tags=["ApprovalRequests"])
 
 @router.get("/", response_model=list[ApprovalRequestResponse])
-def get_requests(db: Session = Depends(get_db)):
-    return db.query(ApprovalRequest).all()
+def get_requests(current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    query = db.query(ApprovalRequest).join(ApprovalRequest.step)
+    query = query.filter(ApprovalStep.signator_id == current_user.id)
+    return query.all()
 
 @router.get('/{request_id}/approve', status_code=status.HTTP_201_CREATED)
 def response_approval_request(request_id: int, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
