@@ -1,6 +1,6 @@
 import { isAxiosError } from "axios"
 import api from "../lib/axios"
-import { ApprovalFlow, ApprovalFlowCreate } from "../types"
+import { ApprovalFlow, ApprovalFlowCreate, ApprovalRequest } from "../types"
 
 export async function getFlows() {
     try {
@@ -16,6 +16,18 @@ export async function getFlows() {
 export async function updateFlow(id: number, flow: ApprovalFlowCreate) {
     try {
         const { data } = await api.put<ApprovalFlow>(`/approval-flow/${id}`, flow)
+        return data
+    } catch (error) {
+        if(isAxiosError(error) && error.response) {
+            throw new Error(error.response.data.error)
+        }
+    }
+}
+
+export async function getApprovalRequests() {
+    try {
+        const { data } = await api<ApprovalRequest[]>('/approval-request')
+        console.log(data)
         return data
     } catch (error) {
         if(isAxiosError(error) && error.response) {

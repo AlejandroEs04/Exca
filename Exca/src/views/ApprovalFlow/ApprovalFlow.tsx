@@ -71,14 +71,15 @@ export default function ApprovalFlow() {
         steps: []
     })
     const [userId, setUserId] = useState(0)
-    const { state, setIsLoading, isLoading, dispatch } = useAppContext()
+    const { state, setIsLoading, isLoading } = useAppContext()
     const { id } = useParams()
     const navigate = useNavigate()
 
     const list = [
         {name:"Dashboard",url:'/'},
-        {name:"Flujos de aprobación",url:'/approval-flows'},
-        {name:"Editar Flujo",url:`/approval-flows/edit/${id}`},
+        {name:"Configuraciones",url:'/settings'},
+        {name:"Flujos de aprobación",url:'/settings/approval-flows'},
+        {name:"Editar Flujo",url:`/settings/approval-flows/edit/${id}`},
     ]
     
     const sensors = useSensors(useSensor(PointerSensor));

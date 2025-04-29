@@ -219,7 +219,7 @@ export default function ContractRequest() {
     }, [])
   
     useEffect(() => {
-        if (!projectId || individuals.length === 0) return
+        if (!projectId) return
         const currentProject = state.projects.find(p => p.id === +projectId)
         if (!currentProject) return
     

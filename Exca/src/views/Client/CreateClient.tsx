@@ -12,8 +12,8 @@ import SelectGroup from "../../components/forms/SelectGroup";
 export default function CreateClient() {
     const list = [
         {name:"Dashboard",url:'/'},
-        {name:"Clientes",url:'/clients'},
-        {name:"Registrar Cliente",url:'/clients/create'},
+        {name:"Cartera de arrendatarios",url:'/clients'},
+        {name:"Registrar arrendatario",url:'/clients/create'},
     ]
 
     const { state, dispatch } = useAppContext()
@@ -68,7 +68,7 @@ export default function CreateClient() {
     return (
         <>
             <Breadcrumb list={list} />
-            <h1>Registrar Cliente</h1>
+            <h1>Registrar Arrendatario</h1>
 
             <form onSubmit={onSubmit}>
                 <button disabled={isDisable} className="btn btn-success">

@@ -1,7 +1,7 @@
-import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom"
+import { Route, Routes, useLocation } from "react-router-dom"
 import { AnimatePresence } from "framer-motion"
 import MainLayout from "./layouts/MainLayout"
-import Index from "./views/Index"
+import Index from "./views"
 import Projects from "./views/Projects/Projects"
 import CreateProject from "./views/Projects/CreateProject"
 import Lands from "./views/Land/Lands"
@@ -20,6 +20,8 @@ import AuthLayout from "./layouts/AuthLayout"
 import Login from "./views/Auth/Login"
 import TechnicalCase from "./views/TechnicalCase/TechnicalCase"
 import ApprovalRequest from "./views/ApprovalRequest/ApprovalRequest"
+import Settings from "./views/Settings/Settings"
+import Following from "./views/Following/Following"
 
 function App() {
   const location = useLocation()
@@ -30,8 +32,9 @@ function App() {
         <Route path="/" element={<MainLayout />}>
           <Route index element={<Index />} />
 
-          <Route path="/users" element={<Users />} />
-          <Route path="/users/create" element={<CreateUser />} />
+          <Route path="/settings" element={<Settings />} />
+          <Route path="/settings/users" element={<Users />} />
+          <Route path="/settings/users/create" element={<CreateUser />} />
 
           <Route path="/projects" element={<Projects />} />
           <Route path="/projects/:id" element={<Project />} />
@@ -47,10 +50,12 @@ function App() {
 
           <Route path="/contract-request/:projectId" element={<ContractRequest />} />
 
-          <Route path="/approval-flows" element={<ApprovalFlows />} />
-          <Route path="/approval-flows/edit/:id" element={<ApprovalFlow />} />
+          <Route path="/settings/approval-flows" element={<ApprovalFlows />} />
+          <Route path="/settings/approval-flows/edit/:id" element={<ApprovalFlow />} />
 
           <Route path="/approval-requests" element={<ApprovalRequest />} />
+
+          <Route path="/following" element={<Following />} />
 
           <Route path="/technical-case/:projectId" element={<TechnicalCase />} />
         </Route>

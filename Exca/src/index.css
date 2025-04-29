@@ -7,6 +7,7 @@
   --primary-dark: #1e3a8a;
   --gray: #262626; 
   --light-gray: #797979;
+  --light-transparent: #9b9a9a;
   --red: #dc2626;
   --red-dark: #b91c1c;
   --green: #16a34a;
@@ -152,6 +153,9 @@ button, input, textarea, select {
 .icon {
   width: 1.2rem;
 }
+.icon-2 {
+  width: 1.6rem;
+}
 .container {
   margin: 1.25rem auto;
   width: 100%;
@@ -194,6 +198,13 @@ button, input, textarea, select {
 }
 .btn-danger:hover {
   background-color: var(--red-dark);
+}
+.btn-secondary {
+  background-color: var(--gray);
+  color: var(--white);
+}
+.btn-secondary:hover {
+  background-color: var(--black);
 }
 .btn-sm .icon {
   width: 0.8rem;
@@ -254,8 +265,14 @@ input.input-error {
 .flex-col {
   flex-direction: column;
 }
-.flex-ror {
+.flex-row {
   flex-direction: row;
+}
+.justify-between {
+  justify-content: space-between;
+}
+.justify-end {
+  justify-content: end;
 }
 .grid {
   display: grid;
@@ -326,7 +343,7 @@ input.input-error {
   justify-content: space-between;
 }
 .aside-navigation .nav-container a {
-  font-size: 1.15rem;
+  font-size: 1rem;
   font-weight: 500;
   display: flex;
   align-items: center;

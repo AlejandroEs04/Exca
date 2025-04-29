@@ -1,0 +1,14 @@
+.nav {
+    display: flex;
+    gap: 0.5rem;
+}
+.nav a {
+    background-color: var(--light-transparent);
+    padding: 2px 8px;
+    border-radius: 10px;
+    color: var(--white);
+    transition: all ease-in-out 0.2s;
+}
+.nav a:hover {
+    background-color: var(--light-gray);
+}

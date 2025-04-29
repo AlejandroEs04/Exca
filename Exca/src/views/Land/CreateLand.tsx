@@ -13,7 +13,7 @@ import Loader from "../../components/shared/Loader/Loader"
 export default function CreateLand() {
     const list = [
         {name:"Dashboard",url:'/'},
-        {name:"Terrenos",url:'/lands'},
+        {name:"Inventarios de terrenos",url:'/lands'},
         {name:"Registrar Terreno",url:'/lands/create'},
     ]
 

@@ -8,7 +8,7 @@ import TrashIcon from "../../components/shared/Icons/TrashIcon"
 export default function Projects() {
     const list = [
         {name:"Dashboard",url:'/'},
-        {name:"Proyectos",url:'/projects'},
+        {name:"Cartera de interesados",url:'/projects'},
     ]
 
     const { state } = useAppContext()
@@ -19,7 +19,7 @@ export default function Projects() {
     return (
         <>
             <Breadcrumb list={list} />
-            <h1>Proyectos</h1>
+            <h1>Cartera de interesados</h1>
             
             <Link to={'create'} className="btn btn-primary">
                 <PlusIcon />
