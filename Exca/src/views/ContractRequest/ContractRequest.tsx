@@ -277,7 +277,7 @@ export default function ContractRequest() {
                 </div>
                 <div className='condition-container'>
                     <label htmlFor="owner">Fraccionamiento / Proyecto</label>
-                    <input type="text" value={project.lands[0].land.residential_development.name} disabled />
+                    <input type="text" value={project?.lands[0]?.land.residential_development.name} disabled />
                 </div>
                 <div className='condition-container'>
                     <label htmlFor="owner">Fecha de solicitud</label>

@@ -1,4 +1,5 @@
 USE ExcaDb
+SELECT * FROM condition_category
 
 DROP TABLE IF EXISTS condition_lease
 DROP TABLE IF EXISTS lease_lessee
