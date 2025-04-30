@@ -10,7 +10,7 @@ DATABASE_URL = os.getenv("DATABASE_URL")
 
 connection_url = URL.create(
     "mssql+pyodbc",
-    host="RAPHAPC\SQLEXPRESS",
+    host="DESKTOP-V7L03UB\MSSQLSERVER01",
     database="ExcaDb",
     query={
         "driver": "ODBC Driver 17 for SQL Server",
