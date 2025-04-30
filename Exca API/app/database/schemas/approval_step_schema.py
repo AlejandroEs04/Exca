@@ -6,10 +6,15 @@ class ApprovalStepBase(BaseModel):
 class ApprovalStepCreate(ApprovalStepBase):
     order: int
 
+class ApprovalFlowResponse(BaseModel):
+    id: int
+    name: str
+
 class ApprovalStepResponse(ApprovalStepBase):
     id: int
     flow_id: int
     next_step_id: int | None = None
+    flow: ApprovalFlowResponse | None = None
     
     class config:
         orm_mode=True
