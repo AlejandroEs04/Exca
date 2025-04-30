@@ -209,6 +209,12 @@ button, input, textarea, select {
 .btn-sm .icon {
   width: 0.8rem;
 }
+.text-green {
+  color: var(--green);
+}
+.text-red {
+  color: var(--red);
+}
 .checkbox-group {
   display: flex;
   align-items: center;
@@ -280,10 +286,15 @@ input.input-error {
   row-gap: 0rem;
 }
 .grid-cols-2 {
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(1, 1fr);
 }
 .grid-cols-3 {
   grid-template-columns: repeat(3, 1fr);
+}
+@media(min-width: 864px) {
+  .grid-cols-2 {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 .g-1 {
   gap: 0.5rem;
@@ -305,12 +316,20 @@ input.input-error {
   display: flex;
 }
 .main-layout .aside-navigation {
+  position: absolute;
   width: 100%;
+  top: 0;
+  left: -100%;
   max-width: 16rem;
   display: flex;
   flex-direction: column;
-  position: sticky;
   top: 0;
+}
+@media(min-width: 864px) {
+  .main-layout .aside-navigation {
+    position: sticky;
+    left: 0;
+  }
 }
 .main-layout .main-container {
   width: 100%;

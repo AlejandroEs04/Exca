@@ -168,6 +168,7 @@ export type ApprovalStep = {
     next_step_id: number | null
     flow_id: number
     signator_id: number
+    flow: ApprovalFlow | null
 }
 
 export type ApprovalStepCreate = Pick<ApprovalStep, 'signator_id'> & {
@@ -212,4 +213,8 @@ export type Owner = {
 export type GuaranteeType = {
     id: number
     name: string
+}
+
+export type Icon = {
+    color?: 'text-green' | 'text-red'
 }
