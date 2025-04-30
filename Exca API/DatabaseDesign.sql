@@ -1,4 +1,5 @@
 USE ExcaDb
+SELECT * FROM condition_category
 
 DROP TABLE IF EXISTS condition_lease
 DROP TABLE IF EXISTS lease_lessee
@@ -235,7 +236,7 @@ VALUES ('text'), ('number'), ('date'), ('boolean'), ('Two Options')
 -- conditions types // Otras
 CREATE TABLE condition (
     id INT NOT NULL PRIMARY KEY IDENTITY(1,1), 
-    name VARCHAR(45) NOT NULL, 
+    name VARCHAR(150) NOT NULL, 
     type_id INT NOT NULL, 
     category_id INT NOT NULL, 
     options NVARCHAR(MAX),
@@ -343,7 +344,7 @@ VALUES
 ('Derecho de preferencia en venta', '["No tiene derecho de preferencia, no se le tiene que avisar", "No tiene derecho de preferencia, si se le tiene que avisar", "Si tiene derecho, no aplica entre filiales GP, no se le avisa", "Si tiene derecho, no aplica entre filiales GP, si se le avisa"]', 1, 5)
 
 INSERT INTO condition_category (name)
-VALUES ('Electricidad'), ('Agua y Drenaje'), ('Gestiones requeridas')
+VALUES ('Electricidad'), ('Agua y Drenaje'), ('Gestiones requeridas'), ('Tecnicas')
 
 INSERT INTO condition (name, options, category_id, type_id)
 VALUES 
