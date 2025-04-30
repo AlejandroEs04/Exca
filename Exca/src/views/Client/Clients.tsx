@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom"
+import { Link } from "react-router-dom"
 import Breadcrumb from "../../components/shared/Breadcrumb/Breadcrumb"
 import PlusIcon from "../../components/shared/Icons/PlusIcon"
 import { useAppContext } from "../../hooks/AppContext"
@@ -9,7 +9,7 @@ import { deleteClient } from "../../api/ClientApi"
 export default function Clients() {
     const list = [
         {name:"Dashboard",url:'/'},
-        {name:"Empresas",url:'/clients'},
+        {name:"Cartera de arrendatarios",url:'/clients'},
     ]
 
     const { state, dispatch } = useAppContext()
@@ -28,7 +28,7 @@ export default function Clients() {
     return (
         <>
             <Breadcrumb list={list} />
-            <h1>Clientes</h1>
+            <h1>Cartera de arrendatarios</h1>
 
             <Link to={'create'} className="btn btn-primary">
                 <PlusIcon />

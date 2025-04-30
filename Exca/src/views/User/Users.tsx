@@ -9,7 +9,8 @@ import Loader from "../../components/shared/Loader/Loader"
 export default function Users() {
     const list = [
         {name:"Dashboard",url:'/'},
-        {name:"Usuarios",url:'/users'},
+        {name:"Configuraciones",url:'/settings'},
+        {name:"Usuarios",url:'/settings/users'},
     ]
 
     const { state, isLoading } = useAppContext()

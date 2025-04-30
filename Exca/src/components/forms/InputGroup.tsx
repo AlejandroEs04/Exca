@@ -102,7 +102,7 @@ export default function InputGroup({
             {optionsFiltered.length > 0 && show && (
                 <div className="input-options">
                     {optionsFiltered.map(option => (
-                        <button type="button" key={option.value} onClick={() => onPushOption(option.label)}>{option.label}</button>
+                        <button type="button" key={option.value} onMouseDown={() => onPushOption(option.label)}>{option.label}</button>
                     ))}
                 </div>
             )}

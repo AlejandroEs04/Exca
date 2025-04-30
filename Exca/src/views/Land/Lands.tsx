@@ -9,7 +9,7 @@ import Loader from "../../components/shared/Loader/Loader";
 export default function Lands() {
     const list = [
         {name:"Dashboard",url:'/'},
-        {name:"Terrenos",url:'/lands'},
+        {name:"Inventario de terrenos",url:'/lands'},
     ]
 
     const { state, isLoading } = useAppContext()
@@ -19,7 +19,7 @@ export default function Lands() {
     return (
         <>
             <Breadcrumb list={list} />
-            <h1>Terrenos</h1>
+            <h1>Inventario de terrenos</h1>
             
             <Link to={'create'} className="btn btn-primary">
                 <PlusIcon />

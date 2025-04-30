@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom"
 import Breadcrumb from "../../components/shared/Breadcrumb/Breadcrumb"
-import PlusIcon from "../../components/shared/Icons/PlusIcon"
 import { useEffect, useState } from "react"
 import { ApprovalFlow } from "../../types"
 import { useAppContext } from "../../hooks/AppContext"
@@ -11,7 +10,8 @@ import EditIcon from "../../components/shared/Icons/EditIcon"
 export default function ApprovalFlows() {
     const list = [
         {name:"Dashboard",url:'/'},
-        {name:"Flujos de aprobaciones",url:'/approval-flows'},
+        {name:"Configuraciones",url:'/settings'},
+        {name:"Flujos de aprobaciones",url:'/settings/approval-flows'},
     ]
 
     const [flows, setFlows] = useState<ApprovalFlow[]>([])
@@ -41,11 +41,6 @@ export default function ApprovalFlows() {
         <>
             <Breadcrumb list={list} />
             <h1>Flujos de aprobaciones</h1>
-
-            <Link to={'create'} className="btn btn-primary">
-                <PlusIcon />
-                Registrar
-            </Link>
 
             <table className="mt-2">
                 <thead>

@@ -184,6 +184,14 @@ export type ApprovalFlowCreate = Pick<ApprovalFlow, 'name'> & {
     steps: ApprovalStepCreate[]
 }
 
+export type ApprovalRequest = {
+    id: number
+    response: boolean | null
+    step_id: number
+    item_id: number
+    step: ApprovalStep | null
+}
+
 export type AuthResponse = {
     access_token: string
     token_type: string

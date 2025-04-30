@@ -1,4 +1,4 @@
-import React, { ChangeEvent, FormEvent, useEffect, useMemo, useState } from 'react'
+import { ChangeEvent, FormEvent, useEffect, useMemo, useState } from 'react'
 import { UserCreate } from '../../types'
 import InputGroup, { Option, PushEvent } from '../../components/forms/InputGroup'
 import Breadcrumb from '../../components/shared/Breadcrumb/Breadcrumb'
@@ -13,8 +13,9 @@ import { useNavigate } from 'react-router-dom'
 export default function CreateUser() {
     const list = [
         {name:"Dashboard",url:'/'},
-        {name:"Usuarios",url:'/users'},
-        {name:"Registrar User",url:'/users/create'},
+        {name:"Configuraciones",url:'/settings'},
+        {name:"Usuarios",url:'/settings/users'},
+        {name:"Registrar User",url:'/settings/users/create'},
     ]
 
     const { state, dispatch } = useAppContext()
