@@ -1,4 +1,4 @@
-import { ChangeEvent, useState } from "react"
+import { ChangeEvent, useEffect, useState } from "react"
 
 export type Option = {
     label: string
@@ -16,7 +16,7 @@ type InputGroupProps = {
     id?: string
     name: string
     value: string | number
-    type?: 'text' | 'number' | 'email' | 'password' | 'date' | 'tel'
+    type?: 'text' | 'number' | 'email' | 'password' | 'date' | 'tel' | 'currency'
     placeholder: string
     label: string
     options?: Option[]
@@ -27,7 +27,7 @@ type InputGroupProps = {
     isHorizontal?: boolean
 }
 
-export default function InputGroup({ 
+export default function InputGroup({
         name, 
         id = name, 
         value, 
@@ -66,7 +66,8 @@ export default function InputGroup({
             }
         }
         if(onChangeFnc != null) {
-            onChangeFnc(e)
+            onChangeFnc(e);
+
         }
 
         if(e.target.value === '') {
@@ -77,14 +78,61 @@ export default function InputGroup({
         const filtered = options.filter(option => option.label.toLowerCase().includes((e as ChangeEvent<HTMLInputElement>).target.value.toLowerCase()))
         setOptionsFiltered(filtered)
     }
+
+    function formatToCurrency(value: string | number): string {
+        const num = typeof value === 'number' ? value : parseFloat(String(value).replace(/[^0-9.]/g, ''))
+        if (isNaN(num)) return ''
+        return new Intl.NumberFormat('es-MX', {
+            style: 'currency',
+            currency: 'MXN',
+            minimumFractionDigits: 2,
+        }).format(num)
+    }
+    useEffect(() => {
+        if (type === 'currency' && typeof value === 'number') {
+            const formatted = formatToCurrency(value)
+            const e: PushEvent = {
+                target: {
+                    name,
+                    value: formatted
+                }
+            }
+            if (onChangeFnc) onChangeFnc(e)
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [type])
     
     return (
         <div className={isHorizontal ? 'condition-container' : `${className} input-group`}>
             <label htmlFor={id}>{label}</label>
             <input 
                 disabled={disable}
-                onFocus={() => setShow(true)}
-                onBlur={() => (setTimeout(() => setShow(false), 100))}
+                onFocus={() => {
+                    setShow(true)
+                    if (type === 'currency') {
+                        const raw = String(value).replace(/[^0-9.]/g, '')
+                        const e: PushEvent = {
+                            target: {
+                                name,
+                                value: raw
+                            }
+                        }
+                        if (onChangeFnc) onChangeFnc(e)
+                    }
+                }}                
+                onBlur={() => {
+                    setTimeout(() => setShow(false), 100)
+                    if (type === 'currency') {
+                        const formatted = formatToCurrency(value)
+                        const e: PushEvent = {
+                            target: {
+                                name,
+                                value: formatted
+                            }
+                        }
+                        if (onChangeFnc) onChangeFnc(e)
+                    }
+                }}
                 type={type} 
                 name={name} 
                 id={id} 

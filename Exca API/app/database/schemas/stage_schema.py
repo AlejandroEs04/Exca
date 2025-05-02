@@ -7,4 +7,4 @@ class StageResponse(StageBase):
     id: int
     
     class Config:
-        orm_mode = True
+        from_attributes = True

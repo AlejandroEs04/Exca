@@ -18,4 +18,4 @@ class ApprovalRequestResponse(ApprovalRequestBase):
     step: ApprovalStepResponse | None = None
     
     class config:
-        orm_mode=True
+        from_attributes = True

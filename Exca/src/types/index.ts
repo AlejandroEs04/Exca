@@ -23,6 +23,11 @@ export type ResidentialDevelopment = {
     name: string
 }
 
+export type City = {
+    id: number
+    descripcion: string
+}
+
 export type Land = {
     id: number
     cadastral_file: string
@@ -30,6 +35,13 @@ export type Land = {
     price_per_area: number
     address: string
     residential_development_id: number
+    municipio?: number
+    valor_catastral?: number,
+    area_construida?: number,
+    pago_predial?: number,
+    global_status?: number,
+    path_predial_file?: string,
+    name_last_update?: string
 }
 
 export type LandResponse = Land & {

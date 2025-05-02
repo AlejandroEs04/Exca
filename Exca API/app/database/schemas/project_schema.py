@@ -46,4 +46,4 @@ class ProjectResponse(ProjectBase):
     lease_request: LeaseRequestResponse | None = None
     
     class Config:
-        orm_mode = True
+        from_attributes = True

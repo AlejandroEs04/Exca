@@ -5,6 +5,8 @@ import Index from "./views"
 import Projects from "./views/Projects/Projects"
 import CreateProject from "./views/Projects/CreateProject"
 import Lands from "./views/Land/Lands"
+import LandsToVerify from "./views/verifies/verifyLands"
+import FormLand from "./views/verifies/FormLand"
 import CreateLand from "./views/Land/CreateLand"
 import Clients from "./views/Client/Clients"
 import CreateClient from "./views/Client/CreateClient"
@@ -58,6 +60,9 @@ function App() {
           <Route path="/following" element={<Following />} />
 
           <Route path="/technical-case/:projectId" element={<TechnicalCase />} />
+
+          <Route path="/verify-lands" element={<LandsToVerify />} />
+          <Route path="/verify-lands/form-land/:id?" element={<FormLand />} />
         </Route>
 
         <Route path="/" element={<AuthLayout />}>
