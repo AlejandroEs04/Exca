@@ -58,6 +58,7 @@ function App() {
           <Route path="/following" element={<Following />} />
 
           <Route path="/technical-case/:projectId" element={<TechnicalCase />} />
+          
         </Route>
 
         <Route path="/" element={<AuthLayout />}>

@@ -16,4 +16,4 @@ class LandResponse(LandBase):
     residential_development: ResidentialDevelopmentResponse
     
     class config:
-        orm_mode = True
+        from_attributes = True

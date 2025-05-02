@@ -18,4 +18,4 @@ class ClientResponse(ClientBase):
     brands: List[BrandResponse] = []
     
     class config:
-        orm_mode = True
+        from_attributes = True

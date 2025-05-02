@@ -10,4 +10,4 @@ class AreaResponse(AreaBase):
     id: int
     
     class config:
-        orm_mode = True
+        from_attributes = True
