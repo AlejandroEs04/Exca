@@ -24,10 +24,10 @@ export default function LandsToVerify() {
             {
                 /*
                 
-                <Link to={'create'} className="btn btn-primary">
-                <PlusIcon />
-                Registrar
-            </Link>
+                    <Link to={'create'} className="btn btn-primary">
+                        <PlusIcon />
+                        Registrar
+                    </Link>
                 */
 
             }

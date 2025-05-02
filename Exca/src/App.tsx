@@ -1,7 +1,6 @@
 import { Route, Routes, useLocation } from "react-router-dom"
 import { AnimatePresence } from "framer-motion"
 import MainLayout from "./layouts/MainLayout"
-import Index from "./views/Index"
 import Projects from "./views/Projects/Projects"
 import CreateProject from "./views/Projects/CreateProject"
 import Lands from "./views/Land/Lands"
@@ -27,6 +26,7 @@ import Following from "./views/Following/Following"
 import Client from "./views/Client/Client"
 import Activities from "./views/Projects/Activities"
 import LegalCase from "./views/LegalCase/LegalCase"
+import Index from "./views"
 
 function App() {
   const location = useLocation()
@@ -65,13 +65,10 @@ function App() {
           <Route path="/following" element={<Following />} />
 
           <Route path="/technical-case/:projectId" element={<TechnicalCase />} />
-<<<<<<< HEAD
 
           <Route path="/verify-lands" element={<LandsToVerify />} />
           <Route path="/verify-lands/form-land/:id?" element={<FormLand />} />
-=======
           <Route path="/legal-case/:projectId" element={<LegalCase />} />
->>>>>>> 9b17ab905c785fddba9df8c9cd3b182818499bb7
         </Route>
 
         <Route path="/" element={<AuthLayout />}>
