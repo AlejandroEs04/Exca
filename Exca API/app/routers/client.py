@@ -60,3 +60,7 @@ def delete_client(id: int, db: Session = Depends(get_db)):
 @router.get("/types", response_model=list[ClientTypeResponse])
 def get_company_types(db: Session = Depends(get_db)):
     return db.query(ClientType).all()
+
+@router.post('/document', response_model=list[ClientResponse])
+def create_document():
+    return

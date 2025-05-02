@@ -35,3 +35,13 @@ export async function getApprovalRequests() {
         }
     }
 }
+
+export async function responseApprovalRequest(id: number, response: boolean) {
+    try {
+        await api(`/approval-request/response/${id}/${response}`)
+    } catch (error) {
+        if(isAxiosError(error) && error.response) {
+            throw new Error(error.response.data.detail)
+        }
+    }
+}

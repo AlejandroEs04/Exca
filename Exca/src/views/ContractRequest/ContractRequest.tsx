@@ -1,4 +1,4 @@
-import { ChangeEvent, useCallback, useEffect, useState } from 'react'
+import { ChangeEvent, useCallback, useEffect, useMemo, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { getConditions } from '../../api/ConditionApi'
 import { getProjectLandTypes, updateProject } from '../../api/ProjectApi'
@@ -22,10 +22,11 @@ import SelectGroup, { Option } from '../../components/forms/SelectGroup'
 import InputGroup, { PushEvent } from '../../components/forms/InputGroup'
 import { getGuaranteeTypes, getIndividuals } from '../../api/IndividualApi'
 import Breadcrumb from '../../components/shared/Breadcrumb/Breadcrumb'
+import { getConditionRules } from '../../utils/conditionsRules'
 
 export default function ContractRequest() {
     const { projectId } = useParams()
-    const { state, dispatch, isLoading } = useAppContext()
+    const { state, dispatch, isLoading, setError } = useAppContext()
     const [guaranteeTypes, setGuaranteeTypes] = useState<Option[]>([])
     const [individuals, setIndividuals] = useState<Option[]>([])
     const [owners, setOwners] = useState<Option[]>([])
@@ -65,10 +66,10 @@ export default function ContractRequest() {
                 return prev.filter(c => c.id !== condition.id)
             }
             const updated = {
-            id: condition.id,
-            condition_id: condition.id,
-            value,
-            is_active: isInput && e.target instanceof HTMLInputElement ? e.target.checked : false
+                id: condition.id,
+                condition_id: condition.id,
+                value,
+                is_active: isInput && e.target instanceof HTMLInputElement ? e.target.checked : false
             }
             return existing 
             ? prev.map(c => c.id === condition.id ? updated : c)
@@ -148,36 +149,49 @@ export default function ContractRequest() {
             }
     
             const savedProject = await updateProject(project.id, updatedProject)
-    
-            dispatch({ 
-                type: 'set-projects', 
-                paypload: { 
-                    projects: state.projects.map(p => p.id === savedProject.id ? savedProject : p) 
-                }
-            })
 
             newRequest.conditions = getConditionsToSend()
             newRequest.project_id = +projectId!
 
-            await registerRequest(newRequest)
+            const requestUpdated = await registerRequest(newRequest)
+            
+            if (savedProject) {
+                savedProject.lease_request = requestUpdated!;
+            }
+
+            dispatch({ 
+                type: 'set-projects', 
+                paypload: { 
+                    projects: state.projects.map(p => p.id === savedProject!.id ? savedProject : p).filter((p): p is ProjectView => p !== undefined)
+                }
+            })
 
             toast.success("Cambios Guardados Correctamente")
         } catch (error) {
-            console.error(error)
+            setError(error)
         }
     }
 
     const handleSendToApproval = async() => {
         try {
-            await sendToApprovalRequest(project?.lease_request?.id!)
+            await sendToApprovalRequest(project?.id!)
             toast.success("Se envio a firmas correctamente")
         } catch (error) {
-            console.log(error)
+            setError(error)
         }
     }
   
-    const getValue = (id: number) => project?.lease_request?.conditions.find(c => c.condition_id === id)?.value
+    const getValue = (id: number) => {
+        const value = getConditionRules(id, conditions, project!).value;
+        return typeof value === 'boolean' ? value.toString() : value;
+    }
     const getChecked = (id: number) => project?.lease_request?.conditions.find(c => c.condition_id === id)?.is_active
+
+    const isDisable = useMemo(() => 
+        newRequest.guarantee === '' || 
+        newRequest.guarantee_type_id === 0 || 
+        newRequest.guarantee_address === '' || 
+        newRequest.owner_id === 0, [newRequest])
 
     const getArray = (options: string) : string[] => {
         return JSON.parse(options);
@@ -252,12 +266,12 @@ export default function ContractRequest() {
             <div className='w-full flex g-1'>
                 {(project.lease_request === null || project.lease_request.status_id == 1) && (
                     <>
-                        <button onClick={handleSubmit} className='btn btn-primary w-max'>
+                        <button disabled={isDisable} onClick={handleSubmit} className='btn btn-primary w-max'>
                             <SaveIcon />
                             Save Changes
                         </button>
 
-                        <button onClick={handleSendToApproval} className='btn btn-success w-max'>
+                        <button disabled={isDisable} onClick={handleSendToApproval} className='btn btn-success w-max'>
                             <SendIcon />
                             Enviar a firmas
                         </button>
@@ -349,6 +363,7 @@ export default function ContractRequest() {
                     <label htmlFor="commission_agreement">Pacto comisiorio</label>
                     <div className='checkbox'>
                         <input type='checkbox' checked={newRequest.commission_agreement} onChange={handleChange} name='commission_agreement' id='commission_agreement' />
+                        <span className="checkmark"></span>
                     </div>
                 </div>
 
@@ -356,6 +371,7 @@ export default function ContractRequest() {
                     <label htmlFor="assignment_income">Cesión de renta a FIMSA</label>
                     <div className='checkbox'>
                         <input type='checkbox' checked={newRequest.assignment_income} onChange={handleChange} name='assignment_income' id='assignment_income' />
+                        <span className="checkmark"></span>
                     </div>
                 </div>
             </div>
@@ -377,6 +393,7 @@ export default function ContractRequest() {
                             <label htmlFor="type">Escritura en compraventa</label>
                             <div className='checkbox'>
                                 <input type='checkbox' name='' id='' />
+                                <span className="checkmark"></span>
                             </div>
                         </div>
                         <div className='condition-container'>
@@ -417,6 +434,7 @@ export default function ContractRequest() {
                         {condition.type_id === 4 && (
                             <div className='checkbox'>
                                 <input checked={getChecked(condition.id)} onChange={handleConditionChange} type='checkbox' name={condition.name} id={condition.id.toString()} placeholder={condition.name} />
+                                <span className="checkmark"></span>
                             </div>
                         )}
                         {condition.type_id === 5 && (

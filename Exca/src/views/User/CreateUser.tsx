@@ -61,7 +61,7 @@ export default function CreateUser() {
         try {
             const newUser = await createUser(user)
             dispatch({ type: 'set-users', paypload: { users : [...state.users, newUser!] } })
-            navigate('/users')
+            navigate('/settings/users')
     
             toast.success("Usuario creado correctamente")
         } catch (error) {

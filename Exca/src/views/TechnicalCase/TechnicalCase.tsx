@@ -2,7 +2,7 @@ import { useNavigate, useParams } from "react-router-dom"
 import Breadcrumb from "../../components/shared/Breadcrumb/Breadcrumb"
 import { useAppContext } from "../../hooks/AppContext"
 import { useEffect, useState } from "react"
-import { Condition, ProjectView } from "../../types"
+import { Condition, ProjectView, TechnicalCaseConditionCreate } from "../../types"
 import Loader from "../../components/shared/Loader/Loader"
 import InputGroup from "../../components/forms/InputGroup"
 import { getConditions } from "../../api/ConditionApi"
@@ -21,6 +21,7 @@ export default function TechnicalCase() {
     const navigate = useNavigate()
     const [project, setProject] = useState<ProjectView | null>(null)
     const [conditions, setConditions] = useState<Condition[]>([])
+    const [newConditions, setNewConditions] = useState<TechnicalCaseConditionCreate[]>([])
     const [isLocalLoading, setIsLocalLoading] = useState(false)
 
     useEffect(() => {
@@ -32,6 +33,10 @@ export default function TechnicalCase() {
             setProject(currentProject)
         }
     }, [state.projects, projectId])
+
+    useEffect(() => {
+        console.log(newConditions)
+    }, [newConditions])
 
     useEffect(() => {
         const fetchData = async () => {
@@ -68,17 +73,25 @@ export default function TechnicalCase() {
 
                 <form className="mt-4">
                     <h2>Aspectos Técnicos de Arrendamiento</h2>
-                    <ConditionsContainer conditions={conditions.filter(c => c.category_id === 10)} project={project!} />
+                    <ConditionsContainer 
+                        setConditions={setNewConditions} 
+                        currentConditions={newConditions} 
+                        conditions={conditions.filter(c => c.category_id === 10)} 
+                        project={project!} />
 
                     <h2>Servicios de Electricidad</h2>
-                    <ConditionsContainer conditions={conditions.filter(c => c.category_id === 7)} project={project!} />
+                    <ConditionsContainer 
+                        setConditions={setNewConditions} 
+                        currentConditions={newConditions} 
+                        conditions={conditions.filter(c => c.category_id === 7)} 
+                        project={project!} />
 
                     <h2>Servicios de Agua y Drenaje</h2>
-                    <ConditionsContainer conditions={conditions.filter(c => c.category_id === 8)} project={project!} />
+                    <ConditionsContainer setConditions={setNewConditions} currentConditions={newConditions} conditions={conditions.filter(c => c.category_id === 8)} project={project!} />
                     
                     <h2>Gestiones requeridas</h2>
                     <p>En caso de no ser necesarias, deje el espacio en blanco</p>
-                    <ConditionsContainer conditions={conditions.filter(c => c.category_id === 9)} project={project!} />
+                    <ConditionsContainer setConditions={setNewConditions} currentConditions={newConditions} conditions={conditions.filter(c => c.category_id === 9)} project={project!} />
                 </form>
             </div>
         </>

@@ -8,6 +8,9 @@ import Loader from '../../components/shared/Loader/Loader'
 import { toast } from 'react-toastify'
 import InputGroup from '../../components/forms/InputGroup'
 import LeaseRequestInformation from '../../components/LeaseRequest/LeaseRequestInformation'
+import ListIcon from '../../components/shared/Icons/ListIcon'
+import DocumentTextIcon from '../../components/shared/Icons/DocumentTextIcon'
+import ActivitiesIcon from '../../components/shared/Icons/ActivitiesIcon'
 
 export default function Project() {
     const { id } = useParams()
@@ -26,7 +29,7 @@ export default function Project() {
     useEffect(() => {
         if(state.projects.length) {
             const project = state.projects.find(project => project.id === +id!)
-        
+            
             if(!project) {
                 toast.error("No existe el proyecto seleccionado")
                 navigate("/projects")
@@ -42,7 +45,7 @@ export default function Project() {
     return (
         <>
             <Breadcrumb list={list} />
-            <h1>{project?.name}</h1> 
+            <h1>{project.lands[0].land.residential_development.name}</h1> 
             <p className='date'>Creado el: {dateFormat(project.created_at)}</p>
             <p className='mt-1'>Estatus: {project?.stage.name}</p>
 
@@ -50,8 +53,19 @@ export default function Project() {
                 <Link to={`/contract-request/${id}`} className='btn btn-primary w-max mt-1'>Solicitud de contrato</Link>
             )}
             {(project.stage_id === 3) && (
-                <div className='mt-1'>
-                    <Link to={`/technical-case/${id}`} className='btn btn-primary w-max'>Carátula técnica</Link>
+                <div className='mt-1 flex g-1'>
+                    <Link to={`/technical-case/${id}`} className='btn btn-primary w-max'>
+                        <ListIcon />
+                        Carátula técnica
+                    </Link>
+                    <Link to={`/legal-case/${id}`} className='btn btn-indigo w-max'>
+                        <DocumentTextIcon />
+                        Carátula Legal
+                    </Link>
+                    <Link to={`activities`} className='btn btn-esmerald w-max'>
+                        <ActivitiesIcon />
+                        Actividades
+                    </Link>
                 </div>
             )}
 
@@ -89,6 +103,15 @@ export default function Project() {
 
             <div className='mt-2'>
                 {project.lease_request && <LeaseRequestInformation leaseRequest={project.lease_request} />}
+                
+                <div className='flex items-center g-2'>
+                    <h3>Aprobaciones: </h3>
+                    {project.approvations.filter(a => a.step?.flow_id === 1).map(a => (
+                        <div>
+                            <p className={`approbation-name ${a.response ? 'text-green' : 'text-red'}`}>{a.step?.signator.full_name}</p>
+                        </div>
+                    ))}
+                </div>
             </div>
         </>
     )

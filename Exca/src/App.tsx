@@ -1,7 +1,7 @@
 import { Route, Routes, useLocation } from "react-router-dom"
 import { AnimatePresence } from "framer-motion"
 import MainLayout from "./layouts/MainLayout"
-import Index from "./views"
+import Index from "./views/Index"
 import Projects from "./views/Projects/Projects"
 import CreateProject from "./views/Projects/CreateProject"
 import Lands from "./views/Land/Lands"
@@ -24,6 +24,9 @@ import TechnicalCase from "./views/TechnicalCase/TechnicalCase"
 import ApprovalRequest from "./views/ApprovalRequest/ApprovalRequest"
 import Settings from "./views/Settings/Settings"
 import Following from "./views/Following/Following"
+import Client from "./views/Client/Client"
+import Activities from "./views/Projects/Activities"
+import LegalCase from "./views/LegalCase/LegalCase"
 
 function App() {
   const location = useLocation()
@@ -40,10 +43,12 @@ function App() {
 
           <Route path="/projects" element={<Projects />} />
           <Route path="/projects/:id" element={<Project />} />
+          <Route path="/projects/:id/activities" element={<Activities />} />
           <Route path="/projects/create" element={<CreateProject />} />
           <Route path="/projects/edit/:id" element={<EditProject />} />
 
           <Route path="/clients" element={<Clients />} />
+          <Route path="/clients/:id" element={<Client />} />
           <Route path="/clients/create" element={<CreateClient />} />
           <Route path="/clients/edit/:id" element={<EditClient />} />
 
@@ -60,9 +65,13 @@ function App() {
           <Route path="/following" element={<Following />} />
 
           <Route path="/technical-case/:projectId" element={<TechnicalCase />} />
+<<<<<<< HEAD
 
           <Route path="/verify-lands" element={<LandsToVerify />} />
           <Route path="/verify-lands/form-land/:id?" element={<FormLand />} />
+=======
+          <Route path="/legal-case/:projectId" element={<LegalCase />} />
+>>>>>>> 9b17ab905c785fddba9df8c9cd3b182818499bb7
         </Route>
 
         <Route path="/" element={<AuthLayout />}>

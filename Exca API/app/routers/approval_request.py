@@ -22,8 +22,8 @@ def get_requests(current_user: User = Depends(get_current_user), db: Session = D
     query = query.filter(ApprovalStep.signator_id == current_user.id)
     return query.all()
 
-@router.get('/{request_id}/approve', status_code=status.HTTP_201_CREATED)
-def response_approval_request(request_id: int, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+@router.get('/response/{request_id}/{response}', status_code=status.HTTP_201_CREATED)
+def response_approval_request(request_id: int, response: bool, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
     approval_request = db.query(ApprovalRequest).filter(ApprovalRequest.id == request_id).first()
     
     if not approval_request:
@@ -37,9 +37,6 @@ def response_approval_request(request_id: int, current_user: User = Depends(get_
             status_code=401, 
             detail="La petición ya fue respondida"
         )
-        
-    approval_request.response = True
-    db.commit()
         
     current_step = db.query(ApprovalStep).filter(ApprovalStep.id == approval_request.step_id).first()
     
@@ -55,7 +52,14 @@ def response_approval_request(request_id: int, current_user: User = Depends(get_
             detail="No tiene los permisos para firmar esta petición"
         )
         
-    if not current_step.next_step_id:
+    approval_request.response = response
+    db.commit()
+      
+    if not response:
+        #Rejected
+        reject_flow(current_step.flow_id, approval_request.item_id, db)
+        return
+    elif not current_step.next_step_id:
         # Flow finished
         finish_flow(current_step.flow_id, approval_request.item_id, db)
         return
@@ -91,6 +95,22 @@ def finish_flow(flow_id: int, item_id: int, db: Session):
         db.commit()
         
         # Send to legal area
+        return
+            
+def reject_flow(flow_id: int, item_id: int, db: Session):
+    if(flow_id == 1):
+        lease_request = db.query(LeaseRequest).filter(LeaseRequest.id == item_id).first()
+        
+        if not lease_request:
+            raise HTTPException(
+                status_code=404, 
+                detail="La solicitud de contrato no existe"
+            )
+        
+        lease_request.status_id = 5
+        db.commit()
+        
+        # Send to originator
         return
             
         

@@ -8,6 +8,7 @@ from app.database.schemas.lease_request_schema import LeaseRequestCreate, LeaseR
 from app.database.models.lease_request_condition import LeaseRequestCondition
 from app.database.schemas.approval_request_schema import ApprovalRequestCreate
 from app.database.models.project import Project
+from app.database.schemas.project_schema import ProjectResponse
 from app.database.models.approval_request import ApprovalRequest
 from app.database.models.approval_step import ApprovalStep
 from app.database.models.user import User
@@ -101,9 +102,9 @@ def update_request(request_id: int, request: LeaseRequestCreate, db: Session = D
 def get_leases(db: Session = Depends(get_db)):
     return db.query(LeaseRequest).options(joinedload(LeaseRequest.conditions).joinedload(LeaseRequestCondition.condition)).all()
 
-@router.post("/send-to-approval", status_code=status.HTTP_201_CREATED)
+@router.post("/send-to-approval", status_code=status.HTTP_201_CREATED, response_model=ProjectResponse)
 def send_approval(approvalRequest: ApprovalRequestCreate, db: Session = Depends(get_db)):
-    request_query = db.query(LeaseRequest).where(LeaseRequest.id == approvalRequest.item_id)
+    request_query = db.query(LeaseRequest).where(LeaseRequest.project_id == approvalRequest.item_id)
     request_exists = db.scalars(request_query).first()
     
     if not request_exists:
@@ -157,6 +158,8 @@ def send_approval(approvalRequest: ApprovalRequestCreate, db: Session = Depends(
             status_code=404, 
             detail="Hubo un error al crear la petición"
         )
+        
+    return db.query(Project).where(Project.id == request_exists.project_id).first()
 
 # Get an especific request
 @router.get("/{request_id}", response_model=LeaseRequestResponse)

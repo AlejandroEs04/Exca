@@ -74,7 +74,7 @@ export type ProjectLand = {
 
 export type Project = {
     id: number
-    name: string
+    name?: string | null
     client: string
     brand_id: number
     stage_id: number
@@ -83,6 +83,7 @@ export type Project = {
     updated_at: string
     lands: ProjectLand[]
     stage: Stage
+    approvations: ApprovalRequest[]
 }
 
 export type ProjectCreate = Pick<Project, 'name' | 'client'> &  {
@@ -90,11 +91,12 @@ export type ProjectCreate = Pick<Project, 'name' | 'client'> &  {
     brand: string
 }
 
-export type ProjectView = Pick<Project, 'id' | 'name' | 'client' | 'stage_id' | 'origitnator_id' | 'created_at' | 'updated_at'> & {
+export type ProjectView = Pick<Project, 'id' | 'name' | 'client' | 'stage_id' | 'origitnator_id' | 'created_at' | 'updated_at' | 'approvations'> & {
     brand: Brand
     lands: ProjectLand[]
     stage: Stage
     lease_request: LeaseRequestResponse
+    technical_case: TechnicalCase | null
 }
 
 export type Condition = {
@@ -105,6 +107,21 @@ export type Condition = {
     options: string
 }
 
+export type TechnicalCaseConditions = {
+    id: number
+    condition_id: number
+    technical_case_id: number
+    value: string
+    is_active: boolean
+}
+
+export type TechnicalCase = {
+    id: number
+    project_id: number
+    originator_id: number
+    conditions: TechnicalCaseConditions[]
+}
+
 export type LeaseRequestCondition = {
     id: number
     condition_id: number
@@ -113,6 +130,8 @@ export type LeaseRequestCondition = {
     is_active: boolean
     condition: Condition
 }
+
+export type TechnicalCaseConditionCreate = Pick<LeaseRequestCondition, 'condition_id' | 'is_active' | 'value'>
 
 export type LeaseRequestConditionCreate = Pick<LeaseRequestCondition, 'id' | 'condition_id' | 'value' | 'is_active'>
 
@@ -180,6 +199,7 @@ export type ApprovalStep = {
     next_step_id: number | null
     flow_id: number
     signator_id: number
+    signator: User
     flow: ApprovalFlow | null
 }
 

@@ -4,7 +4,7 @@ import { LeaseRequestCreate, LeaseRequestResponse } from "../types"
 
 export async function registerRequest(request: LeaseRequestCreate) {
     try {
-        const { data } = await api.post("/lease-request", request)
+        const { data } = await api.post<LeaseRequestResponse>("/lease-request", request)
         return data
     } catch (error) {
         if(isAxiosError(error) && error.response) {
@@ -26,7 +26,7 @@ export async function getRequests() {
 
 export async function updateRequest(id: number, request: LeaseRequestCreate) {
     try {
-        const { data } = await api.put(`/lease-request/${id}`, request)
+        const { data } = await api.put<LeaseRequestResponse>(`/lease-request/${id}`, request)
         return data
     } catch (error) {
         if(isAxiosError(error) && error.response) {

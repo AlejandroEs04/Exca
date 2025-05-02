@@ -5,12 +5,14 @@ import { getClient } from '../api/ClientApi';
 import { getProjects } from '../api/ProjectApi';
 import { getRequests } from '../api/LeaseRequestApi';
 import { getUsers } from '../api/UserApi';
+import { toast } from 'react-toastify';
 
 interface AppContextProps {
     state: AppState
     dispatch: Dispatch<AppActions>
     isLoading: boolean
     setIsLoading: React.Dispatch<React.SetStateAction<boolean>>
+    setError: (error: any) => void
 }
 
 const AppContext = createContext<AppContextProps | undefined>(undefined);
@@ -18,6 +20,14 @@ const AppContext = createContext<AppContextProps | undefined>(undefined);
 export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     const [state, dispatch] = useReducer(AppReducer, initialState)
     const [isLoading, setIsLoading] = useState(false)
+
+    const setError = (error: any) => {
+        if (error instanceof Error) {
+            toast.error(error.message)
+        } else {
+            toast.error("An unexpected error occurred")
+        }
+    }
 
     useEffect(() => {
         const getInitials = async() => {
@@ -48,7 +58,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     }, [])
 
     return (
-        <AppContext.Provider value={{ state, dispatch, isLoading, setIsLoading }}>
+        <AppContext.Provider value={{ state, dispatch, isLoading, setIsLoading, setError }}>
             {children}
         </AppContext.Provider>
     );

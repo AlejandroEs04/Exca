@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react"
 import Breadcrumb from "../../components/shared/Breadcrumb/Breadcrumb"
-import { getApprovalRequests } from "../../api/ApprovalFlowApi"
+import { getApprovalRequests, responseApprovalRequest } from "../../api/ApprovalFlowApi"
 import { ApprovalRequest as ApprovalRequestType } from "../../types"
 import CheckIcon from "../../components/shared/Icons/CheckIcon"
 import XMark from "../../components/shared/Icons/XMark"
 import { useNavigate } from "react-router-dom"
+import { toast } from "react-toastify"
+import { useAppContext } from "../../hooks/AppContext"
 
 export default function ApprovalRequest() {
     const list = [
@@ -13,17 +15,29 @@ export default function ApprovalRequest() {
     ]
     const [requests, setRequests] = useState<ApprovalRequestType[]>()
     const navigate = useNavigate()
+    const { setError } = useAppContext()
 
     const navigateApprovation = (id: number) => {
         const currentRequest = requests?.find(r => r.id === id)
-
-        console.log(currentRequest)
         
         switch (currentRequest?.step?.flow_id) {
             case 1: 
                 // Lease Request
                 navigate(`/contract-request/${currentRequest.item_id}`)
             break;
+        }
+    }
+
+    const handleResponse = async(id: number, response: boolean) => {
+        try {
+            await responseApprovalRequest(id, response)
+
+            if (requests) {
+                setRequests(requests.map(r => r.id === id ? { ...r, response } : r))
+            }
+            toast.success("Se mando su respuesta correctamente")
+        } catch (error) {
+            setError(error)
         }
     }
 
@@ -56,11 +70,11 @@ export default function ApprovalRequest() {
                             <td>{r.step?.flow?.name}</td>
                             <td>
                                 <div className="table-actions">
-                                    <button>
+                                    <button onClick={() => handleResponse(r.id, true)}>
                                         <CheckIcon color="text-green" />
                                     </button>
 
-                                    <button>
+                                    <button onClick={() => handleResponse(r.id, false)}>
                                         <XMark color="text-red" />
                                     </button>
                                 </div>
