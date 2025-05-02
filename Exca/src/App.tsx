@@ -69,6 +69,7 @@ function App() {
           <Route path="/verify-lands" element={<LandsToVerify />} />
           <Route path="/verify-lands/form-land/:id?" element={<FormLand />} />
           <Route path="/legal-case/:projectId" element={<LegalCase />} />
+          
         </Route>
 
         <Route path="/" element={<AuthLayout />}>
