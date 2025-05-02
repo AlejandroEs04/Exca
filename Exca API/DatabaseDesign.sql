@@ -1,8 +1,12 @@
 USE ExcaDb
-SELECT * FROM condition_category
 
+DROP TABLE IF EXISTS project_activity
+DROP TABLE IF EXISTS project_status
+DROP TABLE IF EXISTS legal_case_conditions
+DROP TABLE IF EXISTS legal_case
 DROP TABLE IF EXISTS condition_lease
-DROP TABLE IF EXISTS lease_lessee
+DROP TABLE IF EXISTS technical_case_conditions
+DROP TABLE IF EXISTS technical_case
 DROP TABLE IF EXISTS lease_lessor
 DROP TABLE IF EXISTS lease
 DROP TABLE IF EXISTS rent_assigment
@@ -47,7 +51,7 @@ CREATE TABLE user_rol (
 )
 
 INSERT INTO user_rol (name)
-VALUES ('Originator'), ('Approver'), ('Administrator')
+VALUES ('Gerente'), ('Subdirector'), ('Director'), ('Analista'), ('User')
 
 CREATE TABLE area (
     id INT NOT NULL IDENTITY(1,1) PRIMARY KEY, 
@@ -55,7 +59,7 @@ CREATE TABLE area (
 )
 
 INSERT INTO area (name)
-VALUES ('Comercial'), ('Legal'), ('Proyectos')
+VALUES ('Comercial'), ('Legal'), ('Gestión'), ('Desarrollo')
 
 CREATE TABLE [user] (
     id INT NOT NULL IDENTITY(1,1) PRIMARY KEY, 
@@ -81,25 +85,22 @@ CREATE TABLE business_turn (
     name VARCHAR(45) NOT NULL
 )
 
-CREATE TABLE document_type (
-    id INT NOT NULL PRIMARY KEY IDENTITY(1,1), 
-    name VARCHAR(45) NOT NULL
-)
-INSERT INTO document_type (name)
-VALUES ('Company (Legal Entity)'), ('Company (Physical person)'), ('Individual')
-
 CREATE TABLE document (
     id INT NOT NULL PRIMARY KEY IDENTITY(1,1), 
-    name VARCHAR(45) NOT NULL
+    name VARCHAR(45) NOT NULL,
+    use_legal_entity BIT NOT NULL, 
+    use_physical_person BIT NOT NULL,
+    use_individual BIT NOT NULL
 )
-
-CREATE TABLE document_entity (
-    id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
-    document_type_id INT NOT NULL, 
-    document_id INT NOT NULL, 
-    FOREIGN KEY (document_type_id) REFERENCES document_type (id),
-    FOREIGN KEY (document_id) REFERENCES document (id)
-)
+INSERT INTO document (name, use_legal_entity, use_physical_person, use_individual) 
+VALUES ('Acta Constitutiva c/Inscriptción RPP', 1, 0, 0),
+('Poder Representante Legal C/Inscripción RPP', 1, 0, 0),
+('Identificación Oficial Vigente', 1, 1, 1),
+('Comprobante de Domicilio No Mayor a 3 Meses', 1, 1, 1),
+('RFC', 1, 1, 0),
+('Estado de Cuenta Bancario', 1, 1, 0),
+('Escritura de la Propiedad en Garantia', 0, 0, 1),
+('Otro', 1, 1, 0)
 
 CREATE TABLE client (
     id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
@@ -129,7 +130,6 @@ CREATE TABLE brand (
     FOREIGN KEY (client_id) REFERENCES client (id)
 )
 
--- Guarantors (obligado solidario)
 CREATE TABLE individual (
     id INT NOT NULL PRIMARY KEY IDENTITY(1,1), 
     full_name VARCHAR(100) NOT NULL, 
@@ -178,7 +178,7 @@ VALUES ('Nuevo'), ('En firmas'), ('Aceptado'), ('Cancelado')
 
 CREATE TABLE project (
     id INT NOT NULL PRIMARY KEY IDENTITY(1,1), 
-    name VARCHAR(45) NOT NULL, 
+    name VARCHAR(45) NULL, 
     brand_id INT NOT NULL,
     stage_id INT NOT NULL,
     originator_id INT NOT NULL,
@@ -224,7 +224,14 @@ CREATE TABLE condition_category (
     name VARCHAR(45) NOT NULL
 )
 INSERT INTO condition_category (name)
-VALUES ('Condiciones Comerciales'), ('Condiciones Generales'), ('Contención de riesgos económicos'), ('Contención de riesgos'), ('Mitgación de riesgos'), ('Construcción por GP')
+VALUES 
+('Condiciones Comerciales'), 
+('Condiciones Generales'), 
+('Contención de riesgos económicos'), 
+('Contención de riesgos'), 
+('Mitgación de riesgos'), 
+('Construcción por GP')
+
 
 CREATE TABLE condition_type (
     id INT NOT NULL IDENTITY(1,1) PRIMARY KEY, 
@@ -233,7 +240,6 @@ CREATE TABLE condition_type (
 INSERT INTO condition_type (name)
 VALUES ('text'), ('number'), ('date'), ('boolean'), ('Two Options')
 
--- conditions types // Otras
 CREATE TABLE condition (
     id INT NOT NULL PRIMARY KEY IDENTITY(1,1), 
     name VARCHAR(150) NOT NULL, 
@@ -372,50 +378,79 @@ VALUES
 ('Uso de Suelo', null, 9, 1),
 ('Estudios Ambientales', null, 9, 1)
 
--- HASTA AQUIIIII
-/**
--- Asign company for rent assigments (cesión de renta)
-CREATE TABLE rent_assigment (
-    id INT NOT NULL PRIMARY KEY IDENTITY(1,1), 
-    assignee_id INT NOT NULL, 
-    assigment_date DATE, 
-    document_link VARCHAR(MAX), -- assignment contract
-    FOREIGN KEY (assignee_id) REFERENCES company (id) 
+-- ('Estudios Ambientales', null, 9, 1),
+-- ('Estudios Ambientales', null, 9, 1),
+-- ('Estudios Ambientales', null, 9, 1),
+-- ('Estudios Ambientales', null, 9, 1),
+-- ('Estudios Ambientales', null, 9, 1),
+-- ('Estudios Ambientales', null, 9, 1),
+-- ('Estudios Ambientales', null, 9, 1),
+-- ('Estudios Ambientales', null, 9, 1),
+-- ('Estudios Ambientales', null, 9, 1),
+-- ('Estudios Ambientales', null, 9, 1),
+-- ('Estudios Ambientales', null, 9, 1),
+-- ('Estudios Ambientales', null, 9, 1),
+-- ('Estudios Ambientales', null, 9, 1),
+-- ('Estudios Ambientales', null, 9, 1),
+-- ('Estudios Ambientales', null, 9, 1),
+-- ('Estudios Ambientales', null, 9, 1),
+-- ('Estudios Ambientales', null, 9, 1),
+-- ('Estudios Ambientales', null, 9, 1)
+
+INSERT INTO [user] (full_name, email, rol_id, area_id, hashed_password)
+VALUES ('Raphael Estrada', '2004.estrada.lopez@gmail.com', 1, 1, '$2b$12$5r1.bjr72xbAL0X3jZtvkuqtObxMZG8waRP1h43RK3GPBBzaogWVq')
+
+CREATE TABLE technical_case (
+    id INT NOT NULL IDENTITY(1,1) PRIMARY KEY, 
+    project_id INT NOT NULL, 
+    originator_id INT NOT NULL, 
+    FOREIGN KEY (project_id) REFERENCES project (id), 
+    FOREIGN KEY (originator_id) REFERENCES [user] (id)
 )
 
--- Contract
-CREATE TABLE lease (
-    id INT NOT NULL PRIMARY KEY IDENTITY(1,1), 
-    contract_date DATE NOT NULL,  
-    guarantor_id INT,
-    rent_assigment_id INT, 
-    FOREIGN KEY (guarantor_id) REFERENCES individual(id), 
-    FOREIGN KEY (rent_assigment_id) REFERENCES rent_assigment(id), 
-)
-
--- Lessor of lease
-CREATE TABLE lease_lessor (
-    lease_id INT NOT NULL, 
-    company_id INT NOT NULL, 
-    ownership_percentage DECIMAL(10,2), 
-    FOREIGN KEY (lease_id) REFERENCES lease (id), 
-    FOREIGN KEY (company_id) REFERENCES company(id), 
-    PRIMARY KEY (lease_id, company_id)
-)
-
-CREATE TABLE lease_lessee (
-    lease_id INT NOT NULL, 
-    company_id INT NOT NULL, 
-    FOREIGN KEY (lease_id) REFERENCES lease (id), 
-    FOREIGN KEY (company_id) REFERENCES company(id), 
-    PRIMARY KEY (lease_id, company_id)
-)
-
--- relation of conditions with lease
-CREATE TABLE condition_lease (
+CREATE TABLE technical_case_conditions (
+    id INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
+    technical_case_id INT NOT NULL, 
     condition_id INT NOT NULL,
-    lease_id INT NOT NULL,
-    value TEXT, 
-    FOREIGN KEY (condition_id) REFERENCES condition_type (id), 
-    FOREIGN KEY (lease_id) REFERENCES lease (id)
-)**/
+    value TEXT,
+    is_active BIT NOT NULL DEFAULT 1,
+    FOREIGN KEY (condition_id) REFERENCES condition (id), 
+    FOREIGN KEY (technical_case_id) REFERENCES technical_case (id)
+)
+
+CREATE TABLE legal_case (
+    id INT NOT NULL IDENTITY(1,1) PRIMARY KEY, 
+    project_id INT NOT NULL, 
+    originator_id INT NOT NULL, 
+    FOREIGN KEY (project_id) REFERENCES project (id), 
+    FOREIGN KEY (originator_id) REFERENCES [user] (id)
+)
+
+CREATE TABLE legal_case_conditions (
+    id INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
+    legal_case_id INT NOT NULL, 
+    condition_id INT NOT NULL,
+    value TEXT,
+    is_active BIT NOT NULL DEFAULT 1,
+    FOREIGN KEY (condition_id) REFERENCES condition (id), 
+    FOREIGN KEY (legal_case_id) REFERENCES legal_case (id)
+)
+
+CREATE TABLE project_status (
+    id INT NOT NULL IDENTITY(1,1) PRIMARY KEY, 
+    name VARCHAR(45)
+)
+INSERT INTO project_status (name)
+VALUES ('No visto'), ('Visto'), ('En proceso'), ('Finalizado'), ('Cancelado'), ('Retrasado')
+
+CREATE TABLE project_activity (
+    id INT NOT NULL IDENTITY(1,1) PRIMARY KEY, 
+    description TEXT NOT NULL, 
+    responsible_area_id INT NOT NULL, 
+    responsible_id INT NULL,
+    due_date DATE NOT NULL, 
+    status_id INT NOT NULL,
+    FOREIGN KEY (responsible_area_id) REFERENCES area (id), 
+    FOREIGN KEY (responsible_id) REFERENCES [user] (id), 
+    FOREIGN KEY (status_id) REFERENCES [status] (id)
+)

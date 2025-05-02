@@ -10,6 +10,7 @@ from app.database.models.project import Project
 from app.database.schemas.project_schema import ProjectCreate, ProjectResponse
 from app.database.models.project_land_type import ProjectLandType
 from app.database.schemas.project_land_type_schema import ProjectLandTypeResponse
+from app.database.models.approval_request import ApprovalRequest
 
 router = APIRouter(prefix="/project", tags=["Projects"])
 
@@ -66,7 +67,6 @@ def create_project(project: ProjectCreate, db: Session = Depends(get_db)):
         
     # Create a new project
     new_project = Project(
-        name=project.name,
         brand_id=brand_id,
         stage_id=1,
         originator_id=1
@@ -98,7 +98,6 @@ def update_project(project_id: int, project_update: ProjectCreate, db: Session =
     if not project:
         raise HTTPException(status_code=404, detail="Project not found")
     
-    project.name = project_update.name
     # TODO: I HAVE TO ADD ORIGINATOR AND STAGE
     
     # Updates lands
@@ -120,7 +119,13 @@ def update_project(project_id: int, project_update: ProjectCreate, db: Session =
 @router.get("/", response_model=list[ProjectResponse])
 def get_projects(db: Session = Depends(get_db)):
     projects = db.query(Project).all()
+    
+    for project in projects:
+        project.approvations = db.query(ApprovalRequest).where(ApprovalRequest.item_id == project.id)
+    
+    db.query()
     return projects
+
 @router.get("/rent-type", response_model=list[ProjectLandTypeResponse])
 def get_rent_type(db: Session = Depends(get_db)):
     return db.query(ProjectLandType).all()

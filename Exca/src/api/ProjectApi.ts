@@ -7,8 +7,9 @@ export async function registerProject (project: ProjectCreate) {
         const { data } = await api.post('/project', project)
         return data
     } catch (error) {
+        console.log(error)
         if(isAxiosError(error) && error.response) {
-            throw new Error(error.response.data.error)
+            throw new Error(error.response.data.detail)
         }
     }
 }
@@ -19,18 +20,18 @@ export async function getProjects () {
         return data
     } catch (error) {
         if(isAxiosError(error) && error.response) {
-            throw new Error(error.response.data.error)
+            throw new Error(error.response.data.detail)
         }
     }
 }
 
 export async function updateProject(id: number, project: ProjectCreate) {
     try {
-        const { data } = await api.put(`/project/${id}`, project)
+        const { data } = await api.put<ProjectView>(`/project/${id}`, project)
         return data
     } catch (error) {
         if(isAxiosError(error) && error.response) {
-            throw new Error(error.response.data.error)
+            throw new Error(error.response.data.detail)
         }
     }
 }
@@ -41,7 +42,7 @@ export async function getProjectLandTypes () {
         return data
     } catch (error) {
         if(isAxiosError(error) && error.response) {
-            throw new Error(error.response.data.error)
+            throw new Error(error.response.data.detail)
         }
     }
 }

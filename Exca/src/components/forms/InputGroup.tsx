@@ -92,7 +92,7 @@ export default function InputGroup({
                 placeholder={placeholder}
                 onChange={onChange}
                 autoComplete="off"
-                className={isError ? 'input-error' : ''}
+                className={`${isError ? 'input-error' : ''}`}
             />
 
             {isError && (

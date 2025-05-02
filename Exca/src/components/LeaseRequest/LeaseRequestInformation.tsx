@@ -20,6 +20,7 @@ export default function LeaseRequestInformation({leaseRequest}: LeaseRequestInfo
                         ) : (
                             <div className='checkbox'>
                                 <input disabled defaultChecked={getChecked(condition.condition_id)} type='checkbox' name={condition.condition.name} id={condition.id.toString()} placeholder={condition.condition.name} />
+                                <span className="checkmark"></span>
                             </div>
                         )}
                     </div>

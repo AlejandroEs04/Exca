@@ -22,7 +22,6 @@ export default function CreateProject() {
 
     const { state, dispatch, isLoading } = useAppContext()
     const [project, setProject] = useState({
-        name: '', 
         client: '',
         brand: ''
     })
@@ -102,7 +101,7 @@ export default function CreateProject() {
     const areaDisable = useMemo(() => cadastralFile.land_id === 0, [cadastralFile.land_id])
     const landsSelectDisable = useMemo(() => landOptions.length === 0, [landOptions])
     const submitDisable = useMemo(() => {
-        return project.name === '' || project.client === '' || project.brand === '' || lands.length === 0
+        return project.client === '' || project.brand === '' || lands.length === 0
     }, [project, lands])
 
     const onSubmit = async(e: FormEvent) => {
@@ -110,7 +109,6 @@ export default function CreateProject() {
 
         try {
             const projectObj : ProjectCreate = {
-                name: project.name,
                 client: project.client,
                 brand: project.brand,
                 lands
@@ -171,10 +169,6 @@ export default function CreateProject() {
                     <SaveIcon />
                     Guardar
                 </button>
-
-                <div className="mt-1">
-                    <InputGroup name="name" label="Nombre" value={project.name} placeholder="Nombre del proyecto" onChangeFnc={onChangeProject} />
-                </div>
 
                 <div className="grid grid-cols-2 mt-2">
                     <InputGroup name="client" label="Razón social" value={project.client} placeholder="Razón social" onChangeFnc={onChangeProject} options={clientsOptions} />

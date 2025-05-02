@@ -30,7 +30,6 @@ export default function Projects() {
                 <thead>
                     <tr>
                         <th>ID</th>
-                        <th>Nombre</th>
                         <th>Fraccionamiento</th>
                         <th>Cliente</th>
                         <th>Marca</th>
@@ -43,7 +42,6 @@ export default function Projects() {
                     {state.projects.map(project => (
                         <tr onDoubleClick={() => handleProject(project.id)} key={project.id}>
                             <td>{project.id}</td>
-                            <td>{project.name}</td>
                             <td>
                                 {project.lands.map(land => land.land.residential_development.name).join(', ')}
                             </td>

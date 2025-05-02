@@ -5,15 +5,14 @@ from app.database.schemas.land_schema import LandResponse
 from app.database.schemas.stage_schema import StageResponse
 from app.database.schemas.client_schema import ClientResponse
 from app.database.schemas.lease_request_schema import LeaseRequestResponse
+from app.database.schemas.approval_request_schema import ApprovalRequestResponse
 
 class ProjectBase(BaseModel):
-    name: str
     brand_id: int
     stage_id: int
     originator_id: int
     
 class ProjectCreate(BaseModel):
-    name: str
     client: str
     brand: str
     lands: list[ProjectLandCreate] = []
@@ -44,6 +43,7 @@ class ProjectResponse(ProjectBase):
     created_at: datetime
     updated_at: datetime
     lease_request: LeaseRequestResponse | None = None
+    approvations: list[ApprovalRequestResponse] = []
     
     class Config:
         orm_mode = True
