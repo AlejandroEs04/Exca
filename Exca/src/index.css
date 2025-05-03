@@ -113,6 +113,9 @@ button, input, textarea, select {
   outline: none;
   background: none;
 }
+.m-0 {
+  margin: 0 !important;
+}
 .m-1 {
   margin: 0.5rem;
 }
@@ -342,7 +345,6 @@ input.input-error {
   max-width: 16rem;
   display: flex;
   flex-direction: column;
-  top: 0;
 }
 @media(min-width: 864px) {
   .main-layout .aside-navigation {
@@ -359,6 +361,8 @@ input.input-error {
   align-items: center;
   margin-top: 1.25rem;
   padding: 0 1rem;
+  position: sticky;
+  top: 0;
 }
 .aside-navigation {
   height: calc(100vh - 3.4rem);
@@ -501,7 +505,7 @@ input.input-error {
 }
 
 .w-min {
-  width: min-content;
+  width: min-content !important;
 }
 .w-max {
   width: max-content;
@@ -577,8 +581,7 @@ input.input-error {
   font-size: 1.1rem;
 }
 
-
-
+/* AUTHENTICATION ZONE */
 .auth-view {
   display: flex;
   height: 100vh;

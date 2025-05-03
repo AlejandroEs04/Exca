@@ -5,21 +5,44 @@ type getConditionRulesReturn = {
     required: boolean | undefined
 }
 
-export const getConditionRules = (id: number, conditions: Condition[], project: ProjectView) : getConditionRulesReturn => {
-    const conditionResponse: getConditionRulesReturn= { value: undefined, required: undefined }
+export const getConditionRules = (
+    id: number, 
+    conditions: Condition[], 
+    project: ProjectView, 
+    type: 'lease' | 'technical' = 'lease', 
+    isChecked: boolean = false
+) : getConditionRulesReturn => {
+    // Create object
+    const conditionResponse: getConditionRulesReturn = { value: undefined, required: undefined }
 
-    const existsCondition = project?.lease_request?.conditions.find(c => c.condition_id === id)
+    let existsCondition = null
+
+    // if exists items in the project response
+    switch(type) {
+        case 'lease':
+            existsCondition = project?.lease_request?.conditions.find(c => c.condition_id === id)
+            break;
+        case 'technical':
+            existsCondition = project?.technical_case?.conditions.find(c => c.condition_id === id)
+            break;
+    }
+
+    // if exists, then return current value
     if(existsCondition) {
-        conditionResponse.value = existsCondition.value
+        if(isChecked){
+            conditionResponse.value = existsCondition.is_active
+        } else {
+            conditionResponse.value = existsCondition.value
+        }
     } else {
-        // There any rule
-        conditionResponse.value = rules(id, conditions, project)
+        // if it's not exists, there any rule?
+        conditionResponse.value = rules(id, project)
     }
 
     return conditionResponse
 }
 
-const rules = (id: number, conditions: Condition[], project: ProjectView) : string | undefined => {
+const rules = (id: number, project: ProjectView) : string | undefined => {
     let value : string | undefined = undefined
     
     switch(id) {

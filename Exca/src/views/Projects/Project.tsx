@@ -11,6 +11,7 @@ import LeaseRequestInformation from '../../components/LeaseRequest/LeaseRequestI
 import ListIcon from '../../components/shared/Icons/ListIcon'
 import DocumentTextIcon from '../../components/shared/Icons/DocumentTextIcon'
 import ActivitiesIcon from '../../components/shared/Icons/ActivitiesIcon'
+import CaseInformation from '../../components/CaseInformation/CaseInformation'
 
 export default function Project() {
     const { id } = useParams()
@@ -112,7 +113,14 @@ export default function Project() {
                         </div>
                     ))}
                 </div>
+                
             </div>
+            
+            {(project.technical_case && project.technical_case.sended_at) && (
+                <div className='mt-4'>
+                    {(project.technical_case) && <CaseInformation title='Carátula Técnica' conditions={project?.technical_case?.conditions!} />}
+                </div>
+            )}
         </>
     )
 }

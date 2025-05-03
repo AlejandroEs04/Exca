@@ -304,7 +304,6 @@ CREATE TABLE approval_step (
     id INT NOT NULL PRIMARY KEY IDENTITY(1,1), 
     next_step_id INT NULL, 
     flow_id INT NOT NULL, 
-    -- Settings
     signator_id INT NOT NULL, 
     FOREIGN KEY (next_step_id) REFERENCES approval_step (id), 
     FOREIGN KEY (flow_id) REFERENCES approval_flow (id), 
@@ -404,6 +403,9 @@ CREATE TABLE technical_case (
     id INT NOT NULL IDENTITY(1,1) PRIMARY KEY, 
     project_id INT NOT NULL, 
     originator_id INT NOT NULL, 
+    created_at DATETIME NOT NULL DEFAULT GETDATE(),
+    sended_at DATETIME,
+    updated_at DATETIME NOT NULL DEFAULT GETDATE(),
     FOREIGN KEY (project_id) REFERENCES project (id), 
     FOREIGN KEY (originator_id) REFERENCES [user] (id)
 )
@@ -421,7 +423,10 @@ CREATE TABLE technical_case_conditions (
 CREATE TABLE legal_case (
     id INT NOT NULL IDENTITY(1,1) PRIMARY KEY, 
     project_id INT NOT NULL, 
-    originator_id INT NOT NULL, 
+    originator_id INT NOT NULL,
+    created_at DATETIME NOT NULL DEFAULT GETDATE(),
+    sended_at DATETIME,
+    updated_at DATETIME NOT NULL DEFAULT GETDATE(), 
     FOREIGN KEY (project_id) REFERENCES project (id), 
     FOREIGN KEY (originator_id) REFERENCES [user] (id)
 )

@@ -14,3 +14,4 @@ class Condition(Base):
     category = relationship("ConditionCategory", back_populates="conditions")
     type = relationship("ConditionType", back_populates="conditions")
     request_conditions = relationship("LeaseRequestCondition", back_populates="condition")
+    technical_case_conditions = relationship("TechnicalCaseCondition", back_populates="condition")
