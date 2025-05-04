@@ -12,6 +12,7 @@ import { toast } from "react-toastify"
 import Loader from "../../components/shared/Loader/Loader"
 import SelectGroup from "../../components/forms/SelectGroup"
 import { label } from "framer-motion/client"
+import { formatToCurrency } from "../../utils"
 
 export default function FormLand() {
     const { id } = useParams<{ id?: string }>()
@@ -77,7 +78,7 @@ export default function FormLand() {
                     }
                 });
                 //navigate('/lands')
-                toast.success("Terreno actualizado correctamente " + land.id)
+                toast.success("Terreno actualizado correctamente ")
             }else{
                 toast.success("Terreno creado correctamente")
             }
@@ -89,6 +90,7 @@ export default function FormLand() {
 
     const isDisable = useMemo(() => 
         isNullOrEmpty(land.cadastral_file) || isNullOrEmpty(land.residential_development_id) || isNullOrEmpty(land.address) || +land.area === 0 || +land.price_per_area === 0, [land])
+    
     if(id != null)
     {
         useEffect(() => {
@@ -96,7 +98,8 @@ export default function FormLand() {
             const land = state.lands.find(land => land.id === +id!)
     
             if(!land) return
-            console.log(land)
+            
+            //console.log(land)
     
             setLand(land)
         }, [id, state.lands])
@@ -170,11 +173,12 @@ export default function FormLand() {
                                     value={land.municipio ? land.municipio : 404} 
                                     options={cityOptions}
                                     placeholder="Municipio" onChangeFnc={onChange} />
-                        <InputGroup name="valor_catastral" label="Valor Catastral" 
-                                    value={land.valor_catastral ? land.valor_catastral : 0} placeholder="Valor Catastral" onChangeFnc={onChange} 
-                                    type="currency" />
+                        
                         <InputGroup name="area_construida" label="Área Construida" 
                                     value={land.area_construida ? land.area_construida : 0} placeholder="Área Construida" onChangeFnc={onChange} />
+                        <InputGroup name="valor_catastral" label="Valor Catastral" 
+                                    value={land.valor_catastral ? land.valor_catastral : 0} placeholder="Pago Predial" onChangeFnc={onChange} 
+                                    type="currency"/>
                         <InputGroup name="pago_predial" label="Pago Predial" 
                                     value={land.pago_predial ? land.pago_predial : 0} placeholder="Pago Predial" onChangeFnc={onChange} 
                                     type="currency"/>

@@ -57,7 +57,8 @@ export default function InputGroup({
             onChangeFnc(e);
     }
 
-    const onChange = (e: ChangeEvent<HTMLInputElement> | PushEvent) => {
+    const onChange = (e: ChangeEvent<HTMLInputElement> | PushEvent) => {    
+        
         if(limit) {
             if(limit < +e.target.value) {
                 setIsError('Este valor supera el limite')
@@ -65,11 +66,12 @@ export default function InputGroup({
                 setIsError(null)
             }
         }
+        
         if(onChangeFnc != null) {
             onChangeFnc(e);
 
-        }
-
+        } 
+        
         if(e.target.value === '') {
             setOptionsFiltered(options)
             return
@@ -89,18 +91,20 @@ export default function InputGroup({
         }).format(num)
     }
     useEffect(() => {
-        if (type === 'currency' && typeof value === 'number') {
-            const formatted = formatToCurrency(value)
-            const e: PushEvent = {
-                target: {
-                    name,
-                    value: formatted
-                }
+        if (type === 'currency') {
+            const formatted = formatToCurrency(value);
+            if (value !== formatted) {
+                const e: PushEvent = {
+                    target: {
+                        name,
+                        value: formatted
+                    }
+                };
+                onChangeFnc?.(e);
             }
-            if (onChangeFnc) onChangeFnc(e)
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [type])
+    }, [value, type, name]);
+    
     
     return (
         <div className={isHorizontal ? 'condition-container' : `${className} input-group`}>

@@ -47,3 +47,15 @@ class ProjectResponse(ProjectBase):
     
     class Config:
         from_attributes = True
+
+class ProjectDocResponse(ProjectBase):
+    id: int
+    name: str
+    brand_id: int
+    stage_id: int 
+    originator_id: int
+    created_at: datetime
+    updated_at: datetime
+
+    class Config:
+        from_attributes = True

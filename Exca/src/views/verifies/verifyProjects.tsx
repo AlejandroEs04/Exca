@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Breadcrumb from "../../components/shared/Breadcrumb/Breadcrumb";
 import PlusIcon from "../../components/shared/Icons/PlusIcon";
 import { useAppContext } from "../../hooks/AppContext";
@@ -6,10 +6,10 @@ import TrashIcon from "../../components/shared/Icons/TrashIcon";
 import EditIcon from "../../components/shared/Icons/EditIcon";
 import Loader from "../../components/shared/Loader/Loader";
 
-export default function LandsToVerify() {
+export default function ProjectsToVerify() {
     const list = [
         {name:"Dashboard",url:'/'},
-        {name:"Validar Terrenos",url:'/verify-lands'},
+        {name:"Validar Proyectos",url:'/verify-projects'},
     ]
     const statusOptions: Record<number, string> = {
         1: 'PENDIENTE',
@@ -18,51 +18,51 @@ export default function LandsToVerify() {
     };
     
 
-    const { state, isLoading } = useAppContext()
+    const { state } = useAppContext()
+    const navigate = useNavigate()
 
-    if(isLoading) return <Loader />
+    const handleProject = (id: number) => navigate(`/verify-projects/form-project/${id}`)
     
     return (
         <>
             <Breadcrumb list={list} />
-            <h1>Validar Terrenos</h1>
-            
+            <h1>Validar Interesados</h1>
             {
                 /*
+                <Link to={'create'} className="btn btn-primary">
+                    <PlusIcon />
+                    Registrar
+                </Link>
                 
-                    <Link to={'create'} className="btn btn-primary">
-                        <PlusIcon />
-                        Registrar
-                    </Link>
                 */
-
             }
+            
 
             <table className="mt-2">
                 <thead>
                     <tr>
                         <th>ID</th>
-                        <th>Expediente Catastral</th>
-                        <th>Área en m2</th>
-                        <th>Precio por m2</th>
                         <th>Fraccionamiento</th>
+                        <th>Cliente</th>
+                        <th>Marca</th>
                         <th>Estatus</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
 
                 <tbody>
-                    {state.lands.map((land) => (
-                        <tr key={land.id}>
-                            <td>{land.id}</td>
-                            <td>{land.cadastral_file}</td>
-                            <td>{land.area}</td>
-                            <td>{land.price_per_area}</td>
-                            <td>{land.residential_development.name}</td>
-                            <td>{statusOptions[land.global_status ? land.global_status : 0]}</td>
+                    {state.projects.map(project => (
+                        <tr onDoubleClick={() => handleProject(project.id)} key={project.id}>
+                            <td>{project.id}</td>
+                            <td>
+                                {project.lands.map(land => land.land.residential_development.name).join(', ')}
+                            </td>
+                            <td>{project.brand.client.business_name}</td>
+                            <td>{project.brand.name}</td>
+                            <td>{project.stage.name}</td>
                             <td>
                                 <div className="table-actions">
-                                    <Link to={`/verify-lands/form-land/${land.id}`} className="text-blue"><EditIcon /></Link>
+                                    <Link to={`/verify-projects/form-project/${project.id}`} className="text-blue"><EditIcon /></Link>
                                     <button className="text-red"><TrashIcon /></button>
                                 </div>
                             </td>

@@ -27,6 +27,8 @@ import Client from "./views/Client/Client"
 import Activities from "./views/Projects/Activities"
 import LegalCase from "./views/LegalCase/LegalCase"
 import Index from "./views"
+import ProjectsToVerify from "./views/verifies/verifyProjects"
+import FormProject from "./views/verifies/FormProject"
 
 function App() {
   const location = useLocation()
@@ -68,6 +70,10 @@ function App() {
 
           <Route path="/verify-lands" element={<LandsToVerify />} />
           <Route path="/verify-lands/form-land/:id?" element={<FormLand />} />
+
+          <Route path="/verify-projects" element={<ProjectsToVerify />} />
+          <Route path="/verify-projects/form-project/:id?" element={<FormProject />} />
+
           <Route path="/legal-case/:projectId" element={<LegalCase />} />
           
         </Route>

@@ -7,7 +7,7 @@ from app.database.models.client import Client
 from app.database.models.brand import Brand
 from app.database.models.project_land import ProjectLand
 from app.database.models.project import Project
-from app.database.schemas.project_schema import ProjectCreate, ProjectResponse
+from app.database.schemas.project_schema import ProjectCreate, ProjectDocResponse, ProjectResponse
 from app.database.models.project_land_type import ProjectLandType
 from app.database.schemas.project_land_type_schema import ProjectLandTypeResponse
 from app.database.models.approval_request import ApprovalRequest
@@ -115,6 +115,16 @@ def update_project(project_id: int, project_update: ProjectCreate, db: Session =
     db.commit()
     db.refresh(project)
     return project
+
+@router.get("/get-project/{project_id}", response_model=ProjectDocResponse)
+def getProjectById(project_id: int,  db: Session = Depends(get_db)):
+    project = db.query(Project).filter(Project.id == project_id).first()
+
+    if not project:
+        raise HTTPException(status_code=404, detail="Project not found")
+    return project
+
+
 
 @router.get("/", response_model=list[ProjectResponse])
 def get_projects(db: Session = Depends(get_db)):

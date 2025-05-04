@@ -92,6 +92,7 @@ export type ProjectCreate = Pick<Project, 'name' | 'client'> &  {
 }
 
 export type ProjectView = Pick<Project, 'id' | 'name' | 'client' | 'stage_id' | 'origitnator_id' | 'created_at' | 'updated_at' | 'approvations'> & {
+    name: string
     brand: Brand
     lands: ProjectLand[]
     stage: Stage

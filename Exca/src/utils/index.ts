@@ -29,3 +29,12 @@ export const dateFormat = (date: string) => {
 export const isInputHelper = (target: EventTarget): target is HTMLInputElement => {
     return (target as HTMLInputElement).checked !== undefined;
 };
+export const formatToCurrency = (value: string | number): string => {
+    const num = typeof value === 'number' ? value : parseFloat(String(value).replace(/[^0-9.]/g, ''))
+    if (isNaN(num)) return ''
+    return new Intl.NumberFormat('es-MX', {
+        style: 'currency',
+        currency: 'MXN',
+        minimumFractionDigits: 2,
+    }).format(num)
+}

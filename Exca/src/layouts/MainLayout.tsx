@@ -87,7 +87,14 @@ export default function MainLayout() {
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9a3.75 3.75 0 1 0-7.5 0c0 2.5 3.75 6.75 3.75 6.75S15.75 11.5 15.75 9z" />
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 9h.008v.008H12V9z" />
                                 </svg>
-                                Verificar Terrenos
+                                Vaidar Terrenos
+                            </Link>
+                            <Link to={'/verify-projects'}>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="icon">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9a3.75 3.75 0 1 0-7.5 0c0 2.5 3.75 6.75 3.75 6.75S15.75 11.5 15.75 9z" />
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 9h.008v.008H12V9z" />
+                                </svg>
+                                Vaidar Interesados
                             </Link>
                         </nav>
 
