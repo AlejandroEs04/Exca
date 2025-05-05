@@ -1,9 +1,11 @@
 USE ExcaDb
 
 DROP TABLE IF EXISTS project_activity
-DROP TABLE IF EXISTS project_status
+DROP TABLE IF EXISTS project_activity_status
 DROP TABLE IF EXISTS legal_case_conditions
 DROP TABLE IF EXISTS legal_case
+DROP TABLE IF EXISTS case_condition
+DROP TABLE IF EXISTS [case]
 DROP TABLE IF EXISTS condition_lease
 DROP TABLE IF EXISTS technical_case_conditions
 DROP TABLE IF EXISTS technical_case
@@ -232,7 +234,6 @@ VALUES
 ('Mitgación de riesgos'), 
 ('Construcción por GP')
 
-
 CREATE TABLE condition_type (
     id INT NOT NULL IDENTITY(1,1) PRIMARY KEY, 
     name VARCHAR(45) NOT NULL
@@ -377,27 +378,123 @@ VALUES
 ('Uso de Suelo', null, 9, 1),
 ('Estudios Ambientales', null, 9, 1)
 
--- ('Estudios Ambientales', null, 9, 1),
--- ('Estudios Ambientales', null, 9, 1),
--- ('Estudios Ambientales', null, 9, 1),
--- ('Estudios Ambientales', null, 9, 1),
--- ('Estudios Ambientales', null, 9, 1),
--- ('Estudios Ambientales', null, 9, 1),
--- ('Estudios Ambientales', null, 9, 1),
--- ('Estudios Ambientales', null, 9, 1),
--- ('Estudios Ambientales', null, 9, 1),
--- ('Estudios Ambientales', null, 9, 1),
--- ('Estudios Ambientales', null, 9, 1),
--- ('Estudios Ambientales', null, 9, 1),
--- ('Estudios Ambientales', null, 9, 1),
--- ('Estudios Ambientales', null, 9, 1),
--- ('Estudios Ambientales', null, 9, 1),
--- ('Estudios Ambientales', null, 9, 1),
--- ('Estudios Ambientales', null, 9, 1),
--- ('Estudios Ambientales', null, 9, 1)
+-- Condiciones Generales (category_id = 2)
+INSERT INTO condition (name, options, category_id, type_id)
+VALUES 
+('Municipio', null, 2, 1),
+('Estado', null, 2, 1),
+('Vigencia Contrato en Años', null, 2, 2),
+('Inicio de Vigencia', null, 2, 3),
+('Prórroga de Vigencia en Años', null, 2, 2),
+('Prórroga Condicionada o Automática', '["Condicionada", "Automática"]', 2, 5),
+('Plazo Para Solicitar Prórroga en Días', null, 2, 2),
+('Incremento de Renta en Prórroga', null, 2, 1),
+('Riesgo de no recibir pago de Rentas', null, 2, 4),
+('Fecha de Entrega de Posesión del Inmueble', null, 2, 3),
+('Responsabilidad de Trámite de Licencias', '["Arrendadora", "Arrendataria"]', 2, 5),
+('Fecha de Entrega de Licencias', null, 2, 3),
+('Mantenimiento (Sin IVA)', null, 2, 2),
+('Indexación Mantenimiento', null, 2, 1),
+('Periodo de Gracia en Meses', null, 2, 2),
+('Inicio de Periodo de Gracia', '["Entrega del Local Construido", "Firma de contrato", "Otro"]', 2, 5),
+('Fecha de Inicio de Periodo de Gracia', null, 2, 3);
+
+-- Contención de riesgos económicos (category_id = 3)
+INSERT INTO condition (name, options, category_id, type_id)
+VALUES 
+('Depósito en Garantía en Meses', null, 3, 2),
+('Cantidad Garantía en Meses', null, 3, 2),
+('Actualización de Depósito en Garantía', null, 3, 1),
+('Renta Anticipada en Meses', null, 3, 2),
+('Cantidad de Renta Anticipada', null, 3, 2);
+
+-- Contención de riesgos (category_id = 4)
+INSERT INTO condition (name, options, category_id, type_id)
+VALUES 
+('GPV Autoriza Layout', null, 4, 4),
+('GP Puede Cancelar el Contrato', null, 4, 4),
+('Supuesto en el que GP puede Cancelar el Contrato', null, 4, 1),
+('Plazo en días para que GP Termine el Contrato', null, 4, 2),
+('Subarrendamiento Libre', null, 4, 4),
+('Subarrendamiento a Filiales', null, 4, 4),
+('Derecho de Preferencia en Venta para la Arrendataria', null, 4, 4),
+('Tiempo en Días para Respuesta para Aceptación del Derecho de Preferencia', null, 4, 2),
+('Derecho de Preferencia para Filiales de la Arrendataria', null, 4, 4),
+('Aviso a Filiales de Derecho de Preferencia', null, 4, 4);
+
+-- Mitigación de riesgos (category_id = 5)
+INSERT INTO condition (name, options, category_id, type_id)
+VALUES 
+('Giro de Negocio de la Arrendataria', null, 5, 1),
+('Riesgo por Distancia con Zona Habitacional', null, 5, 4),
+('Distancia con Casa Habitación más Cercana', null, 5, 1),
+('Riesgo de Olores', null, 5, 4),
+('Visto Bueno de Área de Ventas', null, 5, 1),
+('Riesgo de Generación de Tráfico', null, 5, 4),
+('Visto Bueno de Proyectos', null, 5, 1),
+('Riesgo de Residuos Peligrosos', null, 5, 4),
+('Remediación por la Arrendataria en caso de Contaminación de Suelo', null, 5, 4),
+('Riesgo de Contaminación de Suelo', null, 5, 4),
+('Arrendataria Obligada a Contratación de Seguro por Obra y Operación', null, 5, 4),
+('Giros Prohibidos', null, 5, 4),
+('Listado de Giros Prohibidos', null, 5, 1),
+('Lotes Afectados por Giros Prohibidos', null, 5, 1),
+('Exclusividad de Giros en Contrato', null, 5, 4),
+('Lotes Afectados por Exclusividad de Giros', null, 5, 1),
+('Giros Exclusivos', null, 5, 1),
+('Incumple Giros Exclusivos de Otros Contratos', null, 5, 4),
+('Estado de Devolución del Inmueble al Termino del Contrato', null, 5, 1);
+
+-- Construcción por GP (category_id = 6)
+INSERT INTO condition (name, options, category_id, type_id)
+VALUES 
+('GP Construye', null, 6, 4),
+('Superficie a Construir', null, 6, 2),
+('Incluye Estacionamiento', null, 6, 4),
+('Servicio de Agua y Drenaje', null, 6, 4),
+('GP Administra el consumo de agua', null, 6, 4),
+('Servicio de Electricidad', null, 6, 4),
+('Preparación Eléctrica', null, 6, 4),
+('Fecha de Entrega del Inmueble con Construcción', null, 6, 3),
+('Aplica posibilidad de Entrega Parcial', null, 6, 4),
+('Permite Terminación del Contrato por la No Entrega de la Construcción', null, 6, 4),
+('Licencias a Cargo de', '["Arrendadora", "Arrendataria"]', 6, 5),
+('Construcción de Totem', null, 6, 4),
+('Posición de Rótulo', null, 6, 1),
+('Entrega de Planos / Proyectos', null, 6, 4),
+('Fecha de Entrega de Planos / Proyectos', null, 6, 3);
 
 INSERT INTO [user] (full_name, email, rol_id, area_id, hashed_password)
 VALUES ('Raphael Estrada', '2004.estrada.lopez@gmail.com', 1, 1, '$2b$12$5r1.bjr72xbAL0X3jZtvkuqtObxMZG8waRP1h43RK3GPBBzaogWVq')
+
+CREATE TABLE case_type (
+    id INT NOT NULL IDENTITY(1,1) PRIMARY KEY, 
+    name VARCHAR(30) NOT NULL
+)
+INSERT INTO case_type (name) VALUES ('Technical', 'Legal')
+
+CREATE TABLE [case] (
+    id INT NOT NULL IDENTITY(1,1) PRIMARY KEY, 
+    project_id INT NOT NULL, 
+    originator_id INT NOT NULL, 
+    created_at DATETIME NOT NULL DEFAULT GETDATE(),
+    sended_at DATETIME,
+    updated_at DATETIME NOT NULL DEFAULT GETDATE(),
+    type_id INT NOT NULL
+    FOREIGN KEY (project_id) REFERENCES project (id), 
+    FOREIGN KEY (originator_id) REFERENCES [user] (id),
+    FOREIGN KEY (type_id) REFERENCES [case_type] (id)
+)
+
+CREATE TABLE case_condition (
+    id INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
+    case_id INT NOT NULL, 
+    condition_id INT NOT NULL,
+    value TEXT,
+    is_active BIT NOT NULL DEFAULT 1,
+    FOREIGN KEY (condition_id) REFERENCES condition (id), 
+    FOREIGN KEY (case_id) REFERENCES [case] (id)
+)
 
 CREATE TABLE technical_case (
     id INT NOT NULL IDENTITY(1,1) PRIMARY KEY, 
@@ -441,11 +538,11 @@ CREATE TABLE legal_case_conditions (
     FOREIGN KEY (legal_case_id) REFERENCES legal_case (id)
 )
 
-CREATE TABLE project_status (
+CREATE TABLE project_activity_status (
     id INT NOT NULL IDENTITY(1,1) PRIMARY KEY, 
     name VARCHAR(45)
 )
-INSERT INTO project_status (name)
+INSERT INTO project_activity_status (name)
 VALUES ('No visto'), ('Visto'), ('En proceso'), ('Finalizado'), ('Cancelado'), ('Retrasado')
 
 CREATE TABLE project_activity (
@@ -457,5 +554,5 @@ CREATE TABLE project_activity (
     status_id INT NOT NULL,
     FOREIGN KEY (responsible_area_id) REFERENCES area (id), 
     FOREIGN KEY (responsible_id) REFERENCES [user] (id), 
-    FOREIGN KEY (status_id) REFERENCES [status] (id)
+    FOREIGN KEY (status_id) REFERENCES [project_activity_status] (id)
 )

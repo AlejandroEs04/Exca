@@ -17,3 +17,4 @@ class User(Base):
     rol = relationship("UserRol", back_populates="users")
     approval_steps = relationship("ApprovalStep", back_populates="signator")
     technical_requests = relationship("TechnicalCase", back_populates="originator")
+    cases = relationship("Case", back_populates="originator")
