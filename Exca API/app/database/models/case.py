@@ -12,7 +12,3 @@ class Case(Base):
     sended_at = Column(DateTime, nullable=True)
     updated_at = Column(DateTime, nullable=False, server_default=func.now(), onupdate=func.now())
     type_id = Column(Integer, nullable=False)
-    
-    conditions = relationship("CaseCondition", back_populates="case")
-    project = relationship("Project", back_populates="cases")
-    originator = relationship("User", back_populates="cases")

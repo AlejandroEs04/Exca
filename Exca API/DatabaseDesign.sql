@@ -6,6 +6,7 @@ DROP TABLE IF EXISTS legal_case_conditions
 DROP TABLE IF EXISTS legal_case
 DROP TABLE IF EXISTS case_condition
 DROP TABLE IF EXISTS [case]
+DROP TABLE IF EXISTS case_type
 DROP TABLE IF EXISTS condition_lease
 DROP TABLE IF EXISTS technical_case_conditions
 DROP TABLE IF EXISTS technical_case
@@ -471,7 +472,7 @@ CREATE TABLE case_type (
     id INT NOT NULL IDENTITY(1,1) PRIMARY KEY, 
     name VARCHAR(30) NOT NULL
 )
-INSERT INTO case_type (name) VALUES ('Technical', 'Legal')
+INSERT INTO case_type (name) VALUES ('Technical'), ('Legal')
 
 CREATE TABLE [case] (
     id INT NOT NULL IDENTITY(1,1) PRIMARY KEY, 

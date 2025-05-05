@@ -27,3 +27,5 @@ from app.database.models.document_entity import DocumentEntity
 from app.database.models.document_type import DocumentType
 from app.database.models.technical_case import TechnicalCase
 from app.database.models.technical_case_conditions import TechnicalCaseCondition
+from app.database.models.case import Case
+from app.database.models.case_condition import CaseCondition
