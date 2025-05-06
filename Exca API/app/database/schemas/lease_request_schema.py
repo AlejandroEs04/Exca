@@ -26,4 +26,4 @@ class LeaseRequestResponse(LeaseRequestBase):
     status_id: int
     
     class config:
-        orm_mode=True
+        from_attributes = True

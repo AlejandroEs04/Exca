@@ -19,4 +19,4 @@ class ApprovalStepResponse(ApprovalStepBase):
     signator: UserResponse | None = None
     
     class config:
-        orm_mode=True
+        from_attributes = True

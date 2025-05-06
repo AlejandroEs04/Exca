@@ -1,10 +1,11 @@
 import { Route, Routes, useLocation } from "react-router-dom"
 import { AnimatePresence } from "framer-motion"
 import MainLayout from "./layouts/MainLayout"
-import Index from "./views/Index"
 import Projects from "./views/Projects/Projects"
 import CreateProject from "./views/Projects/CreateProject"
 import Lands from "./views/Land/Lands"
+import LandsToVerify from "./views/verifies/verifyLands"
+import FormLand from "./views/verifies/FormLand"
 import CreateLand from "./views/Land/CreateLand"
 import Clients from "./views/Client/Clients"
 import CreateClient from "./views/Client/CreateClient"
@@ -22,11 +23,19 @@ import Settings from "./views/Settings/Settings"
 import Following from "./views/Following/Following"
 import Client from "./views/Client/Client"
 import Activities from "./views/Projects/Activities"
+
+import Index from "./views"
+import ProjectsToVerify from "./views/verifies/verifyProjects"
+import FormProject from "./views/verifies/FormProject"
+import AdministrationList from "./views/administration/administrationList"
+import FormFacturacion from "./views/administration/FormFacturacion"
+
 import Land from "./views/Land/Land"
 import EditLand from "./views/Land/EditLand"
 import TechnicalCase from "./views/Projects/TechnicalCase/TechnicalCase"
 import LeaseRequest from "./views/Projects/LeaseRequest/LeaseRequest"
 import LegalCase from "./views/Projects/LegalCase/LegalCase"
+
 
 function App() {
   const location = useLocation()
@@ -67,7 +76,18 @@ function App() {
           <Route path="/following" element={<Following />} />
 
           <Route path="/technical-case/:projectId" element={<TechnicalCase />} />
+
+          <Route path="/verify-lands" element={<LandsToVerify />} />
+          <Route path="/verify-lands/form-land/:id?" element={<FormLand />} />
+
+          <Route path="/verify-projects" element={<ProjectsToVerify />} />
+          <Route path="/verify-projects/form-project/:id?" element={<FormProject />} />
+
+          <Route path="/administration" element={<AdministrationList />} />
+          <Route path="/administration/billing/:id?" element={<FormFacturacion />} />
+
           <Route path="/legal-case/:projectId" element={<LegalCase />} />
+          
         </Route>
 
         <Route path="/" element={<AuthLayout />}>

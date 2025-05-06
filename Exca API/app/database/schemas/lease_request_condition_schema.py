@@ -15,4 +15,4 @@ class LeaseRequestConditionResponse(LeaseRequestConditionBase):
     condition: ConditionResponse | None = None
     
     class config:
-        orm_mode=True
+        from_attributes = True
