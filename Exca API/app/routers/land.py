@@ -43,7 +43,10 @@ def create_land(land: LandCreate, db: Session = Depends(get_db)):
         area=land.area,
         price_per_area=land.price_per_area,
         address=land.address,
-        residential_development_id=residential_development_id
+        residential_development_id=residential_development_id,
+        build_area=land.build_area,
+        city=land.city,
+        state=land.state
     )
     db.add(new_land)
     db.commit()

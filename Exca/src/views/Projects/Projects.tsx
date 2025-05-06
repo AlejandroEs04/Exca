@@ -4,6 +4,7 @@ import PlusIcon from "../../components/shared/Icons/PlusIcon"
 import { useAppContext } from "../../hooks/AppContext"
 import EditIcon from "../../components/shared/Icons/EditIcon"
 import TrashIcon from "../../components/shared/Icons/TrashIcon"
+import EyeIcon from "../../components/shared/Icons/EyeIcon"
 
 export default function Projects() {
     const list = [
@@ -50,6 +51,7 @@ export default function Projects() {
                             <td>{project.stage.name}</td>
                             <td>
                                 <div className="table-actions">
+                                    <Link to={`/projects/${project.id}`} className="text-indigo"><EyeIcon /></Link>
                                     <Link to={`/projects/edit/${project.id}`} className="text-blue"><EditIcon /></Link>
                                     <button className="text-red"><TrashIcon /></button>
                                 </div>

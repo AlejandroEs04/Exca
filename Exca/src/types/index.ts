@@ -27,16 +27,19 @@ export type Land = {
     id: number
     cadastral_file: string
     area: number
+    build_area: number
     price_per_area: number
     address: string
     residential_development_id: number
+    city: string
+    state: string
 }
 
 export type LandResponse = Land & {
     residential_development: ResidentialDevelopment
 }
 
-export type LandCreate = Pick<Land, 'cadastral_file' | 'area' | 'price_per_area' | 'address'> & {
+export type LandCreate = Pick<Land, 'cadastral_file' | 'area' | 'price_per_area' | 'address' | 'build_area' | 'city' | 'state'> & {
     residential_development: string
 }
 

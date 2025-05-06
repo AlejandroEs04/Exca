@@ -157,9 +157,12 @@ CREATE TABLE land (
     id INT NOT NULL IDENTITY(1,1) PRIMARY KEY, 
     cadastral_file VARCHAR(45) NOT NULL UNIQUE,
     area DECIMAL(10,2) NOT NULL, 
+    build_area DECIMAL(10,2) NOT NULL,
     price_per_area DECIMAL(10,2) NOT NULL, 
     address VARCHAR(200) NOT NULL, 
     residential_development_id INT NOT NULL,
+    city VARCHAR(45) NOT NULL, 
+    state VARCHAR(45) NOT NULL, 
     FOREIGN KEY (residential_development_id) REFERENCES residential_development (id)
 )
 

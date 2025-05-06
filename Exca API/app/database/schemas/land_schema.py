@@ -4,8 +4,11 @@ from app.database.schemas.residential_development_schema import ResidentialDevel
 class LandBase(BaseModel):
     cadastral_file: str
     area: float
+    build_area: float = 0
     price_per_area: float
     address: str
+    city: str
+    state: str
     
 class LandCreate(LandBase):
     residential_development: str

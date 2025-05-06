@@ -5,6 +5,7 @@ import { useAppContext } from "../../hooks/AppContext";
 import TrashIcon from "../../components/shared/Icons/TrashIcon";
 import EditIcon from "../../components/shared/Icons/EditIcon";
 import Loader from "../../components/shared/Loader/Loader";
+import EyeIcon from "../../components/shared/Icons/EyeIcon";
 
 export default function Lands() {
     const list = [
@@ -30,10 +31,12 @@ export default function Lands() {
                 <thead>
                     <tr>
                         <th>ID</th>
-                        <th>Expediente Catastral</th>
-                        <th>Área en m2</th>
-                        <th>Precio por m2</th>
                         <th>Fraccionamiento</th>
+                        <th>Municipio</th>
+                        <th>Estado</th>
+                        <th>Expediente Catastral</th>
+                        <th>Superficie del terreno</th>
+                        <th>Superficie de construcción</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
@@ -42,12 +45,15 @@ export default function Lands() {
                     {state.lands.map((land) => (
                         <tr key={land.id}>
                             <td>{land.id}</td>
+                            <td>{land.residential_development.name}</td>
+                            <td>{land.city}</td>
+                            <td>{land.state}</td>
                             <td>{land.cadastral_file}</td>
                             <td>{land.area}</td>
-                            <td>{land.price_per_area}</td>
-                            <td>{land.residential_development.name}</td>
+                            <td>{land.build_area}</td>
                             <td>
                                 <div className="table-actions">
+                                    <Link to={`/lands/${land.id}`} className="text-indigo"><EyeIcon /></Link>
                                     <Link to={`/lands/edit/${land.id}`} className="text-blue"><EditIcon /></Link>
                                     <button className="text-red"><TrashIcon /></button>
                                 </div>

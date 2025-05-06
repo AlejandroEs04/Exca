@@ -1,30 +1,23 @@
-import { ChangeEvent, useCallback, useEffect, useMemo, useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
-import { getConditions } from '../../api/ConditionApi'
-import { getProjectLandTypes, updateProject } from '../../api/ProjectApi'
-import { registerRequest, sendToApprovalRequest } from '../../api/LeaseRequestApi'
-import { useAppContext } from '../../hooks/AppContext'
-import { isNullOrEmpty } from '../../utils'
-import { 
-  Condition, 
-  LeaseRequestConditionCreate, 
-  LeaseRequestCreate, 
-  ProjectCreate, 
-  ProjectLandType, 
-  ProjectView 
-} from '../../types'
-import SaveIcon from '../../components/shared/Icons/SaveIcon'
-import SendIcon from '../../components/shared/Icons/SendIcon'
-import { toast } from 'react-toastify'
-import { getOnwers } from '../../api/OwnerApi'
-import Loader from '../../components/shared/Loader/Loader'
-import SelectGroup, { Option } from '../../components/forms/SelectGroup'
-import InputGroup, { PushEvent } from '../../components/forms/InputGroup'
-import { getGuaranteeTypes, getIndividuals } from '../../api/IndividualApi'
-import Breadcrumb from '../../components/shared/Breadcrumb/Breadcrumb'
-import { getConditionRules } from '../../utils/conditionsRules'
+import { Link, useParams } from "react-router-dom"
+import { useAppContext } from "../../../hooks/AppContext"
+import { ChangeEvent, useCallback, useEffect, useMemo, useState } from "react"
+import InputGroup, { Option, PushEvent } from "../../../components/forms/InputGroup"
+import { Condition, LeaseRequestConditionCreate, LeaseRequestCreate, ProjectCreate, ProjectLandType, ProjectView } from "../../../types"
+import { isNullOrEmpty } from "../../../utils"
+import { getProjectLandTypes, updateProject } from "../../../api/ProjectApi"
+import { registerRequest, sendToApprovalRequest } from "../../../api/LeaseRequestApi"
+import { getConditionRules } from "../../../utils/conditionsRules"
+import { toast } from "react-toastify"
+import { getConditions } from "../../../api/ConditionApi"
+import { getOnwers } from "../../../api/OwnerApi"
+import { getGuaranteeTypes, getIndividuals } from "../../../api/IndividualApi"
+import Loader from "../../../components/shared/Loader/Loader"
+import Breadcrumb from "../../../components/shared/Breadcrumb/Breadcrumb"
+import SaveIcon from "../../../components/shared/Icons/SaveIcon"
+import SendIcon from "../../../components/shared/Icons/SendIcon"
+import SelectGroup from "../../../components/forms/SelectGroup"
 
-export default function ContractRequest() {
+export default function LeaseRequest() {
     const { projectId } = useParams()
     const { state, dispatch, isLoading, setError } = useAppContext()
     const [guaranteeTypes, setGuaranteeTypes] = useState<Option[]>([])

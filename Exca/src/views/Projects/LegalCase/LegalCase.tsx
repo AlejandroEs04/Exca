@@ -1,12 +1,12 @@
-import { useNavigate, useParams } from "react-router-dom"
-import Breadcrumb from "../../components/shared/Breadcrumb/Breadcrumb"
-import { useEffect, useState } from "react"
-import { Condition, ConditionCreate, ProjectView } from "../../types"
-import { useAppContext } from "../../hooks/AppContext"
-import { getConditions } from "../../api/ConditionApi"
-import Loader from "../../components/shared/Loader/Loader"
-import ConditionsContainer from "../../components/ConditionsContainer/ConditionsContainer"
-import InputGroup from "../../components/forms/InputGroup"
+import { useNavigate, useParams } from "react-router-dom";
+import { useAppContext } from "../../../hooks/AppContext";
+import { useEffect, useState } from "react";
+import { Condition, ConditionCreate, ProjectView } from "../../../types";
+import { getConditions } from "../../../api/ConditionApi";
+import Loader from "../../../components/shared/Loader/Loader";
+import Breadcrumb from "../../../components/shared/Breadcrumb/Breadcrumb";
+import InputGroup from "../../../components/forms/InputGroup";
+import ConditionsContainer from "../../../components/ConditionsContainer/ConditionsContainer";
 
 export default function LegalCase() {
     const { projectId } = useParams()

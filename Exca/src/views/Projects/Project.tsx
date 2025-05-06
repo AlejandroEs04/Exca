@@ -12,6 +12,7 @@ import ListIcon from '../../components/shared/Icons/ListIcon'
 import DocumentTextIcon from '../../components/shared/Icons/DocumentTextIcon'
 import ActivitiesIcon from '../../components/shared/Icons/ActivitiesIcon'
 import CaseInformation from '../../components/CaseInformation/CaseInformation'
+import XMark from '../../components/shared/Icons/XMark'
 
 export default function Project() {
     const { id } = useParams()
@@ -50,25 +51,28 @@ export default function Project() {
             <p className='date'>Creado el: {dateFormat(project.created_at)}</p>
             <p className='mt-1'>Estatus: {project?.stage.name}</p>
 
-            {(project?.lease_request === null || project.lease_request.status_id < 3) && (
-                <Link to={`/contract-request/${id}`} className='btn btn-primary w-max mt-1'>Solicitud de contrato</Link>
-            )}
-            {(project.stage_id === 3) && (
-                <div className='mt-1 flex g-1'>
-                    <Link to={`/technical-case/${id}`} className='btn btn-primary w-max'>
-                        <ListIcon />
-                        Carátula técnica
-                    </Link>
-                    <Link to={`/legal-case/${id}`} className='btn btn-indigo w-max'>
-                        <DocumentTextIcon />
-                        Carátula Legal
-                    </Link>
-                    <Link to={`activities`} className='btn btn-esmerald w-max'>
-                        <ActivitiesIcon />
-                        Actividades
-                    </Link>
-                </div>
-            )}
+            <div className='mt-1 flex g-1'>
+                {(project?.lease_request === null || project.lease_request.status_id < 3) && (
+                    <Link to={`/contract-request/${id}`} className='btn btn-primary w-max mt-1'>Solicitud de contrato</Link>
+                )}
+                {(project.stage_id === 3) && (
+                    <>
+                        <Link to={`/technical-case/${id}`} className='btn btn-primary w-max'>
+                            <ListIcon />
+                            Carátula técnica
+                        </Link>
+                        <Link to={`/legal-case/${id}`} className='btn btn-indigo w-max'>
+                            <DocumentTextIcon />
+                            Carátula Legal
+                        </Link>
+                        <Link to={`activities`} className='btn btn-esmerald w-max'>
+                            <ActivitiesIcon />
+                            Actividades
+                        </Link>
+                    </>
+                )}
+                <button className='btn btn-danger'><XMark /> Cerrar</button>
+            </div>
 
             <h2 className='mt-2'>Datos del arrendatario</h2>
             <div className='grid grid-cols-3 g-1'>

@@ -6,6 +6,7 @@
   --primary: #2563eb;
   --primary-dark: #1e3a8a;
   --gray: #262626; 
+  --indigo: #4f46e5;
   --light-gray: #797979;
   --light-transparent: #9b9a9a;
   --red: #dc2626;
@@ -97,6 +98,21 @@ table .table-actions {
 }
 table .table-actions svg {
   width: 1.5rem;
+}
+.table-summary {
+  border: none;
+  box-shadow: none;
+}
+.table-summary th {
+  background-color: transparent;
+}
+.table-summary tr {
+  border: none;
+  font-size: 1.2rem;
+}
+.table-summary td, 
+.table-summary th {
+  padding: 0.4rem 0;
 }
 .border-left {
   border-left: 1px solid var(--light-gray);
@@ -234,6 +250,9 @@ button, input, textarea, select {
 .text-red {
   color: var(--red);
 }
+.text-indigo {
+  color: var(--indigo);
+}
 .checkbox-group {
   display: flex;
   align-items: center;
@@ -313,11 +332,31 @@ input.input-error {
 .grid-cols-3 {
   grid-template-columns: repeat(3, 1fr);
 }
-@media(min-width: 864px) {
+.grid-summary {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+}
+.grid-summary .summary-info {
+  font-size: 1.2rem;
+}
+.grid-summary .summary-info .title {
+  font-weight: 600;
+}
+.grid-summary h2 {
+  font-weight: 400;
+  color: var(--primary);
+}
+@media(min-width: 768px) {
   .grid-cols-2 {
     grid-template-columns: repeat(2, 1fr);
   }
 }
+@media(min-width: 1200px) {
+  .grid-summary {
+    grid-template-columns: 3fr 2fr;
+  }
+}
+
 .g-1 {
   gap: 0.5rem;
 }
@@ -354,6 +393,7 @@ input.input-error {
 }
 .main-layout .main-container {
   width: 100%;
+  margin-top: 1rem;
 }
 .header-container {
   height: 3rem;
@@ -365,9 +405,8 @@ input.input-error {
   top: 0;
 }
 .aside-navigation {
-  height: calc(100vh - 3.4rem);
+  height: 100vh;
   background-color: var(--nav-background);
-  padding-top: 0.8rem;
 }
 .aside-navigation h1 {
   font-size: 1.8rem;
@@ -381,6 +420,19 @@ input.input-error {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+}
+.nav-container .title {
+  height: 3.4rem;
+  padding: 1rem 0.8rem;
+}
+.nav-container .title h1 {
+  color: var(--primary);
+  font-weight: 800;
+}
+.nav-container .title h1 span {
+  color: var(--black);
+  font-weight: 600;
+  font-size: 1.2rem;
 }
 .aside-navigation .nav-container a {
   font-size: 1rem;

@@ -1,16 +1,16 @@
-import { useNavigate, useParams } from "react-router-dom"
-import Breadcrumb from "../../components/shared/Breadcrumb/Breadcrumb"
-import { useAppContext } from "../../hooks/AppContext"
 import { useEffect, useState } from "react"
-import { Condition, ConditionCreate, ProjectView, TechnicalCaseCreate } from "../../types"
-import Loader from "../../components/shared/Loader/Loader"
-import InputGroup from "../../components/forms/InputGroup"
-import { getConditions } from "../../api/ConditionApi"
-import ConditionsContainer from "../../components/ConditionsContainer/ConditionsContainer"
-import { createTechnicalCase, sendTechnicalCase } from "../../api/TechnicalCaseApi"
-import SaveIcon from "../../components/shared/Icons/SaveIcon"
-import SendIcon from "../../components/shared/Icons/SendIcon"
+import { getConditions } from "../../../api/ConditionApi"
+import Loader from "../../../components/shared/Loader/Loader"
+import { createTechnicalCase, sendTechnicalCase } from "../../../api/TechnicalCaseApi"
+import { useAppContext } from "../../../hooks/AppContext"
+import { useNavigate, useParams } from "react-router-dom"
+import { Condition, ConditionCreate, ProjectView, TechnicalCaseCreate } from "../../../types"
 import { toast } from "react-toastify"
+import Breadcrumb from "../../../components/shared/Breadcrumb/Breadcrumb"
+import SaveIcon from "../../../components/shared/Icons/SaveIcon"
+import SendIcon from "../../../components/shared/Icons/SendIcon"
+import InputGroup from "../../../components/forms/InputGroup"
+import ConditionsContainer from "../../../components/ConditionsContainer/ConditionsContainer"
 
 export default function TechnicalCase() {
     const { projectId } = useParams()
@@ -109,7 +109,7 @@ export default function TechnicalCase() {
     }, [])
 
     if(isLoading || isLocalLoading) return <Loader />
-
+    
     return (
         <>
             <Breadcrumb list={list} />   
