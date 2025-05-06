@@ -12,25 +12,30 @@ import CreateClient from "./views/Client/CreateClient"
 import EditClient from "./views/Client/EditClient"
 import Project from "./views/Projects/Project"
 import EditProject from "./views/Projects/EditProject"
-import ContractRequest from "./views/ContractRequest/ContractRequest"
 import Users from "./views/User/Users"
 import CreateUser from "./views/User/CreateUser"
 import ApprovalFlow from "./views/ApprovalFlow/ApprovalFlow"
 import ApprovalFlows from "./views/ApprovalFlow/ApprovalFlows"
 import AuthLayout from "./layouts/AuthLayout"
 import Login from "./views/Auth/Login"
-import TechnicalCase from "./views/TechnicalCase/TechnicalCase"
 import ApprovalRequest from "./views/ApprovalRequest/ApprovalRequest"
 import Settings from "./views/Settings/Settings"
 import Following from "./views/Following/Following"
 import Client from "./views/Client/Client"
 import Activities from "./views/Projects/Activities"
-import LegalCase from "./views/LegalCase/LegalCase"
+
 import Index from "./views"
 import ProjectsToVerify from "./views/verifies/verifyProjects"
 import FormProject from "./views/verifies/FormProject"
 import AdministrationList from "./views/administration/administrationList"
 import FormFacturacion from "./views/administration/FormFacturacion"
+
+import Land from "./views/Land/Land"
+import EditLand from "./views/Land/EditLand"
+import TechnicalCase from "./views/Projects/TechnicalCase/TechnicalCase"
+import LeaseRequest from "./views/Projects/LeaseRequest/LeaseRequest"
+import LegalCase from "./views/Projects/LegalCase/LegalCase"
+
 
 function App() {
   const location = useLocation()
@@ -57,9 +62,11 @@ function App() {
           <Route path="/clients/edit/:id" element={<EditClient />} />
 
           <Route path="/lands" element={<Lands />} />
+          <Route path="/lands/:id" element={<Land />} />
           <Route path="/lands/create" element={<CreateLand />} />
+          <Route path="/lands/edit/:id" element={<EditLand />} />
 
-          <Route path="/contract-request/:projectId" element={<ContractRequest />} />
+          <Route path="/contract-request/:projectId" element={<LeaseRequest />} />
 
           <Route path="/settings/approval-flows" element={<ApprovalFlows />} />
           <Route path="/settings/approval-flows/edit/:id" element={<ApprovalFlow />} />

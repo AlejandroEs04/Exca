@@ -1,56 +1,76 @@
-import { ChangeEvent, Dispatch } from "react"
-import { Condition, ProjectView, TechnicalCaseConditionCreate } from "../../types"
-import { getConditionRules } from "../../utils/conditionsRules"
-import { isNullOrEmpty } from "../../utils"
+import { ChangeEvent, Dispatch, SetStateAction, useState } from "react"
+import { Condition, ConditionCreate, ProjectView } from "../../types"
 
 type ConditionsContainerType = {
-    conditions: Condition[]
+    conditionsList: Condition[]
+    newConditions: ConditionCreate[]
+    setNewConditions: Dispatch<SetStateAction<ConditionCreate[]>>
     project: ProjectView
-    setConditions: Dispatch<React.SetStateAction<TechnicalCaseConditionCreate[]>>
-    currentConditions: TechnicalCaseConditionCreate[]
+    isNotGrid?: boolean
+    isChecked?: boolean
 }
 
-export default function ConditionsContainer({ conditions, project, setConditions, currentConditions } : ConditionsContainerType) {
-    const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-        const { name, value } = e.target
-        const isInput = e.target instanceof HTMLInputElement
-        const condition = conditions.find(c => c.name === name)
-        if (!condition) return
-
-        setConditions(prev => {
-            const existing = prev.find(c => c.condition_id === condition.id)
-            if (isNullOrEmpty(value)) {
-                return prev.filter(c => c.condition_id !== condition.id)
-            }
-            const updated = {
-                id: condition.id,
-                condition_id: condition.id,
-                value,
-                is_active: isInput && e.target instanceof HTMLInputElement ? e.target.checked : false
-            }
-            return existing 
-            ? prev.map(c => c.condition_id === condition.id ? updated : c)
-            : [...prev, updated]
-        })
-
-    }
+export default function ConditionsContainer({ 
+    conditionsList, 
+    newConditions,
+    setNewConditions,
+    isNotGrid = false,
+    isChecked = false
+} : ConditionsContainerType) {
+    const [inputChecked, setInputChecked] = useState(false)
 
     const getValue = (id: number) => {
-        const value = getConditionRules(id, conditions, project!).value;
-        return typeof value === 'boolean' ? value.toString() : value;
+        const conditionExists = newConditions.find(c => c.condition_id === id)
+        if(conditionExists) {
+            return conditionExists.value
+        }
+
+        return;
+    }
+    const getChecked = (id: number) => newConditions.find(c => c.condition_id === id)?.is_active
+
+    const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+        const { value, name } = e.target as HTMLInputElement | HTMLSelectElement;
+        const checked = (e.target as HTMLInputElement).checked;
+
+        const condition = conditionsList.find(c => c.name === name)
+        const existsCondition = newConditions.find(c => c.condition_id === condition?.id)
+        
+        if(existsCondition) {
+            setNewConditions(
+                newConditions.map(c => c.condition_id === 
+                    existsCondition.condition_id ? { condition_id: existsCondition.condition_id, value, is_active: checked } : c)
+            )
+        } else {
+            setNewConditions([
+                ...newConditions,
+                { condition_id: condition!.id, value, is_active: true }
+            ])
+        }
+
     }
 
-    const getChecked = (id: number) => project?.lease_request?.conditions.find(c => c.condition_id === id)?.is_active
     const getArray = (options: string) : string[] => JSON.parse(options);
-
     return (
-        <div className="conditions-list">
-            {conditions.map(condition => (
-                <div className='condition-container' key={condition.id}>
+        <div className={!isNotGrid ? "conditions-list" : ''}>
+            {conditionsList.map(condition => (
+                <div className='condition-container g-2' key={condition.id}>
                     <label htmlFor={condition.id.toString()}>{condition.name}</label>
 
                     {condition.type_id === 1 && (
-                        <input value={getValue(condition.id)} onChange={handleChange} type='text' name={condition.name} id={condition.id.toString()} placeholder={condition.name} />
+                        <>
+                            {isChecked ? (
+                                <div className="flex items-center g-2">
+                                    <div className='checkbox w-min m-0'>
+                                        <input onChange={(e) => setInputChecked(e.target.checked)} type='checkbox' />
+                                        <span className="checkmark"></span>
+                                    </div>
+                                    <input className="w-full" disabled={!inputChecked} value={getValue(condition.id)} onChange={handleChange} type='text' name={condition.name} id={condition.id.toString()} placeholder={condition.name} />
+                                </div>
+                            ) : (
+                                <input value={getValue(condition.id)} onChange={handleChange} type='text' name={condition.name} id={condition.id.toString()} placeholder={condition.name} />
+                            )}
+                        </>
                     )}
                     {condition.type_id === 2 && (
                         <input value={getValue(condition.id)} onChange={handleChange} type='number' name={condition.name} id={condition.id.toString()} placeholder={condition.name} />

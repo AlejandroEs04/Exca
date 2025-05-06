@@ -5,8 +5,10 @@ from typing import Optional
 class LandBase(BaseModel):
     cadastral_file: str
     area: float
+    build_area: float = 0
     price_per_area: float
     address: str
+
     municipio: Optional[int]
     valor_catastral: Optional[float]
     area_construida: Optional[float]
@@ -15,6 +17,10 @@ class LandBase(BaseModel):
     path_predial_file: Optional[str]
     name_last_update: Optional[str]
     
+
+    city: str
+    state: str
+
     
 class LandCreate(LandBase):
     residential_development: str

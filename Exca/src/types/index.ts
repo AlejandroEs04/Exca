@@ -32,9 +32,11 @@ export type Land = {
     id: number
     cadastral_file: string
     area: number
+    build_area: number
     price_per_area: number
     address: string
     residential_development_id: number
+
     municipio?: number
     valor_catastral?: number,
     area_construida?: number,
@@ -42,13 +44,17 @@ export type Land = {
     global_status?: number,
     path_predial_file?: string,
     name_last_update?: string
+
+    city: string
+    state: string
+
 }
 
 export type LandResponse = Land & {
     residential_development: ResidentialDevelopment
 }
 
-export type LandCreate = Pick<Land, 'cadastral_file' | 'area' | 'price_per_area' | 'address'> & {
+export type LandCreate = Pick<Land, 'cadastral_file' | 'area' | 'price_per_area' | 'address' | 'build_area' | 'city' | 'state'> & {
     residential_development: string
 }
 
@@ -108,6 +114,21 @@ export type Condition = {
     options: string
 }
 
+export type ConditionCreate = {
+    condition_id: number
+    is_active: boolean
+    value: string
+}
+
+export type ConditionCase = {
+    id: number
+    condition_id: number
+    is_active: boolean
+    value: string
+    condition: Condition
+    technical_case_id?: number
+}
+
 export type TechnicalCaseConditions = {
     id: number
     condition_id: number
@@ -115,12 +136,19 @@ export type TechnicalCaseConditions = {
     value: string
     is_active: boolean
 }
+export type TechnicalCaseConditionCreate = Pick<LeaseRequestCondition, 'condition_id' | 'is_active' | 'value'>
 
 export type TechnicalCase = {
     id: number
     project_id: number
     originator_id: number
-    conditions: TechnicalCaseConditions[]
+    conditions: ConditionCase[]
+    created_at: string
+    updated_at: string
+    sended_at: string | null
+}
+export type TechnicalCaseCreate = Pick<TechnicalCase, 'project_id'> & {
+    conditions: TechnicalCaseConditionCreate[]
 }
 
 export type LeaseRequestCondition = {
@@ -131,9 +159,6 @@ export type LeaseRequestCondition = {
     is_active: boolean
     condition: Condition
 }
-
-export type TechnicalCaseConditionCreate = Pick<LeaseRequestCondition, 'condition_id' | 'is_active' | 'value'>
-
 export type LeaseRequestConditionCreate = Pick<LeaseRequestCondition, 'id' | 'condition_id' | 'value' | 'is_active'>
 
 export type LeaseRequest = {

@@ -21,9 +21,12 @@ export default function CreateLand() {
     const [land, setLand] = useState<LandCreate>({
         cadastral_file: '', 
         area: 0,
+        build_area: 0,
         price_per_area: 0, 
         address: '', 
-        residential_development: ''
+        residential_development: '',
+        city: '',
+        state: ''
     })
 
     const { state, dispatch, isLoading } = useAppContext()
@@ -84,12 +87,15 @@ export default function CreateLand() {
                     Guardar
                 </button>
 
-                <div className="grid grid-cols-3 mt-2">
+                <div className="grid grid-cols-3 mt-2 g-1">
                     <InputGroup name="cadastral_file" label="Expediente Catastral" value={land.cadastral_file} placeholder="Expediente Catastral" onChangeFnc={onChange} />
-                    <InputGroup name="area" label="Área en m2" value={land.area} placeholder="Área en m2" onChangeFnc={onChange} type='number' />
+                    <InputGroup name="area" label="Superficie en m2" value={land.area} placeholder="Área en m2" onChangeFnc={onChange} type='number' />
+                    <InputGroup name="build_area" label="Superficie en constuccion m2" value={land.build_area} placeholder="Superficie en m2" onChangeFnc={onChange} type='number' />
                     <InputGroup name="price_per_area" label="Precio por m2" value={land.price_per_area} placeholder="Precio por m2" onChangeFnc={onChange} type='number' />
                     <InputGroup name="address" label="Dirección" value={land.address} placeholder="Dirección" onChangeFnc={onChange} />
                     <InputGroup name="residential_development" label="Fraccionamiento" value={land.residential_development} options={residentialOptions} placeholder="Fraccionamiento" onChangeFnc={onChange} />
+                    <InputGroup name="state" label="Estado" value={land.state} options={residentialOptions} placeholder="Estado" onChangeFnc={onChange} />
+                    <InputGroup name="city" label="Municipio" value={land.city} placeholder="Municipio" onChangeFnc={onChange} />
                 </div>
             </form> 
         </>

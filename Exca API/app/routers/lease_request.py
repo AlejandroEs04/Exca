@@ -49,7 +49,7 @@ def create_request(request: LeaseRequestCreate, db: Session = Depends(get_db)):
             guarantee_type_id=request.guarantee_type_id,
             status_id=1,
             owner_id=request.owner_id,
-            commission_agreement=request.owner_id,
+            commission_agreement=request.commission_agreement,
             assignment_income=request.assignment_income,
             property_file=request.property_file
         )
@@ -124,7 +124,6 @@ def send_approval(approvalRequest: ApprovalRequestCreate, db: Session = Depends(
         ) 
         
     project_exists.stage_id = 2
-    db.commit()
     
     steps_query = db.query(ApprovalStep).where(ApprovalStep.flow_id == approvalRequest.flow_id)
     steps = list(db.scalars(steps_query))
@@ -159,6 +158,7 @@ def send_approval(approvalRequest: ApprovalRequestCreate, db: Session = Depends(
             detail="Hubo un error al crear la petición"
         )
         
+    db.commit()
     return db.query(Project).where(Project.id == request_exists.project_id).first()
 
 # Get an especific request

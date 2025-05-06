@@ -6,6 +6,7 @@ from app.database.schemas.stage_schema import StageResponse
 from app.database.schemas.client_schema import ClientResponse
 from app.database.schemas.lease_request_schema import LeaseRequestResponse
 from app.database.schemas.approval_request_schema import ApprovalRequestResponse
+from app.database.schemas.technical_case_schema import TechnicalCaseResponse
 
 class ProjectBase(BaseModel):
     brand_id: int
@@ -44,6 +45,7 @@ class ProjectResponse(ProjectBase):
     updated_at: datetime
     lease_request: LeaseRequestResponse | None = None
     approvations: list[ApprovalRequestResponse] = []
+    technical_case: TechnicalCaseResponse | None = None
     
     class Config:
         from_attributes = True

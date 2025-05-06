@@ -8,7 +8,7 @@ export default function Header() {
     return (
         <div className={`${styles.headerContainer}`}>
             <div className={styles.title}>
-                <h1>GP <span>System</span></h1>
+                <h1>GP</h1>
             </div>
             <motion.div 
                 initial={{ opacity: 0, x: 100 }}     

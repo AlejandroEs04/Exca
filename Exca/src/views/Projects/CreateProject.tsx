@@ -172,7 +172,7 @@ export default function CreateProject() {
 
                 <div className="grid grid-cols-2 mt-2">
                     <InputGroup name="client" label="Razón social" value={project.client} placeholder="Razón social" onChangeFnc={onChangeProject} options={clientsOptions} />
-                    <InputGroup name="brand" label="Marca" value={project.brand} placeholder="Nombre de la marca" onChangeFnc={onChangeProject} />
+                    <InputGroup name="brand" label="Nombre Comercial" value={project.brand} placeholder="Nombre Comercial" onChangeFnc={onChangeProject} />
                 </div>
 
                 <div className="mt-2">

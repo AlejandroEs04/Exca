@@ -74,7 +74,7 @@ def response_approval_request(request_id: int, response: bool, current_user: Use
     next_step = db.query(ApprovalStep).filter(ApprovalStep.id == current_step.next_step_id).first()
         
     signator = db.query(User).filter(User.id == next_step.signator_id).first()
-    body = build_email_body("Solicitud de contrato", datetime.now, "Alejandro Estrada", "Daniela Turrubiartes", f"{FRONTEND_URL}/contract-request/1")
+    body = build_email_body("Solicitud de contrato", datetime.now(), "Alejandro Estrada", "Daniela Turrubiartes", f"{FRONTEND_URL}/contract-request/1")
     send_email("Solicitud de aprobación", signator.email, body)
 
 
@@ -92,6 +92,8 @@ def finish_flow(flow_id: int, item_id: int, db: Session):
         
         project.stage_id = 3
         lease_request.status_id = 3
+        db.add(project)
+        db.add(lease_request)
         db.commit()
         
         # Send to legal area
