@@ -1,7 +1,7 @@
 import { useNavigate, useParams } from "react-router-dom"
 import { useAppContext } from "../../hooks/AppContext"
 import { useEffect, useState } from "react"
-import { LandResponse as LandType } from "../../types"
+import { Land as LandType } from "../../types"
 import Breadcrumb from "../../components/shared/Breadcrumb/Breadcrumb"
 import { currencyFormat } from "../../utils"
 
@@ -24,7 +24,7 @@ export default function Land() {
             setLand(land)
         }
     }, [state.lands])
-
+    
     return (
         <>
             <Breadcrumb list={list} /> 
@@ -57,15 +57,15 @@ export default function Land() {
                     <table className="table-summary">
                         <tr>
                             <th>Municipio</th>
-                            <td>{land?.city}</td>
+                            <td>{land?.residential_development?.city}</td>
                         </tr>
                         <tr>
                             <th>Estado</th>
-                            <td>{land?.state}</td>
+                            <td>{land?.residential_development?.state}</td>
                         </tr>
                         <tr>
                             <th>Fraccionamiento</th>
-                            <td>{land?.residential_development.name}</td>
+                            <td>{land?.residential_development?.name}</td>
                         </tr>
                         <tr>
                             <th>Dirección</th>

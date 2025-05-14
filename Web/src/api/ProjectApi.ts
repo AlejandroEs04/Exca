@@ -1,6 +1,6 @@
 import { isAxiosError } from "axios"
 import api from "../lib/axios"
-import { Project, ProjectCreate, ProjectLandType, ProjectView } from "../types"
+import { Project, ProjectCreate, ProjectLandType } from "../types"
 
 export async function registerProject (project: ProjectCreate) {
     try {
@@ -16,7 +16,7 @@ export async function registerProject (project: ProjectCreate) {
 
 export async function getProjects () {
     try {
-        const { data } = await api.get<ProjectView[]>('/project')
+        const { data } = await api.get<Project[]>('/project')
         return data
     } catch (error) {
         if(isAxiosError(error) && error.response) {
@@ -27,7 +27,7 @@ export async function getProjects () {
 
 export async function updateProject(id: number, project: ProjectCreate) {
     try {
-        const { data } = await api.put<ProjectView>(`/project/${id}`, project)
+        const { data } = await api.put<Project>(`/project/${id}`, project)
         return data
     } catch (error) {
         if(isAxiosError(error) && error.response) {

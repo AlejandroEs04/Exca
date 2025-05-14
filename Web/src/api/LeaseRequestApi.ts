@@ -1,10 +1,10 @@
 import { isAxiosError } from "axios"
 import api from "../lib/axios"
-import { LeaseRequestCreate, LeaseRequestResponse } from "../types"
+import { LeaseRequestCreate, LeaseRequest } from "../types"
 
 export async function registerRequest(request: LeaseRequestCreate) {
     try {
-        const { data } = await api.post<LeaseRequestResponse>("/lease-request", request)
+        const { data } = await api.post<LeaseRequest>("/lease-request", request)
         return data
     } catch (error) {
         if(isAxiosError(error) && error.response) {
@@ -15,7 +15,7 @@ export async function registerRequest(request: LeaseRequestCreate) {
 
 export async function getRequests() {
     try {
-        const { data } = await api<LeaseRequestResponse[]>("/lease-request")
+        const { data } = await api<LeaseRequest[]>("/lease-request")
         return data
     } catch (error) {
         if(isAxiosError(error) && error.response) {
@@ -26,7 +26,7 @@ export async function getRequests() {
 
 export async function updateRequest(id: number, request: LeaseRequestCreate) {
     try {
-        const { data } = await api.put<LeaseRequestResponse>(`/lease-request/${id}`, request)
+        const { data } = await api.put<LeaseRequest>(`/lease-request/${id}`, request)
         return data
     } catch (error) {
         if(isAxiosError(error) && error.response) {

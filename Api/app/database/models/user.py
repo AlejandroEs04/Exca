@@ -12,10 +12,10 @@ class User(Base):
     area_id = Column(Integer, ForeignKey("area.id"), nullable=False)
     hashed_password = Column(String, nullable=False)
     
+    cases = relationship("Case", back_populates="originator")
     projects = relationship("Project", back_populates="originator")
     area = relationship("Area", back_populates="users")
     rol = relationship("UserRol", back_populates="users")
     requests = relationship("ApprovalRequest", back_populates="user")
     lease_requests = relationship("LeaseRequest", back_populates="creator")
-    approval_steps = relationship("ApprovalStep", back_populates="signator")
-    technical_requests = relationship("TechnicalCase", back_populates="originator")
+    approval_flow_steps = relationship("ApprovalFlowStep", back_populates="signator")

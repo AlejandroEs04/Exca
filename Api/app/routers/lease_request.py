@@ -10,7 +10,7 @@ from app.database.schemas.approval_request_schema import ApprovalRequestCreate
 from app.database.models.project import Project
 from app.database.schemas.project_schema import ProjectResponse
 from app.database.models.approval_request import ApprovalRequest
-from Api.app.database.models.approval_flow_step import ApprovalStep
+from app.database.models.approval_flow_step import ApprovalFlowStep
 from app.database.models.user import User
 from app.utils.send_approval_email import build_email_body
 from app.services.email import send_email
@@ -125,7 +125,7 @@ def send_approval(approvalRequest: ApprovalRequestCreate, db: Session = Depends(
         
     project_exists.stage_id = 2
     
-    steps_query = db.query(ApprovalStep).where(ApprovalStep.flow_id == approvalRequest.flow_id)
+    steps_query = db.query(ApprovalFlowStep).where(ApprovalFlowStep.flow_id == approvalRequest.flow_id)
     steps = list(db.scalars(steps_query))
 
     next_ids = {step.next_step_id for step in steps if step.next_step_id is not None}

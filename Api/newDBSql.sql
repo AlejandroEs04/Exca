@@ -204,7 +204,6 @@ CREATE TABLE individual_document (
 )
 GO
 
--- 4. Tablas de propiedades y desarrollos
 CREATE TABLE residential_development (
     id INT NOT NULL PRIMARY KEY IDENTITY(1,1), 
     name VARCHAR(60) NOT NULL,
@@ -223,8 +222,7 @@ CREATE TABLE land (
     price_per_area DECIMAL(10,2) NOT NULL CHECK (price_per_area >= 0),
     address VARCHAR(200) NOT NULL,
     residential_development_id INT NOT NULL,
-    municipio VARCHAR(100) NULL,
-    valor_catastral DECIMAL(15,2) NULL,
+    cadastral_value DECIMAL(15,2) NULL,
     predial_payment DECIMAL(15,2) NULL,
     global_status INT NULL,
     name_last_update VARCHAR(50) NULL,
@@ -265,6 +263,9 @@ VALUES
 ('En firmas', 'En proceso de firma'),
 ('Aceptado', 'Aceptado y aprobado'),
 ('Cancelado', 'Cancelado o rechazado')
+GO
+INSERT INTO [status] (name, [description])
+VALUES ('En renta'), ('Disponible')
 GO
 
 CREATE TABLE project (

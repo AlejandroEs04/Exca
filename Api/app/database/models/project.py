@@ -20,5 +20,4 @@ class Project(Base):
     status = relationship("Status", back_populates="projects")
     lands = relationship("ProjectLand", back_populates="project")
     lease_request = relationship("LeaseRequest", back_populates="project", uselist=False, lazy="joined")
-    technical_case = relationship("TechnicalCase", back_populates="project", uselist=False, lazy="joined")
     events = relationship("ProjectEvent", back_populates="project")

@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session, joinedload
 
 from app.database.connection import SessionLocal
 from app.database.models.approval_flow import ApprovalFlow
-from Api.app.database.models.approval_flow_step import ApprovalStep
+from app.database.models.approval_flow_step import ApprovalFlowStep
 from app.database.models.approval_request import ApprovalRequest
 from app.database.models.user import User
 from app.database.schemas.approval_flow_schema import ApprovalFlowResponse,ApprovalFlowCreate
@@ -35,7 +35,7 @@ def create_flow(flow: ApprovalFlowCreate, db: Session = Depends(get_db)):
     db.refresh(new_flow)
     
     for step in flow.steps:
-        new_step = ApprovalStep(
+        new_step = ApprovalFlowStep(
             next_step_id=step.next_step_id,
             flow_id=new_flow.id,
             signator_id=step.signator_id
@@ -54,7 +54,7 @@ def update_flow(flow_id: int, flow: ApprovalFlowCreate, db: Session = Depends(ge
 
     flow_update.name = flow.name
 
-    existing_steps = db.query(ApprovalStep).filter(ApprovalStep.flow_id == flow_id).all()
+    existing_steps = db.query(ApprovalFlowStep).filter(ApprovalFlowStep.flow_id == flow_id).all()
     existing_steps_by_id = {step.id: step for step in existing_steps}
 
     new_steps_ordered = sorted(flow.steps, key=lambda x: x.order)
@@ -68,7 +68,7 @@ def update_flow(flow_id: int, flow: ApprovalFlowCreate, db: Session = Depends(ge
             db.add(existing)
             id_map[i] = existing.id
         else:
-            new_step = ApprovalStep(
+            new_step = ApprovalFlowStep(
                 flow_id=flow_id,
                 signator_id=step_data.signator_id
             )
@@ -82,7 +82,7 @@ def update_flow(flow_id: int, flow: ApprovalFlowCreate, db: Session = Depends(ge
     for i in range(len(new_steps_ordered)):
         step_id = id_map[i]
         next_step_id = id_map[i + 1] if i + 1 < len(new_steps_ordered) else None
-        step = db.get(ApprovalStep, step_id)
+        step = db.get(ApprovalFlowStep, step_id)
         step.next_step_id = next_step_id
         db.add(step)
         
@@ -96,7 +96,7 @@ def update_flow(flow_id: int, flow: ApprovalFlowCreate, db: Session = Depends(ge
         requests = db.query(ApprovalRequest).where(ApprovalRequest.step_id == step.id).all()
         for request in requests:
             if request.response is None:
-                steps_query = db.query(ApprovalStep).where(ApprovalStep.flow_id == step.flow_id)
+                steps_query = db.query(ApprovalFlowStep).where(ApprovalFlowStep.flow_id == step.flow_id)
                 steps = list(db.scalars(steps_query))
 
                 next_ids = {step.next_step_id for step in steps if step.next_step_id is not None}

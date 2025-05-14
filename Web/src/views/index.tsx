@@ -67,11 +67,11 @@ export default function Index() {
                         <tr onClick={() => handleProject(project.id)} key={project.id}>
                             <td>{project.id}</td>
                             <td>
-                                {project.lands.map(land => land.land.residential_development.name).join(', ')}
+                                {project?.project_lands?.map(land => land.land?.residential_development?.name).join(', ')}
                             </td>
-                            <td>{project.brand.client.business_name}</td>
-                            <td>{project.brand.name}</td>
-                            <td>{project.stage.name}</td>
+                            <td>{project.brand?.client?.business_name}</td>
+                            <td>{project.brand?.name}</td>
+                            <td>{project.stage?.name}</td>
                         </tr>
                     ))}
                 </tbody>

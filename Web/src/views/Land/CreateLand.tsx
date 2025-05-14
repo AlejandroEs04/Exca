@@ -24,7 +24,9 @@ export default function CreateLand() {
         build_area: 0,
         price_per_area: 0, 
         address: '', 
-        residential_development: '',
+        cadastral_value: 0,
+        predial_payment: 0,
+        residential_development_name: '',
         city: '',
         state: ''
     })
@@ -57,7 +59,7 @@ export default function CreateLand() {
     }
 
     const isDisable = useMemo(() => 
-        isNullOrEmpty(land.cadastral_file) || isNullOrEmpty(land.residential_development) || isNullOrEmpty(land.address) || +land.area === 0 || +land.price_per_area === 0, [land])
+        isNullOrEmpty(land.cadastral_file) || isNullOrEmpty(land.residential_development_name) || isNullOrEmpty(land.address) || +land.area === 0 || +land.price_per_area === 0, [land])
 
     useEffect(() => {
         const getInfo = async() => {
@@ -93,7 +95,14 @@ export default function CreateLand() {
                     <InputGroup name="build_area" label="Superficie en constuccion m2" value={land.build_area} placeholder="Superficie en m2" onChangeFnc={onChange} type='number' />
                     <InputGroup name="price_per_area" label="Precio por m2" value={land.price_per_area} placeholder="Precio por m2" onChangeFnc={onChange} type='number' />
                     <InputGroup name="address" label="Dirección" value={land.address} placeholder="Dirección" onChangeFnc={onChange} />
-                    <InputGroup name="residential_development" label="Fraccionamiento" value={land.residential_development} options={residentialOptions} placeholder="Fraccionamiento" onChangeFnc={onChange} />
+                    <InputGroup name="cadastral_value" label="Valor Catastral" type="number" value={land.cadastral_value!} placeholder="Valor Catastral" onChangeFnc={onChange} />
+                    <InputGroup name="predial_payment" label="Pago Predial" type="number" value={land.predial_payment!} placeholder="Pago Predial" onChangeFnc={onChange} />
+                </div>
+
+                <h2 className="mt-2">Informacion del fraccionamiento</h2>
+
+                <div className="grid grid-cols-3 g-1 mt-1">
+                    <InputGroup name="residential_development_name" label="Fraccionamiento" value={land.residential_development_name} options={residentialOptions} placeholder="Fraccionamiento" onChangeFnc={onChange} />
                     <InputGroup name="state" label="Estado" value={land.state} options={residentialOptions} placeholder="Estado" onChangeFnc={onChange} />
                     <InputGroup name="city" label="Municipio" value={land.city} placeholder="Municipio" onChangeFnc={onChange} />
                 </div>

@@ -1,10 +1,10 @@
 import { isAxiosError } from "axios"
 import api from "../lib/axios"
-import { TechnicalCase, TechnicalCaseCreate } from "../types"
+import { Case, CaseCreate } from "../types"
 
-export async function createTechnicalCase(newTechnicalCase: TechnicalCaseCreate) {
+export async function createTechnicalCase(newTechnicalCase: CaseCreate) {
     try {
-        const { data } = await api.post<TechnicalCase[]>('/technical-case', newTechnicalCase)
+        const { data } = await api.post<Case[]>('/technical-case', newTechnicalCase)
         return data
     } catch (error) {
         if(isAxiosError(error) && error.response) {
@@ -15,7 +15,7 @@ export async function createTechnicalCase(newTechnicalCase: TechnicalCaseCreate)
 
 export async function sendTechnicalCase(id: number) {
     try {
-        const { data } = await api<TechnicalCase>(`/technical-case/send/${id}`)
+        const { data } = await api<Case>(`/technical-case/send/${id}`)
         console.log(data)
         return data
     } catch (error) {

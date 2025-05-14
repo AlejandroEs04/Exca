@@ -1,18 +1,18 @@
-import { Client, LandResponse, LeaseRequestResponse, ProjectView, User } from "../types";
+import { Client, Land, LeaseRequest, Project, User } from "../types";
 
 export type AppActions =
-    { type: 'set-lands', paypload: { lands: LandResponse[] } } |
+    { type: 'set-lands', paypload: { lands: Land[] } } |
     { type: 'set-clients', paypload: { clients: Client[] } } | 
-    { type: 'set-projects', paypload: { projects: ProjectView[] } } |
-    { type: 'set-lease-request', paypload: { requests: LeaseRequestResponse[] } } |
+    { type: 'set-projects', paypload: { projects: Project[] } } |
+    { type: 'set-lease-request', paypload: { requests: LeaseRequest[] } } |
     { type: 'set-users', paypload: { users: User[] } } |
     { type: 'set-auth', paypload: { auth: User } } 
 
 export type AppState = {
     clients: Client[]
-    lands: LandResponse[]
-    projects: ProjectView[]
-    requests: LeaseRequestResponse[]
+    lands: Land[]
+    projects: Project[]
+    requests: LeaseRequest[]
     users: User[],
     auth: User | null
 }

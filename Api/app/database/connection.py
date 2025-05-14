@@ -11,7 +11,7 @@ DATABASE_URL = os.getenv("DATABASE_URL")
 connection_url = URL.create(
     "mssql+pyodbc",
     host=r"localhost\SQLEXPRESS",
-    database="ExcaDb",
+    database="GPViviendaDb",
     query={
         "driver": "ODBC Driver 17 for SQL Server",
         "Trusted_Connection": "yes"

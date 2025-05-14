@@ -3,11 +3,10 @@ from sqlalchemy.orm import Session
 from app.database.connection import get_db
 from app.database.models.approval_request import ApprovalRequest
 from app.database.schemas.approval_request_schema import ApprovalRequestResponse
-from Api.app.database.models.approval_flow_step import ApprovalStep
+from app.database.models.approval_flow_step import ApprovalFlowStep
 from app.database.models.lease_request import LeaseRequest
 from app.database.models.project import Project
 from app.database.models.user import User
-from Api.app.database.models.approval_flow_step import ApprovalStep
 from app.middleware.auth import get_current_user
 from app.utils.send_approval_email import build_email_body
 from app.services.email import send_email
@@ -19,7 +18,7 @@ router = APIRouter(prefix="/approval-request", tags=["ApprovalRequests"])
 @router.get("/", response_model=list[ApprovalRequestResponse])
 def get_requests(current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
     query = db.query(ApprovalRequest).join(ApprovalRequest.step)
-    query = query.filter(ApprovalStep.signator_id == current_user.id)
+    query = query.filter(ApprovalFlowStep.signator_id == current_user.id)
     return query.all()
 
 @router.get('/response/{request_id}/{response}', status_code=status.HTTP_201_CREATED)
@@ -38,7 +37,7 @@ def response_approval_request(request_id: int, response: bool, current_user: Use
             detail="La petición ya fue respondida"
         )
         
-    current_step = db.query(ApprovalStep).filter(ApprovalStep.id == approval_request.step_id).first()
+    current_step = db.query(ApprovalFlowStep).filter(ApprovalFlowStep.id == approval_request.step_id).first()
     
     if not current_step:
         raise HTTPException(
@@ -71,7 +70,7 @@ def response_approval_request(request_id: int, response: bool, current_user: Use
         db.add(new_request)
         db.commit()
         
-    next_step = db.query(ApprovalStep).filter(ApprovalStep.id == current_step.next_step_id).first()
+    next_step = db.query(ApprovalFlowStep).filter(ApprovalFlowStep.id == current_step.next_step_id).first()
         
     signator = db.query(User).filter(User.id == next_step.signator_id).first()
     body = build_email_body("Solicitud de contrato", datetime.now(), "Alejandro Estrada", "Daniela Turrubiartes", f"{FRONTEND_URL}/contract-request/1")

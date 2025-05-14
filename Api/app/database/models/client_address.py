@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Boolean
+from sqlalchemy import Column, Integer, String, Boolean, ForeignKey
 from sqlalchemy.orm import relationship
 from app.database.connection import Base
 
@@ -6,7 +6,7 @@ class ClientAddress(Base):
     __tablename__ = "client_address"
     
     id = Column(Integer, primary_key=True, index=True)
-    client_id = Column(Integer, nullable=False)
+    client_id = Column(Integer, ForeignKey("client.id"), nullable=False)
     street = Column(String, nullable=False)
     city = Column(String, nullable=False)
     state = Column(String, nullable=False)

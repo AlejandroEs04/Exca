@@ -9,6 +9,5 @@ class Document(Base):
     name = Column(String, nullable=False)
     
     individual_documents = relationship("IndividualDocument", back_populates="document")
-    entities = relationship("DocumentEntity", back_populates="document")
     usages = relationship("DocumentUsage", back_populates="document")
     client_documents = relationship("ClientDocument", back_populates="document")

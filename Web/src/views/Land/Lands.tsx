@@ -45,9 +45,9 @@ export default function Lands() {
                     {state.lands.map((land) => (
                         <tr key={land.id}>
                             <td>{land.id}</td>
-                            <td>{land.residential_development.name}</td>
-                            <td>{land.city}</td>
-                            <td>{land.state}</td>
+                            <td>{land.residential_development?.name}</td>
+                            <td>{land.residential_development?.city}</td>
+                            <td>{land.residential_development?.state}</td>
                             <td>{land.cadastral_file}</td>
                             <td>{land.area}</td>
                             <td>{land.build_area}</td>

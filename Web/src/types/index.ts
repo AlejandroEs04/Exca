@@ -179,8 +179,8 @@ export type Land = {
     address: string;
     residential_development_id: number;
     municipio?: string;
-    valor_catastral?: number;
-    pago_predial?: number;
+    cadastral_value?: number;
+    predial_payment?: number;
     global_status?: number;
     name_last_update?: string;
     path_predial_file?: string;
@@ -190,7 +190,12 @@ export type Land = {
     project_lands?: ProjectLand[];
 }
 
-export type LandCreate = Pick<Land, 'cadastral_file' | 'area' | 'build_area' | 'price_per_area' | 'address' | 'residential_development_id' | 'municipio' | 'valor_catastral' | 'pago_predial'>;
+export type LandCreate = 
+    Pick<Land, 'cadastral_file' | 'area' | 'build_area' | 'price_per_area' | 'address' | 'cadastral_value' | 'predial_payment'> & {
+        residential_development_name: string
+        city: string
+        state: string
+    };
 export type LandUpdate = Partial<LandCreate>;
 
 // Stage
@@ -541,3 +546,18 @@ export type ProjectActivity = {
 
 export type ProjectActivityCreate = Pick<ProjectActivity, 'project_id' | 'title' | 'description' | 'responsible_area_id' | 'responsible_id' | 'due_date' | 'status_id' | 'created_by'>;
 export type ProjectActivityUpdate = Partial<ProjectActivityCreate>;
+
+export type Auth = {
+    email: string
+    password: string
+}
+
+export type AuthResponse = {
+    access_token: string
+    token_type: string
+}
+
+export type City = {
+    id: number
+    descripcion: string
+}

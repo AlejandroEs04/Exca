@@ -18,5 +18,4 @@ class Condition(Base):
     type = relationship("ConditionType", back_populates="conditions")
     options = relationship("ConditionOption", back_populates="condition")
     request_conditions = relationship("LeaseRequestCondition", back_populates="condition")
-    technical_case_conditions = relationship("TechnicalCaseCondition", back_populates="condition")
     case_conditions = relationship("CaseCondition", back_populates="condition")

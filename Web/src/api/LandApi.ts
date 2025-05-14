@@ -1,10 +1,10 @@
 import { isAxiosError } from "axios"
 import api from "../lib/axios"
-import { City, LandCreate, LandResponse, ResidentialDevelopment, Land } from "../types"
+import { City, LandCreate, Land, ResidentialDevelopment } from "../types"
 
 export async function getLands() {
     try {
-        const { data } = await api<LandResponse[]>('/land')
+        const { data } = await api<Land[]>('/land')
         return data
     } catch (error) {
         if(isAxiosError(error) && error.response) {
@@ -15,7 +15,7 @@ export async function getLands() {
 
 export async function registerLand(land: LandCreate) {
     try {
-        const { data } = await api.post<LandResponse>('/land', land)
+        const { data } = await api.post<Land>('/land', land)
         return data
     } catch (error) {
         if(isAxiosError(error) && error.response) {
@@ -25,7 +25,7 @@ export async function registerLand(land: LandCreate) {
 }
 export async function updateLand(land: Land) {
     try {
-        const { data } = await api.post<LandResponse>('/land/updateLand', land)
+        const { data } = await api.post<Land>('/land/updateLand', land)
         return data
     } catch (error) {
         if(isAxiosError(error) && error.response) {

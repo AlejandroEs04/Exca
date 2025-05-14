@@ -6,7 +6,7 @@ class ApprovalRequest(Base):
     __tablename__ = "approval_request"
     
     id = Column(Integer, primary_key=True, index=True)
-    flow_step_id = Column(Integer, ForeignKey("approval_step.id"), nullable=False)
+    flow_step_id = Column(Integer, ForeignKey("approval_flow_step.id"), nullable=False)
     item_id = Column(String, nullable=False)
     requested_by = Column(Integer, ForeignKey("user.id"), nullable=False)
     requested_at = Column(DateTime, nullable=False, server_default=func.now())

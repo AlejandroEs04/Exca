@@ -8,22 +8,16 @@ class LandBase(BaseModel):
     build_area: float = 0
     price_per_area: float
     address: str
-
-    municipio: Optional[int]
-    valor_catastral: Optional[float]
-    area_construida: Optional[float]
-    pago_predial: Optional[float]
-    global_status: Optional[int]
-    path_predial_file: Optional[str]
-    name_last_update: Optional[str]
-    
-
-    city: str
-    state: str
-
+    cadastral_value: Optional[float]
+    predial_payment: Optional[float]
+    global_status: Optional[int] = 1
+    path_predial_file: Optional[str] = None
+    name_last_update: Optional[str] = None
     
 class LandCreate(LandBase):
-    residential_development: str
+    residential_development_name: str
+    city: str
+    state: str
 
 class LandResponse(LandBase):
     id: int
