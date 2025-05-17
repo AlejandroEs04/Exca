@@ -1,0 +1,28 @@
+from pydantic import BaseModel, EmailStr
+from typing import Optional
+from app.database.schemas.client_address_schema import ClientAddressResponse
+
+
+class Client(BaseModel):
+    business_name: str
+    email: Optional[EmailStr]
+    phone_number: Optional[str]
+    tax_id: Optional[str]
+    type_id: int
+    turn_id: Optional[int]
+    id: int
+    address: list[ClientAddressResponse] = []
+
+class BrandBase(BaseModel):
+    name: str
+    client_id: int
+    
+class BrandCreate(BrandBase):
+    pass
+
+class BrandResponse(BrandBase):
+    id: int
+    client: Client
+    
+    class config:
+        from_attributes = True
