@@ -1,0 +1,4 @@
+{
+    "python.analysis.extraPaths": ["./Api/venv/Lib/site-packages"],
+    "python.analysis.typeCheckingMode": "basic"
+}

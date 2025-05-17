@@ -1,14 +1,13 @@
-from sqlalchemy import Column, Integer, String, Boolean
-from sqlalchemy.orm import relationship
-
+from sqlalchemy.orm import relationship, Mapped, mapped_column
+from sqlalchemy import String, Boolean, Integer
 from app.database.connection import Base
 
 class ApprovalFlow(Base):
     __tablename__ = "approval_flow"
-    
-    id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, nullable=False)
-    description = Column(String, nullable=True)
-    is_active = Column(Boolean, nullable=False)
-    
+
+    id: Mapped[int] = mapped_column(primary_key=True, index=True)
+    name: Mapped[str] = mapped_column(nullable=False)
+    description: Mapped[str | None] = mapped_column(nullable=True)
+    is_active: Mapped[bool] = mapped_column(nullable=False)
+
     steps = relationship("ApprovalFlowStep", back_populates="flow")

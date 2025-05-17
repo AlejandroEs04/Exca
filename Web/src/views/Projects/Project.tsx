@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useAppContext } from '../../hooks/AppContext'
-import { ProjectView } from '../../types'
 import Breadcrumb from '../../components/shared/Breadcrumb/Breadcrumb'
 import { currencyFormat, dateFormat } from '../../utils'
 import Loader from '../../components/shared/Loader/Loader'
@@ -11,8 +10,8 @@ import LeaseRequestInformation from '../../components/LeaseRequest/LeaseRequestI
 import ListIcon from '../../components/shared/Icons/ListIcon'
 import DocumentTextIcon from '../../components/shared/Icons/DocumentTextIcon'
 import ActivitiesIcon from '../../components/shared/Icons/ActivitiesIcon'
-import CaseInformation from '../../components/CaseInformation/CaseInformation'
 import XMark from '../../components/shared/Icons/XMark'
+import { Project as ProjectType } from '../../types'
 
 export default function Project() {
     const { id } = useParams()
@@ -26,7 +25,7 @@ export default function Project() {
     ]
 
     const { state } = useAppContext()
-    const [project, setProject] = useState<ProjectView | null>(null)
+    const [project, setProject] = useState<ProjectType | null>(null)
 
     useEffect(() => {
         if(state.projects.length) {
@@ -47,13 +46,13 @@ export default function Project() {
     return (
         <>
             <Breadcrumb list={list} />
-            <h1>{project.lands[0].land.residential_development.name}</h1> 
+            <h1>Proyecto</h1>
             <p className='date'>Creado el: {dateFormat(project.created_at)}</p>
-            <p className='mt-1'>Estatus: {project?.stage.name}</p>
+            <p className='mt-1'>Estatus: {project.stage?.name}</p>
 
             <div className='mt-1 flex g-1'>
-                {(project?.lease_request === null || project.lease_request.status_id < 3) && (
-                    <Link to={`/contract-request/${id}`} className='btn btn-primary w-max mt-1'>Solicitud de contrato</Link>
+                {(project.lease_request === null || project.lease_request?.status_id! < 3) && (
+                    <Link to={`/contract-request/${id}/${project.lease_request !== null ? project.lease_request?.id : ''}`} className='btn btn-primary w-max'>Solicitud de contrato</Link>
                 )}
                 {(project.stage_id === 3) && (
                     <>
@@ -71,13 +70,13 @@ export default function Project() {
                         </Link>
                     </>
                 )}
-                <button className='btn btn-danger'><XMark /> Cerrar</button>
+                {/* <button className='btn btn-danger'><XMark /> Cerrar</button> */}
             </div>
 
             <h2 className='mt-2'>Datos del arrendatario</h2>
             <div className='grid grid-cols-3 g-1'>
-                <InputGroup label='Empresa' placeholder='Nombre de la empresa' value={project.brand.client.business_name} name='bussiness_name' />
-                <InputGroup label='Cliente' placeholder='Nombre del cliente' value={project.brand.name} name='brand_name' />
+                <InputGroup label='Empresa' placeholder='Nombre de la empresa' value={project.brand?.client?.business_name!} name='bussiness_name' />
+                <InputGroup label='Cliente' placeholder='Nombre del cliente' value={project.brand?.name!} name='brand_name' />
                 <InputGroup label='Giro de la empresa' placeholder='Giro de la empresa' value={''} name='business_turn' />
             </div>
 
@@ -94,13 +93,13 @@ export default function Project() {
                 </thead>
 
                 <tbody>
-                    {project.lands.map(land => (
+                    {project.lands?.map(land => (
                         <tr key={land.id}>
-                            <td>{land.land.cadastral_file}</td>
+                            <td>{land.land?.cadastral_file}</td>
                             <td>{land.area}</td>
-                            <td>{currencyFormat(land.land.price_per_area)}</td>
-                            <td>{currencyFormat(land.area * land.land.price_per_area)}</td>
-                            <td>{land.type.name}</td>
+                            <td>{currencyFormat(land.land?.price_per_area!)}</td>
+                            <td>{currencyFormat(land.area * land.land?.price_per_area!)}</td>
+                            <td>{land.type?.name}</td>
                         </tr>
                     ))}
                 </tbody>
@@ -111,20 +110,14 @@ export default function Project() {
                 
                 <div className='flex items-center g-2'>
                     <h3>Aprobaciones: </h3>
-                    {project.approvations.filter(a => a.step?.flow_id === 1).map(a => (
+                    {/* {project?.approvations?.filter(a => a.step?.flow_id === 1).map(a => (
                         <div>
                             <p className={`approbation-name ${a.response ? 'text-green' : 'text-red'}`}>{a.step?.signator.full_name}</p>
                         </div>
-                    ))}
+                    ))} */}
                 </div>
                 
             </div>
-            
-            {(project.technical_case && project.technical_case.sended_at) && (
-                <div className='mt-4'>
-                    {(project.technical_case) && <CaseInformation title='Carátula Técnica' conditions={project?.technical_case?.conditions!} />}
-                </div>
-            )}
         </>
     )
 }

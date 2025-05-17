@@ -16,6 +16,7 @@ export default function Projects() {
     const navigate = useNavigate()
 
     const handleProject = (id: number) => navigate(`/projects/${id}`)
+    console.log(state.projects)
     
     return (
         <>
@@ -44,11 +45,11 @@ export default function Projects() {
                         <tr onDoubleClick={() => handleProject(project.id)} key={project.id}>
                             <td>{project.id}</td>
                             <td>
-                                {project.lands.map(land => land.land.residential_development.name).join(', ')}
+                                {project.lands?.map(land => land.land?.residential_development?.name).join(', ')}
                             </td>
-                            <td>{project.brand.client.business_name}</td>
-                            <td>{project.brand.name}</td>
-                            <td>{project.stage.name}</td>
+                            <td>{project.brand?.client?.business_name}</td>
+                            <td>{project.brand?.client?.business_name}</td>
+                            <td>{project.stage?.name}</td>
                             <td>
                                 <div className="table-actions">
                                     <Link to={`/projects/${project.id}`} className="text-indigo"><EyeIcon /></Link>

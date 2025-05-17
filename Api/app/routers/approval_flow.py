@@ -34,13 +34,19 @@ def create_flow(flow: ApprovalFlowCreate, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(new_flow)
     
+    order_position = len(flow.steps)
+    
     for step in flow.steps:
         new_step = ApprovalFlowStep(
-            next_step_id=step.next_step_id,
             flow_id=new_flow.id,
+            step_order=order_position,
+            signator_role_id=step.signator_role_id, 
+            signator_area_id=step.signator_area_id, 
             signator_id=step.signator_id
         )
         db.add(new_step)
+        
+        order_position = order_position - 1
         
     db.commit()
     db.refresh(new_flow)
@@ -53,74 +59,78 @@ def update_flow(flow_id: int, flow: ApprovalFlowCreate, db: Session = Depends(ge
         raise HTTPException(status_code=404, detail="Flow not found")
 
     flow_update.name = flow.name
+    db.add(flow_update)
 
     existing_steps = db.query(ApprovalFlowStep).filter(ApprovalFlowStep.flow_id == flow_id).all()
     existing_steps_by_id = {step.id: step for step in existing_steps}
 
-    new_steps_ordered = sorted(flow.steps, key=lambda x: x.order)
-    id_map = {} 
+    new_steps_ordered = sorted(flow.steps, key=lambda x: x.step_order)
+    new_signator_ids = set()
+    updated_step_ids = set()
 
-    for i, step_data in enumerate(new_steps_ordered):
+    for step_data in new_steps_ordered:
         existing = next((s for s in existing_steps if s.signator_id == step_data.signator_id), None)
+        new_signator_ids.add(step_data.signator_id)
+
         if existing:
-            existing.order = step_data.order
-            existing.signator_id = step_data.signator_id
+            existing.step_order = step_data.step_order
+            if step_data.signator_role_id is not None:
+                existing.signator_role_id = step_data.signator_role_id
+            if step_data.signator_area_id is not None:
+                existing.signator_area_id = step_data.signator_area_id
+            existing.is_required = step_data.is_required
             db.add(existing)
-            id_map[i] = existing.id
+            updated_step_ids.add(existing.id)
         else:
             new_step = ApprovalFlowStep(
                 flow_id=flow_id,
-                signator_id=step_data.signator_id
+                step_order=step_data.step_order,
+                signator_id=step_data.signator_id,
+                signator_role_id=step_data.signator_role_id,
+                signator_area_id=step_data.signator_area_id,
+                is_required=step_data.is_required
             )
             db.add(new_step)
             db.commit()
             db.refresh(new_step)
-            id_map[i] = new_step.id
+            updated_step_ids.add(new_step.id)
 
     db.commit()
 
-    for i in range(len(new_steps_ordered)):
-        step_id = id_map[i]
-        next_step_id = id_map[i + 1] if i + 1 < len(new_steps_ordered) else None
-        step = db.get(ApprovalFlowStep, step_id)
-        step.next_step_id = next_step_id
-        db.add(step)
-        
-    db.commit()
-
-    remaining_signator_ids = [step.signator_id for step in new_steps_ordered]
+    # Eliminar pasos que ya no están
     for step in existing_steps:
-        if step.signator_id not in remaining_signator_ids:
+        if step.id not in updated_step_ids:
+            # Eliminar solicitudes pendientes asociadas a este paso
+            requests = db.query(ApprovalRequest).filter(ApprovalRequest.step_id == step.id).all()
+            for request in requests:
+                if request.response is None:
+                    # Buscar primer paso válido para este flujo
+                    steps_query = db.query(ApprovalFlowStep).filter(ApprovalFlowStep.flow_id == step.flow_id)
+                    steps = steps_query.order_by(ApprovalFlowStep.step_order).all()
+
+                    if steps:
+                        first_step = steps[0]
+                        existing_req = db.query(ApprovalRequest).filter(
+                            ApprovalRequest.item_id == request.item_id,
+                            ApprovalRequest.step_id == first_step.id
+                        ).first()
+                        if existing_req:
+                            db.delete(existing_req)
+
+                        new_approval = ApprovalRequest(
+                            item_id=request.item_id,
+                            step_id=first_step.id
+                        )
+                        db.add(new_approval)
+
+                        # Enviar correo
+                        signator = db.query(User).filter(User.id == first_step.signator_id).first()
+                        body = build_email_body("Solicitud de contrato", datetime.today(), "Alejandro Estrada", "Daniela Turrubiartes", f"{FRONTEND_URL}/contract-request/1")
+                        if signator and signator.email:
+                            send_email("Solicitud de aprobación", signator.email, body)
             db.delete(step)
-            
-        requests = db.query(ApprovalRequest).where(ApprovalRequest.step_id == step.id).all()
-        for request in requests:
-            if request.response is None:
-                steps_query = db.query(ApprovalFlowStep).where(ApprovalFlowStep.flow_id == step.flow_id)
-                steps = list(db.scalars(steps_query))
-
-                next_ids = {step.next_step_id for step in steps if step.next_step_id is not None}
-                first_step = next((step for step in steps if step.id not in next_ids), None)
-
-                if first_step:
-                    approval_request = db.query(ApprovalRequest).filter(ApprovalRequest.item_id == request.item_id and ApprovalRequest.step_id == first_step.id).first()
-                    
-                    if approval_request:
-                        db.delete(approval_request)
-                    
-                    new_approval = ApprovalRequest(
-                        item_id=request.item_id,
-                        step_id=first_step.id
-                    )
-                    db.add(new_approval)
-                    db.commit()
-                    
-                    # Send Email
-                    signator = db.query(User).filter(User.id == first_step.signator_id).first()
-                    
-                    body = build_email_body("Solicitud de contrato", datetime.today(), "Alejandro Estrada", "Daniela Turrubiartes", f"{FRONTEND_URL}/contract-request/1")
-                    send_email("Solicitud de aprobación", signator.email, body)
 
     db.commit()
     db.refresh(flow_update)
     return flow_update
+

@@ -1,7 +1,7 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useAppContext } from "../../../hooks/AppContext";
 import { useEffect, useState } from "react";
-import { Condition, ConditionCreate, ProjectView } from "../../../types";
+import { Condition, ConditionCreate, Project } from "../../../types";
 import { getConditions } from "../../../api/ConditionApi";
 import Loader from "../../../components/shared/Loader/Loader";
 import Breadcrumb from "../../../components/shared/Breadcrumb/Breadcrumb";
@@ -19,7 +19,7 @@ export default function LegalCase() {
 
     const { state, isLoading } = useAppContext();
     const navigate = useNavigate();
-    const [project, setProject] = useState<ProjectView | null>(null)
+    const [project, setProject] = useState<Project | null>(null)
     const [conditions, setConditions] = useState<Condition[]>([])
     const [newConditions, setNewConditions] = useState<ConditionCreate[]>([])
     const [isLocalLoading, setIsLocalLoading] = useState(false)
@@ -35,14 +35,15 @@ export default function LegalCase() {
     useEffect(() => {
         if(conditions.length) {
             const newConditionsArray = conditions.map(c => {
-                if(project?.technical_case) {
-                    const technicalCondition = project.technical_case.conditions.find(tc => tc.condition_id === c.id)
+                const technical_case = project?.cases?.find(c => c.case_type_id === 1)
+                if(technical_case) {
+                    const technicalCondition = technical_case.conditions?.find(tc => tc.condition_id === c.id)
     
                     if(technicalCondition) {
                         return {
                             condition_id: technicalCondition.condition_id,
                             is_active: technicalCondition.is_active,
-                            value: technicalCondition.value   
+                            value: technicalCondition.text_value   
                         }
                     }
                 }

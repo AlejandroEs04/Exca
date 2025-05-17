@@ -19,11 +19,10 @@ type InputGroupProps = {
     type?: 'text' | 'number' | 'email' | 'password' | 'date' | 'tel' | 'currency'
     placeholder: string
     label: string
-    options?: Option[]
     disable?: boolean
     limit?: number | null
     className?: string | null
-    onChangeFnc?: (e: ChangeEvent<HTMLInputElement> | PushEvent) => void
+    onChangeFnc?: (e: ChangeEvent<HTMLInputElement>) => void
     isHorizontal?: boolean
 }
 
@@ -35,30 +34,15 @@ export default function InputGroup({
         placeholder,
         label,
         onChangeFnc, 
-        options = [],
         disable = false, 
         limit = null,
         className = null,
         isHorizontal = false
     } : InputGroupProps) 
 {
-    const [show, setShow] = useState(false)
     const [isError, setIsError] = useState<string | null>(null)
-    const [optionsFiltered, setOptionsFiltered] = useState<Option[]>(options)
 
-    const onPushOption = (value: string) => {
-        const e : PushEvent = {
-            target: {
-                name,
-                value
-            }
-        }
-        if(onChangeFnc != null)
-            onChangeFnc(e);
-    }
-
-    const onChange = (e: ChangeEvent<HTMLInputElement> | PushEvent) => {    
-        
+    const onChange = (e: ChangeEvent<HTMLInputElement>) => {    
         if(limit) {
             if(limit < +e.target.value) {
                 setIsError('Este valor supera el limite')
@@ -69,16 +53,7 @@ export default function InputGroup({
         
         if(onChangeFnc != null) {
             onChangeFnc(e);
-
-        } 
-        
-        if(e.target.value === '') {
-            setOptionsFiltered(options)
-            return
         }
-
-        const filtered = options.filter(option => option.label.toLowerCase().includes((e as ChangeEvent<HTMLInputElement>).target.value.toLowerCase()))
-        setOptionsFiltered(filtered)
     }
 
     function formatToCurrency(value: string | number): string {
@@ -94,13 +69,13 @@ export default function InputGroup({
         if (type === 'currency') {
             const formatted = formatToCurrency(value);
             if (value !== formatted) {
-                const e: PushEvent = {
+                onChangeFnc?.({
+                    // @ts-expect-error: Custom event for currency formatting
                     target: {
                         name,
                         value: formatted
                     }
-                };
-                onChangeFnc?.(e);
+                });
             }
         }
     }, [value, type, name]);
@@ -111,32 +86,6 @@ export default function InputGroup({
             <label htmlFor={id}>{label}</label>
             <input 
                 disabled={disable}
-                onFocus={() => {
-                    setShow(true)
-                    if (type === 'currency') {
-                        const raw = String(value).replace(/[^0-9.]/g, '')
-                        const e: PushEvent = {
-                            target: {
-                                name,
-                                value: raw
-                            }
-                        }
-                        if (onChangeFnc) onChangeFnc(e)
-                    }
-                }}                
-                onBlur={() => {
-                    setTimeout(() => setShow(false), 100)
-                    if (type === 'currency') {
-                        const formatted = formatToCurrency(value)
-                        const e: PushEvent = {
-                            target: {
-                                name,
-                                value: formatted
-                            }
-                        }
-                        if (onChangeFnc) onChangeFnc(e)
-                    }
-                }}
                 type={type} 
                 name={name} 
                 id={id} 
@@ -149,14 +98,6 @@ export default function InputGroup({
 
             {isError && (
                 <p className="input-error-message">{isError}</p>
-            )}
-
-            {optionsFiltered.length > 0 && show && (
-                <div className="input-options">
-                    {optionsFiltered.map(option => (
-                        <button type="button" key={option.value} onMouseDown={() => onPushOption(option.label)}>{option.label}</button>
-                    ))}
-                </div>
             )}
         </div>
     )

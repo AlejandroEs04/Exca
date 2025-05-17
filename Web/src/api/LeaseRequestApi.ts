@@ -1,15 +1,23 @@
 import { isAxiosError } from "axios"
 import api from "../lib/axios"
 import { LeaseRequestCreate, LeaseRequest } from "../types"
+import { formatValidationErrors } from "../utils"
 
-export async function registerRequest(request: LeaseRequestCreate) {
+export async function createRequest(request: LeaseRequestCreate) {
     try {
         const { data } = await api.post<LeaseRequest>("/lease-request", request)
         return data
     } catch (error) {
         if(isAxiosError(error) && error.response) {
-            throw new Error(error.response.data.detail)
-        }
+            const errorData = error.response.data;
+             
+            if (Array.isArray(errorData.detail)) {
+                const formattedErrors = formatValidationErrors(errorData.detail);
+                throw new Error(JSON.stringify(formattedErrors));
+            }
+                   
+            throw new Error(errorData.detail || 'Error al crear el cliente');
+        } 
     }
 }
 

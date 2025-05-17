@@ -1,16 +1,16 @@
-from sqlalchemy import Column, Integer, String, ForeignKey
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, Mapped, mapped_column
+from sqlalchemy import String, Integer, ForeignKey
 from app.database.connection import Base
 
 class User(Base):
     __tablename__ = "user"
-    
-    id = Column(Integer, primary_key=True, index=True)
-    full_name = Column(String, nullable=False)
-    email = Column(String, nullable=False, unique=True)
-    rol_id = Column(Integer, ForeignKey("user_rol.id"), nullable=False)
-    area_id = Column(Integer, ForeignKey("area.id"), nullable=False)
-    hashed_password = Column(String, nullable=False)
+
+    id: Mapped[int] = mapped_column(primary_key=True, index=True)
+    full_name: Mapped[str] = mapped_column(nullable=False)
+    email: Mapped[str] = mapped_column(nullable=False, unique=True)
+    rol_id: Mapped[int] = mapped_column(ForeignKey("user_rol.id"), nullable=False)
+    area_id: Mapped[int] = mapped_column(ForeignKey("area.id"), nullable=False)
+    hashed_password: Mapped[str] = mapped_column(nullable=False)
     
     cases = relationship("Case", back_populates="originator")
     projects = relationship("Project", back_populates="originator")

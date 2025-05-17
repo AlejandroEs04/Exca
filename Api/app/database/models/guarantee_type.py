@@ -7,7 +7,7 @@ class GuaranteeType(Base):
     
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, nullable=False)
-    descripcion = Column(String, nullable=True)
+    description = Column(String, nullable=True)
     
     lease_requests = relationship("LeaseRequest", back_populates="guarantee_type")
     

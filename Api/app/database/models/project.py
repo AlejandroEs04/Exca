@@ -6,7 +6,6 @@ class Project(Base):
     __tablename__ = "project"
     
     id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, nullable=True)
     brand_id = Column(Integer, ForeignKey("brand.id"), nullable=False)
     stage_id = Column(Integer, ForeignKey("stage.id"), nullable=False)
     status_id = Column(Integer, ForeignKey("status.id"), nullable=False)

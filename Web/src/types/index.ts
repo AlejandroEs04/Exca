@@ -75,7 +75,7 @@ export type Client = {
     phone_number?: string;
     tax_id?: string;
     type_id: number;
-    turn_id?: number;
+    turn_id?: number | null;
     created_at: string;
     updated_at: string;
     addresses?: ClientAddress[];
@@ -85,13 +85,15 @@ export type Client = {
     turn?: BusinessTurn;
 }
 
-export type ClientCreate = Pick<Client, 'business_name' | 'email' | 'phone_number' | 'tax_id' | 'type_id' | 'turn_id'>;
+export type ClientCreate = Pick<Client, 'business_name' | 'email' | 'phone_number' | 'tax_id' | 'type_id' | 'turn_id'> & {
+    address: ClientAddressCreate
+};
 export type ClientUpdate = Partial<ClientCreate>;
 
 // Client Address
 export type ClientAddress = {
     id: number;
-    client_id: number;
+    client_id?: number | null;
     street: string;
     city: string;
     state: string;
@@ -134,12 +136,16 @@ export type Individual = {
     id: number;
     full_name: string;
     tax_id?: string;
+    address?: ClientAddress;
+    client_id: number
     created_at: string;
     updated_at: string;
     documents?: IndividualDocument[];
 }
 
-export type IndividualCreate = Pick<Individual, 'full_name' | 'tax_id'>;
+export type IndividualCreate = Pick<Individual, 'full_name' | 'tax_id' | 'client_id'> & {
+    address: ClientAddressCreate
+};
 export type IndividualUpdate = Partial<IndividualCreate>;
 
 // Individual Document
@@ -225,8 +231,7 @@ export type StatusUpdate = Partial<StatusCreate>;
 // Project
 export type Project = {
     id: number;
-    name?: string;
-    brand_id: number;
+    brand_id?: number;
     stage_id: number;
     status_id: number;
     originator_id: number;
@@ -236,14 +241,16 @@ export type Project = {
     stage?: Stage;
     status?: Status;
     originator?: User;
-    project_lands?: ProjectLand[];
+    lands?: ProjectLand[];
     events?: ProjectEvent[];
-    lease_requests?: LeaseRequest[];
+    lease_request?: LeaseRequest;
     cases?: Case[];
     activities?: ProjectActivity[];
 }
 
-export type ProjectCreate = Pick<Project, 'name' | 'brand_id' | 'stage_id' | 'status_id' | 'originator_id'>;
+export type ProjectCreate = Pick<Project, 'brand_id'> & {
+    lands: ProjectLandCreate[]
+};
 export type ProjectUpdate = Partial<ProjectCreate>;
 
 // Project Land Type
@@ -260,18 +267,19 @@ export type ProjectLandTypeUpdate = Partial<ProjectLandTypeCreate>;
 // Project Land
 export type ProjectLand = {
     id: number;
-    project_id: number;
+    project_id?: number;
     land_id: number;
     area: number;
     type_id?: number;
     created_at: string;
     updated_at: string;
     project?: Project;
-    land?: Land;
+    land?: Land; 
     type?: ProjectLandType;
+    build_area: number
 }
 
-export type ProjectLandCreate = Pick<ProjectLand, 'project_id' | 'land_id' | 'area' | 'type_id'>;
+export type ProjectLandCreate = Pick<ProjectLand, 'project_id' | 'land_id' | 'area' | 'type_id' | 'build_area'>;
 export type ProjectLandUpdate = Partial<ProjectLandCreate>;
 
 // Project Event
@@ -328,7 +336,7 @@ export type Condition = {
     case_conditions?: CaseCondition[];
 }
 
-export type ConditionCreate = Pick<Condition, 'name' | 'type_id' | 'category_id' | 'description' | 'is_active'>;
+export type ConditionCreate = Pick<Condition, 'name' | 'type_id' | 'category_id' | 'description' | 'is_active' | 'id'>;
 export type ConditionUpdate = Partial<ConditionCreate>;
 
 // Condition Option
@@ -389,7 +397,10 @@ export type LeaseRequest = {
     conditions?: LeaseRequestCondition[];
 }
 
-export type LeaseRequestCreate = Pick<LeaseRequest, 'project_id' | 'guarantee_id' | 'guarantee_type_id' | 'owner_id' | 'commission_agreement' | 'assignment_income' | 'property_file' | 'status_id' | 'created_by'>;
+export type LeaseRequestCreate = 
+    Pick<LeaseRequest, 'project_id' | 'guarantee_id' | 'guarantee_type_id' | 'owner_id' | 'commission_agreement' | 'assignment_income' | 'property_file'> & {
+        conditions: CaseConditionCreate[]
+    };
 export type LeaseRequestUpdate = Partial<LeaseRequestCreate>;
 
 // Lease Request Condition
@@ -422,7 +433,10 @@ export type ApprovalFlow = {
     steps?: ApprovalFlowStep[];
 }
 
-export type ApprovalFlowCreate = Pick<ApprovalFlow, 'name' | 'description' | 'is_active'>;
+export type ApprovalFlowCreate = 
+    Pick<ApprovalFlow, 'name' | 'description' | 'is_active'> & {
+        steps: ApprovalFlowStepCreate[]
+    };
 export type ApprovalFlowUpdate = Partial<ApprovalFlowCreate>;
 
 // Approval Flow Step
@@ -436,10 +450,12 @@ export type ApprovalFlowStep = {
     flow?: ApprovalFlow;
     signator_role?: UserRol;
     signator_area?: Area;
+    signator_id: number
     approval_requests?: ApprovalRequest[];
 }
 
-export type ApprovalFlowStepCreate = Pick<ApprovalFlowStep, 'flow_id' | 'step_order' | 'signator_role_id' | 'signator_area_id' | 'is_required'>;
+export type ApprovalFlowStepCreate = 
+    Pick<ApprovalFlowStep, 'flow_id' | 'step_order' | 'signator_role_id' | 'signator_area_id' | 'is_required'>;
 export type ApprovalFlowStepUpdate = Partial<ApprovalFlowStepCreate>;
 
 // Approval Request
@@ -508,7 +524,8 @@ export type CaseCondition = {
     option?: ConditionOption;
 }
 
-export type CaseConditionCreate = Pick<CaseCondition, 'case_id' | 'condition_id' | 'text_value' | 'number_value' | 'date_value' | 'boolean_value' | 'option_id' | 'is_active'>;
+export type CaseConditionCreate = 
+    Pick<CaseCondition, 'condition_id' | 'text_value' | 'number_value' | 'date_value' | 'boolean_value' | 'option_id' | 'is_active'>;
 export type CaseConditionUpdate = Partial<CaseConditionCreate>;
 
 // Project Activity Status

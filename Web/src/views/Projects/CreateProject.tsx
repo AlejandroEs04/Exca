@@ -7,11 +7,13 @@ import SelectGroup from "../../components/forms/SelectGroup"
 import PlusIcon from "../../components/shared/Icons/PlusIcon"
 import { currencyFormat } from "../../utils"
 import { getResidentialDevelopments } from "../../api/LandApi"
-import { ProjectCreate, RentLand, ResidentialDevelopment } from "../../types"
+import { ProjectCreate, ProjectLandCreate, ResidentialDevelopment } from "../../types"
 import { getProjectLandTypes, registerProject } from "../../api/ProjectApi"
-import { useNavigate } from "react-router-dom"
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom"
 import { toast } from "react-toastify"
 import Loader from "../../components/shared/Loader/Loader"
+import ComboBox, { OptionCB } from "../../components/forms/ComboBox"
+import { createBrand } from "../../api/ClientApi"
 
 export default function CreateProject() {
     const list = [
@@ -21,39 +23,34 @@ export default function CreateProject() {
     ]
 
     const { state, dispatch, isLoading } = useAppContext()
-    const [project, setProject] = useState({
-        client: '',
-        brand: ''
+    const [project, setProject] = useState<ProjectCreate>({
+        brand_id: undefined,
+        lands: []
     })
-    const [lands, setLands] = useState<RentLand[]>([])
+    const [clientId, setClientId] = useState(0)
     const [residential, setResidential] = useState('')
     const [residentialOptions, setResidentialOptions] = useState<Option[]>([])
     const [residentialDevelopments, setResidentialDevelopments] = useState<ResidentialDevelopment[]>([])
     const [landOptions, setLandOptions] = useState<Option[]>([])
     const [rentOptions, setRentOptions] = useState<Option[]>([])
+    const [brands, setBrands] = useState<OptionCB[]>([])
     const navigate = useNavigate()
+    const { pathname } = useLocation()
+    const [searchParams] = useSearchParams();
 
     const clientsOptions = state.clients.map(client => {
         return {
             label: client.business_name,
-            value: client.id
+            id: client.id
         }
     })
 
-    const [cadastralFile, setCadastralFile] = useState({
+    const [cadastralFile, setCadastralFile] = useState<ProjectLandCreate>({
         land_id: 0, 
         area: 0,
         type_id: 0, 
-        initial_area: 0
+        build_area: 0
     })
-
-    const onChangeProject = (e: ChangeEvent<HTMLInputElement> | PushEvent) => {
-        const { value, name } = e.target
-        setProject({
-            ...project, 
-            [name]: value
-        })
-    }
 
     const onChangeCadastralFile = (e: ChangeEvent<HTMLInputElement> | PushEvent) => {
         const { value, name } = e.target
@@ -66,7 +63,7 @@ export default function CreateProject() {
 
     const onChangeResidential = (e: ChangeEvent<HTMLInputElement> | PushEvent) => {
         const { value } = e.target
-        if(lands.length > 0) return
+        if(project.lands.length > 0) return
         setResidential(value.toString())
         const currentResidential = residentialDevelopments.find(residential => residential.id === +value);
 
@@ -88,33 +85,33 @@ export default function CreateProject() {
         }
     }
 
-    const addLand = (newLand: RentLand) => {
-        const landExists = lands.find(land => land.land_id === newLand.land_id)
+    const addLand = (newLand: ProjectLandCreate) => {
+        const landExists = project.lands.find(land => land.land_id === newLand.land_id)
 
         if (landExists) {
-            setLands(lands.map(land => land.land_id === newLand.land_id ? newLand : land))
+            setProject({
+                ...project, 
+                lands: project.lands.map(land => land.land_id === newLand.land_id ? newLand : land)
+            })
         } else {
-            setLands([...lands, {...newLand}])
+            setProject({
+                ...project, 
+                lands: [...project.lands, {...newLand}]
+            })
         }
     }
 
     const areaDisable = useMemo(() => cadastralFile.land_id === 0, [cadastralFile.land_id])
     const landsSelectDisable = useMemo(() => landOptions.length === 0, [landOptions])
     const submitDisable = useMemo(() => {
-        return project.client === '' || project.brand === '' || lands.length === 0
-    }, [project, lands])
+        return project.brand_id === 0 || project.lands.length === 0
+    }, [project])
 
     const onSubmit = async(e: FormEvent) => {
         e.preventDefault()
 
         try {
-            const projectObj : ProjectCreate = {
-                client: project.client,
-                brand: project.brand,
-                lands
-            }
-
-            const newProject = await registerProject(projectObj!)
+            const newProject = await registerProject(project)
             dispatch({ type: 'set-projects', paypload: { projects: [...state.projects, newProject] }})
             navigate('/projects')
 
@@ -124,13 +121,61 @@ export default function CreateProject() {
         }
     }
 
+    const handleSelect = (id: string | number, name: string) => {
+        switch (name) {
+            case 'client':
+                setClientId(+id)
+                break;
+            case 'brand':
+                setProject({
+                    ...project, 
+                    brand_id: +id
+                })
+        }
+    };
+
+    const handleCreate = async(newLabel: string, name: string) => {
+        switch (name) {
+            case 'client':
+                localStorage.setItem('createProjectLocal', JSON.stringify(project))
+
+                navigate(`/clients/create?business_name=${newLabel}&return_url=${pathname}`)
+                break;
+            case 'brand':
+                const newBrand = await createBrand({ name: newLabel, client_id: clientId })
+
+                if(newBrand) {
+                    dispatch({ type: 'set-clients', paypload: { clients: state.clients.map(c => c.id === clientId ? { ...c, brands: [...c.brands!, newBrand] } : c) } })
+
+                    setProject({
+                        ...project, 
+                        brand_id: newBrand.id
+                    })
+                }
+                break;
+        }
+    };
+
     useEffect(() => {
         setCadastralFile({
             ...cadastralFile, 
             area: state.lands.find(land => +land.id === +cadastralFile.land_id)?.area || 0, 
-            initial_area: state.lands.find(land => +land.id === +cadastralFile.land_id)?.area || 0, 
+            build_area: state.lands.find(land => +land.id === +cadastralFile.land_id)?.area || 0, 
         })
     }, [cadastralFile.land_id])
+
+    useEffect(() => {   
+        const clientSelected = state.clients.find(c => c.id === clientId)
+
+        const brandsOptions : OptionCB[] = clientSelected?.brands?.map(b => {
+            return {
+                id: b.id, 
+                label: b.name
+            }
+        }) ?? []
+
+        setBrands(brandsOptions)
+    }, [clientId, state.clients])
 
     useEffect(() => {
         const getInfo = async() => {
@@ -153,6 +198,26 @@ export default function CreateProject() {
             })
             setRentOptions(rentOptions)
         }
+        const backCreate = searchParams.get('back_create')
+
+        if(backCreate) {
+            const itemSavedStr = localStorage.getItem('createProjectLocal')
+
+            if(itemSavedStr) {
+                setProject(JSON.parse(itemSavedStr))
+
+                const itemName = searchParams.get('item_name')
+                const itemId = searchParams.get('item_id')
+
+                if(itemName && itemId) {
+                    switch(itemName) {
+                        case 'client':
+                            setClientId(+itemId)
+                            break;
+                    }
+                }
+            }
+        }
     
         getInfo()
     }, [])
@@ -165,14 +230,29 @@ export default function CreateProject() {
             <h1>Registrar Proyecto</h1>
 
             <form onSubmit={onSubmit}>
-                <button disabled={submitDisable} className="btn btn-success">
+                <button disabled={submitDisable} className="btn btn-primary">
                     <SaveIcon />
                     Guardar
                 </button>
 
-                <div className="grid grid-cols-2 mt-2">
-                    <InputGroup name="client" label="Razón social" value={project.client} placeholder="Razón social" onChangeFnc={onChangeProject} options={clientsOptions} />
-                    <InputGroup name="brand" label="Nombre Comercial" value={project.brand} placeholder="Nombre Comercial" onChangeFnc={onChangeProject} />
+                <div className="grid grid-cols-2 mt-2 g-1">
+                    <ComboBox 
+                        name="client" 
+                        value={clientId} 
+                        options={clientsOptions} 
+                        placeholder="Razón social" 
+                        label="Razón social" 
+                        onCreate={handleCreate}
+                        onSelect={handleSelect} />
+                    <ComboBox 
+                        disabled={clientId === 0}
+                        name="brand" 
+                        value={project.brand_id ?? 0} 
+                        options={brands} 
+                        placeholder="Nombre comercial" 
+                        label="Nombre comercial" 
+                        onCreate={handleCreate}
+                        onSelect={handleSelect} />
                 </div>
 
                 <div className="mt-2">
@@ -181,8 +261,8 @@ export default function CreateProject() {
 
                 <div className="grid grid-cols-3 g-1 mt-2">
                     <SelectGroup disable={landsSelectDisable} name="land_id" label="Expediente Catastral" value={cadastralFile.land_id} placeholder="Seleccione un terreno" onChangeFnc={onChangeCadastralFile} options={landOptions} />
-                    <InputGroup limit={cadastralFile.initial_area} name="area" label="Superficie arrendamiento" value={cadastralFile.area} placeholder="Superficie. ej. 180" onChangeFnc={onChangeCadastralFile} disable={areaDisable} /> 
-                    <SelectGroup disable={areaDisable} name="type_id" label="Tipo de arrendamiento" value={cadastralFile.type_id} placeholder="Seleccione un tipo" onChangeFnc={onChangeCadastralFile} options={rentOptions} />
+                    <InputGroup limit={cadastralFile.area} name="area" label="Superficie arrendamiento" value={cadastralFile.area} placeholder="Superficie. ej. 180" onChangeFnc={onChangeCadastralFile} disable={areaDisable} /> 
+                    <SelectGroup disable={areaDisable} name="type_id" label="Tipo de arrendamiento" value={cadastralFile.type_id!} placeholder="Seleccione un tipo" onChangeFnc={onChangeCadastralFile} options={rentOptions} />
                 </div>
 
                 <button className="btn btn-sm btn-primary mt-1" onClick={() => addLand(cadastralFile)} type="button">
@@ -202,7 +282,7 @@ export default function CreateProject() {
                     </thead>
 
                     <tbody>
-                        {lands.map(land => (
+                        {project.lands.map(land => (
                             <tr key={land.land_id}>
                                 <td>{state.lands.find(l => l.id === land.land_id)?.cadastral_file}</td>
                                 <td>{currencyFormat(state.lands.find(l => l.id === land.land_id)?.price_per_area!)}</td>

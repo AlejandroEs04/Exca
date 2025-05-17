@@ -13,7 +13,7 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { ChangeEvent, useEffect, useState } from "react";
-import { ApprovalFlowCreate, ApprovalFlow as ApprovalFlowType, User } from "../../types";
+import { ApprovalFlowCreate, ApprovalFlowStepCreate, ApprovalFlow as ApprovalFlowType, User } from "../../types";
 import { useAppContext } from "../../hooks/AppContext";
 import Breadcrumb from "../../components/shared/Breadcrumb/Breadcrumb";
 import SaveIcon from "../../components/shared/Icons/SaveIcon";
@@ -67,7 +67,9 @@ export default function ApprovalFlow() {
     const [userOprions, setUserOptions] = useState<Option[]>([])
     const [flow, setFlow] = useState<ApprovalFlowType>({
         id: 0,
-        name: '', 
+        name: '',
+        description: '', 
+        is_active: true, 
         steps: []
     })
     const [userId, setUserId] = useState(0)
@@ -93,7 +95,7 @@ export default function ApprovalFlow() {
         }
     };
 
-    const handleChange = (e: ChangeEvent<HTMLSelectElement | HTMLInputElement> | PushEvent) => {
+    const handleChange = (e: ChangeEvent<HTMLSelectElement | HTMLInputElement>) => {
         const { value, name } = e.target
 
         if(name === "userId") {
@@ -121,14 +123,20 @@ export default function ApprovalFlow() {
     }
     
     const handleSubmit = async() => {
-        const payload = approvers.map((a, index) => ({
+        const payload : ApprovalFlowStepCreate[] = approvers.map((a, index) => ({
             signator_id: a.id,
-            order: index + 1,
+            signator_role_id: a.rol_id, 
+            signator_area_id: a.area_id,
+            step_order: index + 1,
+            flow_id: flow.id, 
+            is_required: true
         }));
 
         const flowForUpdate : ApprovalFlowCreate = {
-            name: flow.name, 
-            steps: payload
+            name: flow.name,
+            description: flow.description,  
+            steps: payload, 
+            is_active: true
         }
 
         try {
@@ -144,25 +152,22 @@ export default function ApprovalFlow() {
     }, [state.users])
 
     useEffect(() => {
-        if(state.users.length) {
-            const stepsById = Object.fromEntries(flow.steps.map(s => [s.id, s]));
-            const allNextIds = new Set(flow.steps.map(step => step.next_step_id).filter(id => id !== null));
-            const firstStep = flow.steps.find(step => !allNextIds.has(step.id));
-    
-            const orderedSteps = [];
-            let currentStep = firstStep;
-    
-            while (currentStep) {
-                orderedSteps.push(currentStep);
-                currentStep = stepsById[currentStep.next_step_id!];
-            }
-    
-            const users = orderedSteps.map(s => {
-                return state.users.find(u => u.id === s.signator_id)!
-            })
-            setApprovers(users)
-        }
-    }, [state.users, flow])
+        if (!state.users.length || !flow.steps?.length) return;
+
+        // Ordenar los pasos por step_order ascendente
+        const orderedSteps = [...flow.steps].sort((a, b) => a.step_order - b.step_order);
+
+        // Buscar a los usuarios que están asignados como signatarios
+        const approvers = orderedSteps.map(step => {
+            const user = state.users.find(u => u.id === step.signator_id);
+            if (!user) console.warn(`Usuario no encontrado para el signator_id: ${step.signator_id}`);
+            return user!;
+        });
+
+        setApprovers(approvers);
+    }, [state.users, flow]);
+
+
 
     useEffect(() => {
         const getInfo = async() => {

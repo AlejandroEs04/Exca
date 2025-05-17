@@ -1,11 +1,11 @@
 import { ChangeEvent, Dispatch, SetStateAction, useState } from "react"
-import { Condition, ConditionCreate, ProjectView } from "../../types"
+import { CaseConditionCreate, Condition, Project } from "../../types"
 
 type ConditionsContainerType = {
     conditionsList: Condition[]
-    newConditions: ConditionCreate[]
-    setNewConditions: Dispatch<SetStateAction<ConditionCreate[]>>
-    project: ProjectView
+    newConditions: CaseConditionCreate[]
+    setNewConditions: Dispatch<SetStateAction<CaseConditionCreate[]>>
+    project: Project
     isNotGrid?: boolean
     isChecked?: boolean
 }
@@ -22,7 +22,7 @@ export default function ConditionsContainer({
     const getValue = (id: number) => {
         const conditionExists = newConditions.find(c => c.condition_id === id)
         if(conditionExists) {
-            return conditionExists.value
+            return conditionExists.text_value
         }
 
         return;
@@ -33,24 +33,27 @@ export default function ConditionsContainer({
         const { value, name } = e.target as HTMLInputElement | HTMLSelectElement;
         const checked = (e.target as HTMLInputElement).checked;
 
-        const condition = conditionsList.find(c => c.name === name)
-        const existsCondition = newConditions.find(c => c.condition_id === condition?.id)
-        
-        if(existsCondition) {
-            setNewConditions(
-                newConditions.map(c => c.condition_id === 
-                    existsCondition.condition_id ? { condition_id: existsCondition.condition_id, value, is_active: checked } : c)
-            )
-        } else {
-            setNewConditions([
-                ...newConditions,
-                { condition_id: condition!.id, value, is_active: true }
-            ])
+        const condition = conditionsList.find(c => c.name === name);
+        // Find by condition_id, not id
+        const existsCondition = newConditions.find(c => c.condition_id === condition?.id);
+
+        const conditionCreate : CaseConditionCreate = {
+            condition_id: condition?.id!, 
+            text_value: condition?.type_id === 1 ? value : undefined, 
+            number_value: condition?.type_id === 2 ? +value : undefined,
+            date_value: condition?.type_id === 3 ? value : undefined, 
+            boolean_value: condition?.type_id === 4 ? checked : undefined,
+            option_id: condition?.type_id === 5 ? +value : undefined,
+            is_active: true
         }
 
+        if (existsCondition) {
+            setNewConditions(newConditions.map(c => c.condition_id !== condition?.id ? c : conditionCreate))
+        } else {
+            setNewConditions([...newConditions, conditionCreate])
+        }
     }
 
-    const getArray = (options: string) : string[] => JSON.parse(options);
     return (
         <div className={!isNotGrid ? "conditions-list" : ''}>
             {conditionsList.map(condition => (
@@ -87,8 +90,8 @@ export default function ConditionsContainer({
                     {condition.type_id === 5 && (
                         <select value={getValue(condition.id)} onChange={handleChange} name={condition.name} id={condition.id.toString()}>
                             <option value="">Selecciona una opción</option>
-                            {getArray(condition.options).map(option => (
-                                <option value={option} key={option}>{option}</option>
+                            {condition.options?.map(option => (
+                                <option value={option.id} key={option.id}>{option.option_value}</option>
                             ))}
                         </select>
                     )}

@@ -9,6 +9,7 @@ class ProjectLand(Base):
     project_id = Column(Integer, ForeignKey("project.id"), nullable=False)
     land_id = Column(Integer, ForeignKey("land.id"), nullable=False)
     area = Column(Float, nullable=False)
+    build_area = Column(Float, nullable=False)
     type_id = Column(Integer, ForeignKey("project_land_type.id"), nullable=True)
     created_at = Column(DateTime, nullable=False, server_default=func.now())
     updated_at = Column(DateTime, nullable=False, server_default=func.now(), onupdate=func.now())

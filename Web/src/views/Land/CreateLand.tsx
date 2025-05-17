@@ -84,7 +84,7 @@ export default function CreateLand() {
             <h1>Registrar Terreno</h1>
 
             <form onSubmit={onSubmit}>
-                <button disabled={isDisable} type="submit" className="btn btn-success">
+                <button disabled={isDisable} type="submit" className="btn btn-primary">
                     <SaveIcon />
                     Guardar
                 </button>
@@ -102,8 +102,8 @@ export default function CreateLand() {
                 <h2 className="mt-2">Informacion del fraccionamiento</h2>
 
                 <div className="grid grid-cols-3 g-1 mt-1">
-                    <InputGroup name="residential_development_name" label="Fraccionamiento" value={land.residential_development_name} options={residentialOptions} placeholder="Fraccionamiento" onChangeFnc={onChange} />
-                    <InputGroup name="state" label="Estado" value={land.state} options={residentialOptions} placeholder="Estado" onChangeFnc={onChange} />
+                    <InputGroup name="residential_development_name" label="Fraccionamiento" value={land.residential_development_name} placeholder="Fraccionamiento" onChangeFnc={onChange} />
+                    <InputGroup name="state" label="Estado" value={land.state} placeholder="Estado" onChangeFnc={onChange} />
                     <InputGroup name="city" label="Municipio" value={land.city} placeholder="Municipio" onChangeFnc={onChange} />
                 </div>
             </form> 

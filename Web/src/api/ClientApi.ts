@@ -1,6 +1,7 @@
 import { isAxiosError } from "axios"
 import api from "../lib/axios"
-import { Client, ClientCreate } from "../types"
+import { Brand, BrandCreate, Client, ClientCreate } from "../types"
+import { formatValidationErrors } from "../utils"
 
 export async function getClient() {
     try {
@@ -19,7 +20,14 @@ export async function createClient(client: ClientCreate) {
         return data
     } catch (error) {
         if(isAxiosError(error) && error.response) {
-            throw new Error(error.response.data.error)
+            const errorData = error.response.data;
+      
+            if (Array.isArray(errorData.detail)) {
+                const formattedErrors = formatValidationErrors(errorData.detail);
+                throw new Error(JSON.stringify(formattedErrors));
+            }
+            
+            throw new Error(errorData.detail || 'Error al crear el cliente');
         }
     }
 }
@@ -41,6 +49,24 @@ export async function updateClient(id: number, client: ClientCreate) {
     } catch (error) {
         if(isAxiosError(error) && error.response) {
             throw new Error(error.response.data.error)
+        }
+    }
+}
+
+export async function createBrand(brand: BrandCreate) {
+    try {
+        const { data } = await api.post<Brand>('/client/brand', brand)
+        return data
+    } catch (error) {
+        if(isAxiosError(error) && error.response) {
+            const errorData = error.response.data;
+      
+            if (Array.isArray(errorData.detail)) {
+                const formattedErrors = formatValidationErrors(errorData.detail);
+                throw new Error(JSON.stringify(formattedErrors));
+            }
+            
+            throw new Error(errorData.detail || 'Error al crear el nombre comercial');
         }
     }
 }

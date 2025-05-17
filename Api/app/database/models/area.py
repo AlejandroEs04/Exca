@@ -9,3 +9,4 @@ class Area(Base):
     name = Column(String, nullable=False, unique=True)
     
     users = relationship("User", back_populates="area")
+    approval_steps = relationship("ApprovalFlowStep", back_populates="area")

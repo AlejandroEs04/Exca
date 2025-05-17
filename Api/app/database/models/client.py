@@ -20,3 +20,4 @@ class Client(Base):
     turn = relationship("BusinessTurn", back_populates="clients")
     address = relationship("ClientAddress", back_populates="client")
     documents = relationship("ClientDocument", back_populates="client")
+    individuals = relationship("Individual", back_populates="client")

@@ -35,6 +35,7 @@ import EditLand from "./views/Land/EditLand"
 import TechnicalCase from "./views/Projects/TechnicalCase/TechnicalCase"
 import LeaseRequest from "./views/Projects/LeaseRequest/LeaseRequest"
 import LegalCase from "./views/Projects/LegalCase/LegalCase"
+import CreateIndividual from "./views/Client/Individual/CreateIndividual"
 
 
 function App() {
@@ -60,6 +61,7 @@ function App() {
           <Route path="/clients/:id" element={<Client />} />
           <Route path="/clients/create" element={<CreateClient />} />
           <Route path="/clients/edit/:id" element={<EditClient />} />
+          <Route path="/clients/individual/create" element={<CreateIndividual />} />
 
           <Route path="/lands" element={<Lands />} />
           <Route path="/lands/:id" element={<Land />} />
@@ -67,6 +69,7 @@ function App() {
           <Route path="/lands/edit/:id" element={<EditLand />} />
 
           <Route path="/contract-request/:projectId" element={<LeaseRequest />} />
+          <Route path="/contract-request/:projectId/:leaseRequestId" element={<LeaseRequest />} />
 
           <Route path="/settings/approval-flows" element={<ApprovalFlows />} />
           <Route path="/settings/approval-flows/edit/:id" element={<ApprovalFlow />} />

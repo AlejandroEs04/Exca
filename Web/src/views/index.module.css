@@ -57,22 +57,22 @@
     left: -40px;
   }
   
-  .cardPurple {
-    background-color: #6d28d9;
+  .cardBlue2 {
+    background-color: #1e3a8a;
   }
-  .cardPurple::before {
-    background: radial-gradient(circle at center, #a78bfa, #6d28d9);
+  .cardBlue2::before {
+    background: radial-gradient(circle at center, #3b82f6, #1e3a8a);
     top: -30px;
     right: -40px;
   }
   
-  .cardGreen {
-    background-color: #047857;
+  .cardBlue3 {
+    background-color: #1e3a8a;
   }
-  .cardGreen::before {
-    background: radial-gradient(circle at center, #10b981, #047857);
-    bottom: -20px;
-    right: -30px;
+  .cardBlue3::before {
+    background: radial-gradient(circle at center, #3b82f6, #1e3a8a);
+    top: 20%;
+    left: 30%;
   }
   
   .cardOrange {
