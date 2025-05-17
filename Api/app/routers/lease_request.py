@@ -65,12 +65,10 @@ def update_request(
     request: LeaseRequestCreate, 
     db: Session = Depends(get_db)
 ):
-    # Obtener la solicitud existente
     lease_request = db.get(LeaseRequest, id)
     if not lease_request:
         raise HTTPException(status_code=404, detail="Lease Request not found")
 
-    # Actualizar datos del LeaseRequest
     lease_request.guarantee_id = request.guarantee_id
     lease_request.guarantee_type_id = request.guarantee_type_id
     lease_request.owner_id = request.owner_id
@@ -80,20 +78,16 @@ def update_request(
 
     db.commit()
 
-    # --- Actualización de condiciones ---
-    # Obtener las condiciones actuales en DB
     existing_conditions = db.query(LeaseRequestCondition)\
         .filter(LeaseRequestCondition.lease_request_id == lease_request.id)\
         .all()
     
-    # Crear diccionarios para búsqueda rápida
     existing_conditions_map = {cond.condition_id: cond for cond in existing_conditions}
     incoming_conditions_map = {cond.condition_id: cond for cond in request.conditions}
 
-    # Actualizar o crear condiciones
     for condition_id, condition_data in incoming_conditions_map.items():
         if condition_id in existing_conditions_map:
-            # ➔ Actualizar condición existente
+            # Update existing condition
             existing_condition = existing_conditions_map[condition_id]
             existing_condition.is_active = condition_data.is_active
             existing_condition.text_value = condition_data.text_value
@@ -102,7 +96,7 @@ def update_request(
             existing_condition.boolean_value = condition_data.boolean_value
             existing_condition.option_id = condition_data.option_id
         else:
-            # ➔ Crear nueva condición
+            # Create new condition
             new_condition = LeaseRequestCondition(
                 lease_request_id = lease_request.id,
                 condition_id = condition_data.condition_id,
@@ -115,7 +109,7 @@ def update_request(
             )
             db.add(new_condition)
 
-    # Eliminar condiciones que ya no vienen en el request
+    # Delete every conditions that doesn't exists in new array
     for condition_id, existing_condition in existing_conditions_map.items():
         if condition_id not in incoming_conditions_map:
             db.delete(existing_condition)
@@ -131,7 +125,7 @@ def get_leases(db: Session = Depends(get_db)):
     return db.query(LeaseRequest).options(joinedload(LeaseRequest.conditions).joinedload(LeaseRequestCondition.condition)).all()
 
 @router.post("/send-to-approval", status_code=status.HTTP_201_CREATED, response_model=ProjectResponse)
-def send_approval(approvalRequest: ApprovalRequestCreate, db: Session = Depends(get_db)):
+def send_approval(approvalRequest: ApprovalRequestCreate, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
     request_exists = db.query(LeaseRequest).where(LeaseRequest.project_id == approvalRequest.item_id).first()
     
     if not request_exists:
@@ -152,14 +146,10 @@ def send_approval(approvalRequest: ApprovalRequestCreate, db: Session = Depends(
         
     project_exists.status_id = 2
     
-    steps_query = db.query(ApprovalFlowStep).where(ApprovalFlowStep.flow_id == approvalRequest.flow_id)
-    steps = list(db.scalars(steps_query))
-
-    next_ids = {step.next_step_id for step in steps if step.next_step_id is not None}
-    first_step = next((step for step in steps if step.id not in next_ids), None)
+    first_step = db.query(ApprovalFlowStep).where(ApprovalFlowStep.flow_id == approvalRequest.flow_id and ApprovalFlowStep.step_order == 1).first()
 
     if first_step:
-        approval_request = db.query(ApprovalRequest).filter(ApprovalRequest.item_id == approvalRequest.item_id and ApprovalRequest.step_id == first_step.id).first()
+        approval_request = db.query(ApprovalRequest).filter(ApprovalRequest.item_id == approvalRequest.item_id and ApprovalRequest.flow_step_id == first_step.id).first()
         
         if approval_request:
             raise HTTPException(
@@ -169,7 +159,8 @@ def send_approval(approvalRequest: ApprovalRequestCreate, db: Session = Depends(
         
         new_approval = ApprovalRequest(
             item_id=approvalRequest.item_id,
-            step_id=first_step.id
+            flow_step_id=first_step.id, 
+            requested_by=current_user.id
         )
         db.add(new_approval)
         db.commit()
@@ -177,7 +168,13 @@ def send_approval(approvalRequest: ApprovalRequestCreate, db: Session = Depends(
         # Send Email
         signator = db.query(User).filter(User.id == first_step.signator_id).first()
         
-        body = build_email_body("Solicitud de contrato", datetime.now, "Alejandro Estrada", "Daniela Turrubiartes", f"{FRONTEND_URL}/contract-request/1")
+        if not signator:
+            raise HTTPException(
+                status_code=404,
+                detail="Signator user not found"
+            )
+        
+        body = build_email_body("Solicitud de contrato", datetime.now, current_user.full_name, "Daniela Turrubiartes", f"{FRONTEND_URL}/contract-request/1")
         send_email("Solicitud de aprobación", signator.email, body)
     else:
         raise HTTPException(

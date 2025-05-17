@@ -13,7 +13,7 @@ class CaseCreate(CaseBase):
 class CaseResponse(CaseBase):
     id: int
     created_at: datetime
-    sended_at: datetime
+    sended_at: datetime | None = None
     updated_at: datetime
     status_id: int
     type: CaseTypeResponse

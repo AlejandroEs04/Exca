@@ -505,13 +505,15 @@ export type Case = {
     conditions?: CaseCondition[];
 }
 
-export type CaseCreate = Pick<Case, 'project_id' | 'case_type_id' | 'title' | 'description' | 'originator_id' | 'status_id'>;
+export type CaseCreate = Pick<Case, 'project_id' | 'case_type_id' | 'title' | 'description'> & {
+    conditions: CaseConditionCreate[]
+};
 export type CaseUpdate = Partial<CaseCreate>;
 
 // Case Condition
 export type CaseCondition = {
     id: number;
-    case_id: number;
+    case_id?: number;
     condition_id: number;
     text_value?: string;
     number_value?: number;
@@ -525,7 +527,7 @@ export type CaseCondition = {
 }
 
 export type CaseConditionCreate = 
-    Pick<CaseCondition, 'condition_id' | 'text_value' | 'number_value' | 'date_value' | 'boolean_value' | 'option_id' | 'is_active'>;
+    Pick<CaseCondition, 'condition_id' | 'case_id' | 'text_value' | 'number_value' | 'date_value' | 'boolean_value' | 'option_id' | 'is_active'>;
 export type CaseConditionUpdate = Partial<CaseConditionCreate>;
 
 // Project Activity Status

@@ -41,6 +41,19 @@ export const dateFormat = (date: string) => {
     return prettyFormat
 }
 
+export function formatDateToInput(datetimeString: string) {
+    const date = new Date(datetimeString);
+
+    const pad = (n: number) => n.toString().padStart(2, '0');
+
+    const year = date.getFullYear();
+    const month = pad(date.getMonth() + 1); // Months are 0-based
+    const day = pad(date.getDate());
+
+    return `${year}-${month}-${day}`;
+}
+
+
 export const isInputHelper = (target: EventTarget): target is HTMLInputElement => {
     return (target as HTMLInputElement).checked !== undefined;
 };

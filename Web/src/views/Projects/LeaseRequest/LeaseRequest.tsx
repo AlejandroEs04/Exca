@@ -2,11 +2,10 @@ import { useLocation, useNavigate, useParams, useSearchParams } from "react-rout
 import { useAppContext } from "../../../hooks/AppContext"
 import { ChangeEvent, useEffect, useMemo, useState } from "react"
 import InputGroup, { Option } from "../../../components/forms/InputGroup"
-import { CaseConditionCreate, Condition, Individual, LeaseRequestCreate, Project, ProjectLandType } from "../../../types"
+import { CaseConditionCreate, Individual, LeaseRequestCreate, Project, ProjectLandType } from "../../../types"
 import { getProjectLandTypes } from "../../../api/ProjectApi"
-import { getConditions } from "../../../api/ConditionApi"
 import { getOnwers } from "../../../api/OwnerApi"
-import { getGuaranteeTypes, getIndividuals } from "../../../api/IndividualApi"
+import { getGuaranteeTypes } from "../../../api/IndividualApi"
 import Loader from "../../../components/shared/Loader/Loader"
 import Breadcrumb from "../../../components/shared/Breadcrumb/Breadcrumb"
 import SaveIcon from "../../../components/shared/Icons/SaveIcon"
@@ -14,19 +13,18 @@ import SendIcon from "../../../components/shared/Icons/SendIcon"
 import SelectGroup from "../../../components/forms/SelectGroup"
 import ConditionsContainer from "../../../components/ConditionsContainer/ConditionsContainer"
 import ComboBox, { OptionCB } from "../../../components/forms/ComboBox"
-import { handleError } from "../../../utils"
-import { createRequest } from "../../../api/LeaseRequestApi"
+import { formatDateToInput, handleError } from "../../../utils"
+import { createRequest, sendToApprovalRequest, updateRequest } from "../../../api/LeaseRequestApi"
+import { toast } from "react-toastify"
 
 export default function LeaseRequest() {
-    const { projectId } = useParams()
+    const { projectId, leaseRequestId } = useParams()
     const { pathname } = useLocation()
     const [searchParams] = useSearchParams();
     const { state, isLoading, dispatch } = useAppContext()
     const [guaranteeTypes, setGuaranteeTypes] = useState<Option[]>([])
-    const [individuals, setIndividuals] = useState<Option[]>([])
     const [owners, setOwners] = useState<Option[]>([])
     const [isLocalLoading, setIsLocalLoading] = useState(false)
-    const [conditions, setConditions] = useState<Condition[]>([])
     const [types, setTypes] = useState<ProjectLandType[]>([])
     const [project, setProject] = useState<Project | null>(null)
     const [individual, setIndividual] = useState<Individual | null>(null)
@@ -90,32 +88,57 @@ export default function LeaseRequest() {
 
     const handleSubmit = async() => {
         try {
-            const response = await createRequest({...newRequest, project_id: +projectId!})
+            let response;
+            if(leaseRequestId) {
+                response = await updateRequest(+leaseRequestId, {...newRequest, project_id: +projectId!})
+            } else {
+                response = await createRequest({...newRequest, project_id: +projectId!})
+            }
             dispatch({ type: 'set-projects', paypload: { projects: state.projects.map(p => p.id !== response?.project_id ? p : { ...p, lease_request: response }) } })
-
+            toast.success("Cambios Guardados Correctamente")
             navigate(`/projects/${response?.project_id}`)
         } catch (error) {
             handleError(error);
         }
     }
 
-    const handleGetValue = () => {
+    const handleSend = async() => {
+        try {
+            await sendToApprovalRequest(+leaseRequestId!)
+            toast.success("Cambios Guardados Correctamente")
+            navigate(`/projects/${projectId}`)
+        } catch (error) {
+            handleError(error);
+        }
+    }
+
+    const handleGetValue = (id: number) => {
+        const conditionValue = project?.lease_request?.conditions?.find(c => c.condition_id === id)
         
+        switch(conditionValue?.condition?.type_id) {
+            case 1:
+                return conditionValue.text_value
+            case 2:
+                return conditionValue.number_value
+            case 3:
+                return formatDateToInput(conditionValue.date_value!)
+            case 4:
+                return conditionValue.boolean_value
+            case 5:
+                return conditionValue.option_id
+        }
     }
   
     useEffect(() => {
         const fetchData = async () => {
             setIsLocalLoading(true)
             try {
-                const [conditionsData, typesData, ownersData, guaranteeData, individualsData] = await Promise.all([
-                    getConditions(),
+                const [typesData, ownersData, guaranteeData] = await Promise.all([
                     getProjectLandTypes(),
                     getOnwers(),
                     getGuaranteeTypes(),
-                    getIndividuals()
                 ])
 
-                if (conditionsData) setConditions(conditionsData.filter(c => c.category_id === 1))
                 if (typesData) setTypes(typesData)
                 if (ownersData) {
                     const ownerOptions = ownersData.map(o => { return { value: o.id, label: o.name } })
@@ -124,10 +147,6 @@ export default function LeaseRequest() {
                 if(guaranteeData) {
                     const guaranteeOptions = guaranteeData.map(g => { return { value: g.id, label: g.name } })
                     setGuaranteeTypes(guaranteeOptions)
-                }
-                if(individualsData) {
-                    const individualOptions = individualsData.map(i => { return { value: i.id, label: i.full_name } })
-                    setIndividuals(individualOptions)
                 }
             } catch (error) {
                 console.log(error)
@@ -163,10 +182,6 @@ export default function LeaseRequest() {
     }, [])
 
     useEffect(() => {
-        if(projectId) setNewRequest({ ...newRequest, project_id: +projectId })
-    }, [projectId])
-
-    useEffect(() => {
         const individualSelected = state.individuals.find(i => i.id === newRequest.guarantee_id)
         if(individualSelected) setIndividual(individualSelected)
     }, [newRequest.guarantee_id])
@@ -200,13 +215,16 @@ export default function LeaseRequest() {
                 project_id: currentProject.id, 
                 guarantee_type_id: foundRequest.guarantee_type_id, 
                 owner_id: foundRequest.owner_id, 
+                guarantee_id: foundRequest.guarantee_id,
                 commission_agreement: foundRequest.commission_agreement, 
                 assignment_income: foundRequest.assignment_income, 
                 property_file: foundRequest.property_file, 
                 conditions: foundRequest.conditions ?? []
             })
+
+            setNewConditions(foundRequest.conditions ?? [])
         }
-    }, [projectId, state.projects, state.requests, individuals])
+    }, [projectId, state.projects, state.requests, state.individuals])
   
     if(isLoading || isLocalLoading || !project) return <Loader />
 
@@ -223,7 +241,7 @@ export default function LeaseRequest() {
                             Guardar
                         </button>
 
-                        <button disabled={isDisable} className='btn btn-success w-max'>
+                        <button disabled={isDisable} onClick={handleSend} className='btn btn-success w-max'>
                             <SendIcon />
                             Enviar a firmas
                         </button>
@@ -330,7 +348,7 @@ export default function LeaseRequest() {
                     <div className={`${index !== 0 && 'pt-3'} grid grid-cols-2`} key={land.id}>
                         <div className='condition-container'>
                             <label htmlFor="landType">Inmueble a arrendar</label>
-                            <select value={land.type_id} name={`land[${index}].type_id`} id="landType">
+                            <select onChange={handleChange} value={land.type_id} name={`land[${index}].type_id`} id="landType">
                                 <option value="">Seleccione una opción</option>
                                 {types.map(type => (
                                     <option value={type.id} key={type.id}>{type.name}</option>
@@ -358,7 +376,7 @@ export default function LeaseRequest() {
                         </div>
                         <div className='condition-container'>
                             <label htmlFor="areaForLease">Superficie en arrendamiento</label>
-                            <input type="number" name={`land[${index}].area`} value={land.area} id='areaForLease' placeholder='Superficie en arrendamiento' />
+                            <input onChange={handleChange} type="number" name={`land[${index}].area`} value={land.area} id='areaForLease' placeholder='Superficie en arrendamiento' />
                         </div>
                     </div>
                 </div>
@@ -368,7 +386,8 @@ export default function LeaseRequest() {
             <ConditionsContainer
                 newConditions={newConditions}
                 setNewConditions={setNewConditions} 
-                conditionsList={conditions.filter(c => c.category_id === 1)} 
+                handleGetValue={handleGetValue}
+                conditionsList={state.conditions.filter(c => c.category_id === 1)} 
                 project={project!} />
         </div>
     )

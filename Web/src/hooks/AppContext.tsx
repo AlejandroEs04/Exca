@@ -7,6 +7,10 @@ import { getRequests } from '../api/LeaseRequestApi';
 import { getUsers } from '../api/UserApi';
 import { toast } from 'react-toastify';
 import { getIndividuals } from '../api/IndividualApi';
+import { getConditions } from '../api/ConditionApi';
+import { handleError } from '../utils';
+import { getAuth } from '../api/AuthApi';
+import { useNavigate } from 'react-router-dom';
 
 interface AppContextProps {
     state: AppState
@@ -14,6 +18,7 @@ interface AppContextProps {
     isLoading: boolean
     setIsLoading: React.Dispatch<React.SetStateAction<boolean>>
     setError: (error: any) => void
+    handleLogOut: () => void
 }
 
 const AppContext = createContext<AppContextProps | undefined>(undefined);
@@ -21,6 +26,7 @@ const AppContext = createContext<AppContextProps | undefined>(undefined);
 export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     const [state, dispatch] = useReducer(AppReducer, initialState)
     const [isLoading, setIsLoading] = useState(false)
+    const navigate = useNavigate()
 
     const setError = (error: any) => {
         console.log(error.message)
@@ -31,8 +37,50 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         }
     }
 
+    const isTokenExpired = (token: string) => {
+        try {
+            const [, payloadBase64] = token.split('.');
+            const payload = JSON.parse(atob(payloadBase64));
+            const now = Math.floor(Date.now() / 1000);
+            return payload.exp < now;
+        } catch (e) {
+            return true;
+        }
+    };
+
+    const handleLogOut = () => {
+        localStorage.removeItem('token')
+        navigate('/login');
+    }
+
+    const checkToken = async () => {
+        const token = localStorage.getItem('token');
+        if (!token || isTokenExpired(token)) {
+            navigate('/login');
+            return;
+        }
+
+        try {
+            setIsLoading(true)
+
+            const response = await getAuth();
+            
+            if (!response) {
+                navigate('/login');
+                return
+            }
+
+            dispatch({ type: 'set-auth', paypload: { auth: response } });
+        } catch (error) {
+            navigate('/login');
+        } finally {
+            setIsLoading(false)
+        }
+    };
+
     useEffect(() => {
         const getInitials = async() => {
+            await checkToken();
             setIsLoading(true)
 
             try {
@@ -42,8 +90,9 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
                 const requests = await getRequests()
                 const users = await getUsers()
                 const individuals = await getIndividuals()
+                const conditions = await getConditions()
     
-                if (!clients || !lands || !projects || !requests || !users || !individuals) return
+                if (!clients || !lands || !projects || !requests || !users || !individuals || !conditions) return
     
                 dispatch({ type: 'set-clients', paypload: { clients } })
                 dispatch({ type: 'set-lands', paypload: { lands } })
@@ -51,18 +100,18 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
                 dispatch({ type: 'set-lease-request', paypload: { requests } })
                 dispatch({ type: 'set-users', paypload: { users } })
                 dispatch({ type: 'set-individual', paypload: { individuals } })
+                dispatch({ type: 'set-conditions', paypload: { conditions } })
             } catch(error) {
-                console.log(error)
+                handleError(error)
             } finally {
                 setIsLoading(false)
             }
         }
-
         getInitials()
     }, [])
 
     return (
-        <AppContext.Provider value={{ state, dispatch, isLoading, setIsLoading, setError }}>
+        <AppContext.Provider value={{ state, dispatch, isLoading, setIsLoading, setError, handleLogOut }}>
             {children}
         </AppContext.Provider>
     );

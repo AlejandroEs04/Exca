@@ -498,7 +498,7 @@ CREATE TABLE approval_request (
     item_id VARCHAR(20) NOT NULL, -- ID del documento/solicitud
     requested_by INT NOT NULL,
     requested_at DATETIME NOT NULL DEFAULT GETDATE(),
-    responded_at DATETIME NULL,
+    responsed_at DATETIME NULL,
     response BIT NULL,
     comments TEXT NULL,
     FOREIGN KEY (flow_step_id) REFERENCES approval_flow_step (id),

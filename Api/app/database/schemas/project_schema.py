@@ -7,6 +7,7 @@ from app.database.schemas.stage_schema import StageResponse
 from app.database.schemas.brand_schema import BrandResponse
 from app.database.schemas.status_schema import StatusResponse
 from app.database.schemas.lease_request_schema import LeaseRequestResponse
+from app.database.schemas.case_schema import CaseResponse
 
 from datetime import datetime
 
@@ -29,6 +30,7 @@ class ProjectResponse(ProjectBase):
     stage: StageResponse
     status: StatusResponse
     lease_request: LeaseRequestResponse | None = None
+    cases: list[CaseResponse] = []
 
 class ProjectDocResponse(ProjectBase):
     id: int
@@ -41,6 +43,6 @@ class ProjectDocResponse(ProjectBase):
     brand: BrandResponse
     stage: StageResponse
     status: StatusResponse
-
+    
     class Config:
         orm_mode = True

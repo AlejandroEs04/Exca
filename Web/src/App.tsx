@@ -79,6 +79,7 @@ function App() {
           <Route path="/following" element={<Following />} />
 
           <Route path="/technical-case/:projectId" element={<TechnicalCase />} />
+          <Route path="/technical-case/:projectId/:caseId" element={<TechnicalCase />} />
 
           <Route path="/verify-lands" element={<LandsToVerify />} />
           <Route path="/verify-lands/form-land/:id?" element={<FormLand />} />

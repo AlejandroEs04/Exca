@@ -1,15 +1,16 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, model_validator, ValidationError
 from typing import Optional
 from datetime import datetime
+from app.database.schemas.condition_schema import ConditionResponse
 
 class CaseConditionBase(BaseModel):
-    case_id: int
+    case_id: int | None = None
     condition_id: int
-    text_value: Optional[str]
-    number_value: Optional[float]
-    date_value: Optional[datetime]
-    boolean_value: Optional[bool]
-    option_id: Optional[int]
+    text_value: Optional[str] = None
+    number_value: Optional[float] = None
+    date_value: Optional[datetime] = None
+    boolean_value: Optional[bool] = None
+    option_id: Optional[int] = None
     is_active: bool = True
     
 class CaseConditionCreate(CaseConditionBase):
@@ -17,6 +18,7 @@ class CaseConditionCreate(CaseConditionBase):
 
 class CaseConditionResponse(CaseConditionBase):
     id: int
+    condition: ConditionResponse
     
     class config:
         orm_mode = True

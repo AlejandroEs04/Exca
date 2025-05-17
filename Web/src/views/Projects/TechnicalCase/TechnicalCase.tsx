@@ -1,19 +1,20 @@
 import { useEffect, useState } from "react"
-import { getConditions } from "../../../api/ConditionApi"
 import Loader from "../../../components/shared/Loader/Loader"
-import { createTechnicalCase, sendTechnicalCase } from "../../../api/TechnicalCaseApi"
+import { sendTechnicalCase } from "../../../api/TechnicalCaseApi"
 import { useAppContext } from "../../../hooks/AppContext"
 import { useNavigate, useParams } from "react-router-dom"
-import { Condition, ConditionCreate, ProjectView, TechnicalCaseCreate } from "../../../types"
+import { Project, CaseCreate, CaseConditionCreate } from "../../../types"
 import { toast } from "react-toastify"
 import Breadcrumb from "../../../components/shared/Breadcrumb/Breadcrumb"
 import SaveIcon from "../../../components/shared/Icons/SaveIcon"
 import SendIcon from "../../../components/shared/Icons/SendIcon"
 import InputGroup from "../../../components/forms/InputGroup"
 import ConditionsContainer from "../../../components/ConditionsContainer/ConditionsContainer"
+import { formatDateToInput } from "../../../utils"
+import { createCase, updateCase } from "../../../api/CaseApi"
 
 export default function TechnicalCase() {
-    const { projectId } = useParams()
+    const { projectId, caseId } = useParams()
     const list = [
         {name:"Dashboard",url:'/'},
         {name:"Proyectos",url:'/projects'},
@@ -23,18 +24,25 @@ export default function TechnicalCase() {
 
     const { state, isLoading, setError, dispatch } = useAppContext()
     const navigate = useNavigate()
-    const [project, setProject] = useState<ProjectView | null>(null)
-    const [conditions, setConditions] = useState<Condition[]>([])
-    const [newConditions, setNewConditions] = useState<ConditionCreate[]>([])
-    const [isLocalLoading, setIsLocalLoading] = useState(false)
+    const [project, setProject] = useState<Project | null>(null)
+    const [newConditions, setNewConditions] = useState<CaseConditionCreate[]>([])
 
     const handleSubmit = async() => {
         try {
-            const newTechnicalCase : TechnicalCaseCreate = {
+            const newTechnicalCase : CaseCreate = {
                 project_id: +projectId!, 
+                case_type_id: 1, 
+                title: 'Cáratula Técnica',
+                description: '', 
                 conditions: newConditions
             }
-            await createTechnicalCase(newTechnicalCase)
+            let response;
+
+            if(caseId) {
+                response = await updateCase(+caseId!, newTechnicalCase)
+            } else {
+                response = await createCase(newTechnicalCase)
+            }
             toast.success("Guardado correctamente")
         } catch (error) {
             setError(error)
@@ -55,67 +63,39 @@ export default function TechnicalCase() {
         }
     }
 
+    const handleGetValue = (id: number) => {
+        const conditionValue = project?.cases?.find(c => c.case_type_id === 1)?.conditions?.find(c => c.condition_id === id)
+        switch(conditionValue?.condition?.type_id) {
+            case 1:
+                return conditionValue.text_value
+            case 2:
+                return conditionValue.number_value
+            case 3:
+                return formatDateToInput(conditionValue.date_value!)
+            case 4:
+                return conditionValue.boolean_value
+            case 5:
+                return conditionValue.option_id
+        }
+    }
+
     useEffect(() => {
         if(state.projects.length) {
             const currentProject = state.projects.find(p => p.id === +projectId!) ?? null
             if(!currentProject) navigate("/projects")
             setProject(currentProject)
+            setNewConditions(currentProject?.cases?.find(c => c.case_type_id === 1)?.conditions ?? [])
         }
     }, [state.projects, projectId])
 
-    useEffect(() => {
-        if(conditions.length) {
-            const newConditionsArray = conditions.map(c => {
-                if(project?.technical_case) {
-                    const technicalCondition = project.technical_case.conditions.find(tc => tc.condition_id === c.id)
-
-                    if(technicalCondition) {
-                        return {
-                            condition_id: technicalCondition.condition_id,
-                            is_active: technicalCondition.is_active,
-                            value: technicalCondition.value   
-                        }
-                    }
-                }
-
-                return {
-                    condition_id: c.id,
-                    is_active: false,
-                    value: ''
-                }
-            })
-            setNewConditions(newConditionsArray)
-        }
-    }, [conditions, project])
-
-    useEffect(() => {
-        const fetchData = async () => {
-            setIsLocalLoading(true)
-            try {
-                const [conditionsData] = await Promise.all([
-                    getConditions()
-                ])
-    
-                if (conditionsData) {
-                    setConditions(conditionsData.filter(c => c.category_id >= 7 && c.category_id <= 10))
-                }
-            } catch (error) {
-                console.log(error)
-            } finally {
-                setIsLocalLoading(false)
-            }
-        }
-        fetchData()
-    }, [])
-
-    if(isLoading || isLocalLoading) return <Loader />
+    if(isLoading) return <Loader />
     
     return (
         <>
             <Breadcrumb list={list} />   
             <h1>Carátula Técnica</h1>
 
-            {!project?.technical_case?.sended_at && (
+            {!project?.cases?.find(c => c.case_type_id === 1)?.sended_at && (
                 <div className="flex g-1">
                     <button className="btn btn-primary" onClick={handleSubmit}>
                         <SaveIcon />
@@ -130,11 +110,11 @@ export default function TechnicalCase() {
             )}
 
             <div className="mt-1">
-                <InputGroup disable value={project?.brand.client.business_name!} label="Arrendamiento" name="business_name" placeholder="Nombre de la empresa" />
+                <InputGroup disable value={project?.brand?.client?.business_name!} label="Arrendamiento" name="business_name" placeholder="Nombre de la empresa" />
 
                 <div className="mt-1 grid grid-cols-2 g-1">
-                    <InputGroup disable value={project?.lands[0].land.cadastral_file!} placeholder="Experiente Catastral" name="cadastral_file" label="Expediente Catastral" />
-                    <InputGroup disable value={project?.lands[0].type.name!} placeholder="Tipo de arrendamiento" name="type" label="Tipo de Arrendamiento" />
+                    <InputGroup disable value={project?.lands?.[0]?.land?.cadastral_file ?? ''} placeholder="Experiente Catastral" name="cadastral_file" label="Expediente Catastral" />
+                    <InputGroup disable value={project?.lands?.[0]?.type?.name ?? ''} placeholder="Tipo de arrendamiento" name="type" label="Tipo de Arrendamiento" />
                 </div>
 
                 <form className="mt-4">
@@ -144,9 +124,10 @@ export default function TechnicalCase() {
                             <h2>Aspectos Técnicos de Arrendamiento</h2>
                             <ConditionsContainer
                                 isNotGrid
+                                handleGetValue={handleGetValue}
                                 newConditions={newConditions}
                                 setNewConditions={setNewConditions} 
-                                conditionsList={conditions.filter(c => c.category_id === 10)} 
+                                conditionsList={state.conditions.filter(c => c.category_id === 10)} 
                                 project={project!} />
                         </div>
                         
@@ -154,9 +135,10 @@ export default function TechnicalCase() {
                             <h2>Servicios de Electricidad</h2>
                             <ConditionsContainer
                                 isNotGrid
+                                handleGetValue={handleGetValue}
                                 newConditions={newConditions}
                                 setNewConditions={setNewConditions} 
-                                conditionsList={conditions.filter(c => c.category_id === 7)} 
+                                conditionsList={state.conditions.filter(c => c.category_id === 7)} 
                                 project={project!} />
                         </div>
                         
@@ -164,9 +146,10 @@ export default function TechnicalCase() {
                             <h2>Servicios de Agua y Drenaje</h2>
                             <ConditionsContainer
                                 isNotGrid
+                                handleGetValue={handleGetValue}
                                 newConditions={newConditions}
                                 setNewConditions={setNewConditions} 
-                                conditionsList={conditions.filter(c => c.category_id === 8)} 
+                                conditionsList={state.conditions.filter(c => c.category_id === 8)} 
                                 project={project!} />
                         </div>
                         
@@ -175,9 +158,10 @@ export default function TechnicalCase() {
                             <ConditionsContainer
                                 isNotGrid
                                 isChecked
+                                handleGetValue={handleGetValue}
                                 newConditions={newConditions}
                                 setNewConditions={setNewConditions} 
-                                conditionsList={conditions.filter(c => c.category_id === 9)} 
+                                conditionsList={state.conditions.filter(c => c.category_id === 9)} 
                                 project={project!} />
                         </div>
                     </div>

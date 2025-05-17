@@ -25,6 +25,7 @@ class LeaseRequestConditionResponse(LeaseRequestConditionBase):
     created_at: datetime
     updated_at: datetime
     condition: Optional[ConditionResponse] = None
+    option_id: Optional[int] = None
     # option: Optional[list[ConditionOptionResponse]] = None
     
     # Para Pydantic v2

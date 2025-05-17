@@ -8,6 +8,7 @@ type ConditionsContainerType = {
     project: Project
     isNotGrid?: boolean
     isChecked?: boolean
+    handleGetValue: (id: number) => string | number | boolean | undefined
 }
 
 export default function ConditionsContainer({ 
@@ -15,19 +16,10 @@ export default function ConditionsContainer({
     newConditions,
     setNewConditions,
     isNotGrid = false,
-    isChecked = false
+    isChecked = false,
+    handleGetValue
 } : ConditionsContainerType) {
     const [inputChecked, setInputChecked] = useState(false)
-
-    const getValue = (id: number) => {
-        const conditionExists = newConditions.find(c => c.condition_id === id)
-        if(conditionExists) {
-            return conditionExists.text_value
-        }
-
-        return;
-    }
-    const getChecked = (id: number) => newConditions.find(c => c.condition_id === id)?.is_active
 
     const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { value, name } = e.target as HTMLInputElement | HTMLSelectElement;
@@ -58,7 +50,7 @@ export default function ConditionsContainer({
         <div className={!isNotGrid ? "conditions-list" : ''}>
             {conditionsList.map(condition => (
                 <div className='condition-container g-2' key={condition.id}>
-                    <label htmlFor={condition.id.toString()}>{condition.name}</label>
+                    <label htmlFor={condition.id.toString()}>{condition.name} <p>{handleGetValue(condition.id)}</p></label>
 
                     {condition.type_id === 1 && (
                         <>
@@ -68,33 +60,35 @@ export default function ConditionsContainer({
                                         <input onChange={(e) => setInputChecked(e.target.checked)} type='checkbox' />
                                         <span className="checkmark"></span>
                                     </div>
-                                    <input className="w-full" disabled={!inputChecked} value={getValue(condition.id)} onChange={handleChange} type='text' name={condition.name} id={condition.id.toString()} placeholder={condition.name} />
+                                    <input className="w-full" disabled={!inputChecked} value={handleGetValue(condition.id) as string | number} onChange={handleChange} type='text' name={condition.name} id={condition.id.toString()} placeholder={condition.name} />
                                 </div>
                             ) : (
-                                <input value={getValue(condition.id)} onChange={handleChange} type='text' name={condition.name} id={condition.id.toString()} placeholder={condition.name} />
+                                <input value={handleGetValue(condition.id) as string} onChange={handleChange} type='text' name={condition.name} id={condition.id.toString()} placeholder={condition.name} />
                             )}
                         </>
                     )}
                     {condition.type_id === 2 && (
-                        <input value={getValue(condition.id)} onChange={handleChange} type='number' name={condition.name} id={condition.id.toString()} placeholder={condition.name} />
+                        <input value={handleGetValue(condition.id) as number} onChange={handleChange} type='number' name={condition.name} id={condition.id.toString()} placeholder={condition.name} />
                     )}
                     {condition.type_id === 3 && (
-                        <input value={getValue(condition.id)} onChange={handleChange} type='date' name={condition.name} id={condition.id.toString()} placeholder={condition.name} />
+                        <input value={handleGetValue(condition.id) as string} onChange={handleChange} type='date' name={condition.name} id={condition.id.toString()} placeholder={condition.name} />
                     )}
                     {condition.type_id === 4 && (
                         <div className='checkbox'>
-                            <input checked={getChecked(condition.id)} onChange={handleChange} type='checkbox' name={condition.name} id={condition.id.toString()} placeholder={condition.name} />
+                            <input checked={handleGetValue(condition.id) as boolean} onChange={handleChange} type='checkbox' name={condition.name} id={condition.id.toString()} placeholder={condition.name} />
                             <span className="checkmark"></span>
                         </div>
                     )}
                     {condition.type_id === 5 && (
-                        <select value={getValue(condition.id)} onChange={handleChange} name={condition.name} id={condition.id.toString()}>
+                        <select value={handleGetValue(condition.id) as number} onChange={handleChange} name={condition.name} id={condition.id.toString()}>
                             <option value="">Selecciona una opción</option>
                             {condition.options?.map(option => (
                                 <option value={option.id} key={option.id}>{option.option_value}</option>
                             ))}
                         </select>
                     )}
+
+                    
                 </div>
             ))}
         </div>

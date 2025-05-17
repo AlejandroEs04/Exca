@@ -10,7 +10,6 @@ import LeaseRequestInformation from '../../components/LeaseRequest/LeaseRequestI
 import ListIcon from '../../components/shared/Icons/ListIcon'
 import DocumentTextIcon from '../../components/shared/Icons/DocumentTextIcon'
 import ActivitiesIcon from '../../components/shared/Icons/ActivitiesIcon'
-import XMark from '../../components/shared/Icons/XMark'
 import { Project as ProjectType } from '../../types'
 
 export default function Project() {
@@ -56,7 +55,7 @@ export default function Project() {
                 )}
                 {(project.stage_id === 3) && (
                     <>
-                        <Link to={`/technical-case/${id}`} className='btn btn-primary w-max'>
+                        <Link to={`/technical-case/${id}/${project.cases?.find(c => c.case_type_id === 1)?.id ?? ''}`} className='btn btn-primary w-max'>
                             <ListIcon />
                             Carátula técnica
                         </Link>

@@ -1,45 +1,15 @@
-import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom'
+import { Link, Outlet, useLocation } from 'react-router-dom'
 import { ToastContainer } from 'react-toastify'
-import { useEffect, useState } from 'react'
-import { getAuth } from '../api/AuthApi'
 import { useAppContext } from '../hooks/AppContext'
 import { motion } from 'framer-motion'
 import Loader from '../components/shared/Loader/Loader'
 
 export default function MainLayout() {
-    const navigate = useNavigate()
     const { pathname } = useLocation()
-    const { dispatch } = useAppContext()
-    const [isLocalLoading, setIsLocalLoading] = useState(false)
+    const { isLoading, handleLogOut } = useAppContext()
 
-    const handleLogOut = () => {
-        localStorage.removeItem('token')
-        navigate('/login');
-    }
-
-    useEffect(() => {
-        const isAuth = async() => {
-            setIsLocalLoading(true)
-            try {
-                const token = localStorage.getItem('token')
-                if(!token) navigate('/login');
-    
-                const response = await getAuth();
-                if(!response) navigate('/login');
-    
-                dispatch({ type: 'set-auth', paypload: { auth: response! } })
-            } catch (error) {
-                navigate('/login');
-            } finally {
-                setIsLocalLoading(false)
-            }
-        }
-        isAuth()
-    }, [])
-    
     return (
         <>
-            {/* <Header /> */}
             <div className='main-layout'>
                 <aside className='aside-navigation'>
                     <div className='nav-container'>
@@ -124,7 +94,7 @@ export default function MainLayout() {
 
                 <div className='main-container'>
                     <main className='container'>
-                        {isLocalLoading ? <Loader /> : (
+                        {isLoading ? <Loader /> : (
                             <motion.div
                                 initial={{ opacity: 0, x: 100 }}     
                                 animate={{ opacity: 1, x: 0 }}   
