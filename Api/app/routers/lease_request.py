@@ -146,10 +146,10 @@ def send_approval(approvalRequest: ApprovalRequestCreate, current_user: User = D
         
     project_exists.status_id = 2
     
-    first_step = db.query(ApprovalFlowStep).where(ApprovalFlowStep.flow_id == approvalRequest.flow_id and ApprovalFlowStep.step_order == 1).first()
+    first_step = db.query(ApprovalFlowStep).where(ApprovalFlowStep.flow_id == approvalRequest.flow_id, ApprovalFlowStep.step_order == 1).first()
 
     if first_step:
-        approval_request = db.query(ApprovalRequest).filter(ApprovalRequest.item_id == approvalRequest.item_id and ApprovalRequest.flow_step_id == first_step.id).first()
+        approval_request = db.query(ApprovalRequest).filter(ApprovalRequest.item_id == approvalRequest.item_id, ApprovalRequest.flow_step_id == first_step.id).first()
         
         if approval_request:
             raise HTTPException(

@@ -209,7 +209,7 @@ export default function LeaseRequest() {
     
         setProject(currentProject)
     
-        const foundRequest = state.requests.find(r => r.project_id === +projectId)
+        const foundRequest = currentProject.lease_request
         if (foundRequest) {
             setNewRequest({
                 project_id: currentProject.id, 
@@ -224,7 +224,7 @@ export default function LeaseRequest() {
 
             setNewConditions(foundRequest.conditions ?? [])
         }
-    }, [projectId, state.projects, state.requests, state.individuals])
+    }, [projectId, state.projects, state.individuals])
   
     if(isLoading || isLocalLoading || !project) return <Loader />
 
@@ -265,7 +265,7 @@ export default function LeaseRequest() {
                 </div>
                 <div className='condition-container'>
                     <label htmlFor="owner">Fecha de solicitud</label>
-                    <input type="date" readOnly disabled />
+                    <input type="date" value={formatDateToInput(project.lease_request?.created_at ?? '')} readOnly disabled />
                 </div>
             </div>
 

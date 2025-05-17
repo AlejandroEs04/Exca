@@ -91,6 +91,7 @@ function App() {
           <Route path="/administration/billing/:id?" element={<FormFacturacion />} />
 
           <Route path="/legal-case/:projectId" element={<LegalCase />} />
+          <Route path="/legal-case/:projectId/:caseId" element={<LegalCase />} />
           
         </Route>
 

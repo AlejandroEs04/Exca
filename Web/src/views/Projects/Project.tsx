@@ -50,9 +50,8 @@ export default function Project() {
             <p className='mt-1'>Estatus: {project.stage?.name}</p>
 
             <div className='mt-1 flex g-1'>
-                {(project.lease_request === null || project.lease_request?.status_id! < 3) && (
-                    <Link to={`/contract-request/${id}/${project.lease_request !== null ? project.lease_request?.id : ''}`} className='btn btn-primary w-max'>Solicitud de contrato</Link>
-                )}
+                <Link to={`/contract-request/${id}/${project.lease_request !== null ? project.lease_request?.id : ''}`} className='btn btn-primary w-max'>Solicitud de contrato</Link>
+
                 {(project.stage_id === 3) && (
                     <>
                         <Link to={`/technical-case/${id}/${project.cases?.find(c => c.case_type_id === 1)?.id ?? ''}`} className='btn btn-primary w-max'>

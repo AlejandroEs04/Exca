@@ -12,11 +12,11 @@ router = APIRouter(prefix="/case", tags=["Cases"])
 
 @router.post("/", response_model=CaseResponse)
 def create_case(case: CaseCreate, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
-    case_exists = db.query(Case).where(Case.project_id == case.project_id and Case.case_type_id == case.case_type_id)
+    case_exists = db.query(Case).where(Case.project_id == case.project_id, Case.case_type_id == case.case_type_id).first()
     
     if case_exists:
         raise HTTPException(
-            status_code=401,
+            status_code=403,
             detail="Ya existe una cáratula para este proyecto"
         )
     

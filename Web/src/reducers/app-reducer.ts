@@ -1,10 +1,9 @@
-import { Client, Condition, Individual, Land, LeaseRequest, Project, User } from "../types";
+import { Client, Condition, Individual, Land, Project, User } from "../types";
 
 export type AppActions =
     { type: 'set-lands', paypload: { lands: Land[] } } |
     { type: 'set-clients', paypload: { clients: Client[] } } | 
     { type: 'set-projects', paypload: { projects: Project[] } } |
-    { type: 'set-lease-request', paypload: { requests: LeaseRequest[] } } |
     { type: 'set-users', paypload: { users: User[] } } |
     { type: 'set-auth', paypload: { auth: User } } |
     { type: 'set-individual', paypload: { individuals: Individual[] } } | 
@@ -14,7 +13,6 @@ export type AppState = {
     clients: Client[]
     lands: Land[]
     projects: Project[]
-    requests: LeaseRequest[]
     users: User[],
     auth: User | null,
     individuals: Individual[]
@@ -25,7 +23,6 @@ export const initialState: AppState = {
     clients: [],
     lands: [], 
     projects: [], 
-    requests: [], 
     users: [], 
     auth: null,
     individuals: [], 
@@ -40,8 +37,6 @@ export const AppReducer = (state: AppState, action: AppActions): AppState => {
             return { ...state, lands: action.paypload.lands }
         case 'set-projects':
             return { ...state, projects: action.paypload.projects }
-        case 'set-lease-request':
-            return { ...state, requests: action.paypload.requests }
         case 'set-users':
             return { ...state, users: action.paypload.users }
         case 'set-auth':

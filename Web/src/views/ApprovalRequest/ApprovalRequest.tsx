@@ -54,35 +54,38 @@ export default function ApprovalRequest() {
             <Breadcrumb list={list} /> 
             <h1>Aprobaciones pendientes</h1>
 
-            <table>
-                <thead>
-                    <tr>
-                        <th>Id</th>
-                        <th>Flow</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    {requests?.filter(r => r.response === null).map(r => (
-                        <tr key={r.id} onDoubleClick={() => navigateApprovation(r.id)}>
-                            <td>{r.id}</td>
-                            <td>{r.flow_step?.flow?.name}</td>
-                            <td>
-                                <div className="table-actions">
-                                    <button onClick={() => handleResponse(r.id, true)}>
-                                        <CheckIcon color="text-green" />
-                                    </button>
-
-                                    <button onClick={() => handleResponse(r.id, false)}>
-                                        <XMark color="text-red" />
-                                    </button>
-                                </div>
-                            </td>
+            {requests?.filter(r => r.response === null).length === 0 ? (
+                <h3>No tiene aprobaciones pendientes</h3>
+            ) : (            
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Flow</th>
+                            <th>Acciones</th>
                         </tr>
-                    ))}
-                </tbody>
-            </table>
+                    </thead>
+
+                    <tbody>
+                        {requests?.filter(r => r.response === null).map(r => (
+                            <tr key={r.id} onDoubleClick={() => navigateApprovation(r.id)}>
+                                <td>{r.id}</td>
+                                <td>{r.flow_step?.flow?.name}</td>
+                                <td>
+                                    <div className="table-actions">
+                                        <button onClick={() => handleResponse(r.id, true)}>
+                                            <CheckIcon color="text-green" />
+                                        </button>
+                                        <button onClick={() => handleResponse(r.id, false)}>
+                                            <XMark color="text-red" />
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            )}
         </>
     )
 }

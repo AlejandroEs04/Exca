@@ -50,7 +50,7 @@ export default function ConditionsContainer({
         <div className={!isNotGrid ? "conditions-list" : ''}>
             {conditionsList.map(condition => (
                 <div className='condition-container g-2' key={condition.id}>
-                    <label htmlFor={condition.id.toString()}>{condition.name} <p>{handleGetValue(condition.id)}</p></label>
+                    <label htmlFor={condition.id.toString()}>{condition.name}</label>
 
                     {condition.type_id === 1 && (
                         <>

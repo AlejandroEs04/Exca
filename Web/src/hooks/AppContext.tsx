@@ -3,7 +3,6 @@ import { AppActions, AppReducer, AppState, initialState } from "../reducers/app-
 import { getLands } from '../api/LandApi';
 import { getClient } from '../api/ClientApi';
 import { getProjects } from '../api/ProjectApi';
-import { getRequests } from '../api/LeaseRequestApi';
 import { getUsers } from '../api/UserApi';
 import { toast } from 'react-toastify';
 import { getIndividuals } from '../api/IndividualApi';
@@ -87,17 +86,15 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
                 const clients = await getClient()
                 const lands = await getLands()
                 const projects = await getProjects()
-                const requests = await getRequests()
                 const users = await getUsers()
                 const individuals = await getIndividuals()
                 const conditions = await getConditions()
     
-                if (!clients || !lands || !projects || !requests || !users || !individuals || !conditions) return
+                if (!clients || !lands || !projects || !users || !individuals || !conditions) return
     
                 dispatch({ type: 'set-clients', paypload: { clients } })
                 dispatch({ type: 'set-lands', paypload: { lands } })
                 dispatch({ type: 'set-projects', paypload: { projects } })
-                dispatch({ type: 'set-lease-request', paypload: { requests } })
                 dispatch({ type: 'set-users', paypload: { users } })
                 dispatch({ type: 'set-individual', paypload: { individuals } })
                 dispatch({ type: 'set-conditions', paypload: { conditions } })
