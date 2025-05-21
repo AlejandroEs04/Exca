@@ -9,6 +9,7 @@ class UserBase(BaseModel):
     email: EmailStr
     rol_id: int
     area_id: int
+    user_title_id: int
     
 class UserCreate(UserBase):
     password: str

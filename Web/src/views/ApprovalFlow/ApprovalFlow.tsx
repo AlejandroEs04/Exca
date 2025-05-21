@@ -17,7 +17,7 @@ import { ApprovalFlowCreate, ApprovalFlowStepCreate, ApprovalFlow as ApprovalFlo
 import { useAppContext } from "../../hooks/AppContext";
 import Breadcrumb from "../../components/shared/Breadcrumb/Breadcrumb";
 import SaveIcon from "../../components/shared/Icons/SaveIcon";
-import InputGroup, { Option, PushEvent } from "../../components/forms/InputGroup";
+import InputGroup, { Option } from "../../components/forms/InputGroup";
 import SelectGroup from "../../components/forms/SelectGroup";
 import TrashIcon from "../../components/shared/Icons/TrashIcon";
 import { useNavigate, useParams } from "react-router-dom";
@@ -73,7 +73,7 @@ export default function ApprovalFlow() {
         steps: []
     })
     const [userId, setUserId] = useState(0)
-    const { state, setIsLoading, isLoading } = useAppContext()
+    const { state, isLoading } = useAppContext()
     const { id } = useParams()
     const navigate = useNavigate()
 
@@ -167,11 +167,8 @@ export default function ApprovalFlow() {
         setApprovers(approvers);
     }, [state.users, flow]);
 
-
-
     useEffect(() => {
         const getInfo = async() => {
-            setIsLoading(true)
             try {
                 const flows = await getFlows()
                 if(!flows) return
@@ -184,8 +181,6 @@ export default function ApprovalFlow() {
                 setFlow(currentFlow)
             } catch (error) {
                 console.log(error)
-            } finally {
-                setIsLoading(false)
             }
         }
         getInfo()

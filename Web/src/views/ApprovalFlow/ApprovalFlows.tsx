@@ -2,9 +2,7 @@ import { Link } from "react-router-dom"
 import Breadcrumb from "../../components/shared/Breadcrumb/Breadcrumb"
 import { useEffect, useState } from "react"
 import { ApprovalFlow } from "../../types"
-import { useAppContext } from "../../hooks/AppContext"
 import { getFlows } from "../../api/ApprovalFlowApi"
-import Loader from "../../components/shared/Loader/Loader"
 import EditIcon from "../../components/shared/Icons/EditIcon"
 
 export default function ApprovalFlows() {
@@ -15,27 +13,21 @@ export default function ApprovalFlows() {
     ]
 
     const [flows, setFlows] = useState<ApprovalFlow[]>([])
-    const { setIsLoading, isLoading } = useAppContext()
 
     useEffect(() => {
         const getInfo = async() => {
-            setIsLoading(true)
             try {
+                console.log("hola")
                 const flows = await getFlows()
+                console.log(flows)
                 if(!flows) return
-    
                 setFlows(flows)
             } catch (error) {   
                 console.log(error)
-            } finally {
-                setIsLoading(false)
             }
         }
-
         getInfo()
     }, [])
-
-    if(isLoading) return <Loader />
 
     return (
         <>
@@ -58,7 +50,8 @@ export default function ApprovalFlows() {
                             <td>{flow.name}</td>
                             <td>
                                 <div className="table-actions">
-                                    <Link to={`edit/${flow.id}`} className="text-blue"><EditIcon /></Link>                                </div>
+                                    <Link to={`edit/${flow.id}`} className="text-blue"><EditIcon /></Link>                                
+                                </div>
                             </td>
                         </tr>
                     ))}

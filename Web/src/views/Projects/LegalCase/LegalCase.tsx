@@ -49,7 +49,7 @@ const handleSubmit = async() => {
                 throw new Error("No case returned from API");
             }
             dispatch({ type: 'set-projects', 
-                paypload: { projects: state.projects.map(p => p.id !== +projectId! ? p : { ...p, cases: p.cases?.map(c => c.case_type_id !== 2 ? c : response) }) } })
+                payload: { projects: state.projects.map(p => p.id !== +projectId! ? p : { ...p, cases: p.cases?.map(c => c.case_type_id !== 2 ? c : response) }) } })
             navigate(`/legal-case/${projectId}/${response.id}`)
             toast.success("Guardado correctamente")
         } catch (error) {
@@ -63,7 +63,7 @@ const handleSubmit = async() => {
             const response = await sendCase(+projectId!)
             dispatch({ 
                 type: 'set-projects', 
-                paypload: { projects: state.projects.map(project => project.id !== +projectId! ? project : { ...project, technical_case: response! }) } 
+                payload: { projects: state.projects.map(project => project.id !== +projectId! ? project : { ...project, technical_case: response! }) } 
             })
             toast.success("Enviado correctamente")
         } catch (error) {

@@ -73,7 +73,7 @@ export default function FormLand() {
                 }
                 dispatch({
                     type: 'set-lands',
-                    paypload: {
+                    payload: {
                         lands: state.lands.map(l => l.id === updatedLand.id ? updatedLand : l)
                     }
                 });

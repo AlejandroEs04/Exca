@@ -46,7 +46,7 @@ export default function CreateClient() {
 
         try {
             const newClient = await createClient(client);
-            dispatch({ type: 'set-clients', paypload: { clients : [...state.clients, newClient!] } })
+            dispatch({ type: 'set-clients', payload: { clients : [...state.clients, newClient!] } })
 
             const returnUrl = searchParams.get('return_url')
             if(returnUrl) {

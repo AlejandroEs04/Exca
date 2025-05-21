@@ -55,7 +55,7 @@ export default function TechnicalCase() {
             const response = await sendTechnicalCase(+projectId!)
             dispatch({ 
                 type: 'set-projects', 
-                paypload: { projects: state.projects.map(project => project.id !== +projectId! ? project : { ...project, technical_case: response! }) } 
+                payload: { projects: state.projects.map(project => project.id !== +projectId! ? project : { ...project, technical_case: response! }) } 
             })
             toast.success("Enviado correctamente")
         } catch (error) {

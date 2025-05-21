@@ -49,7 +49,7 @@ export default function CreateLand() {
 
         try {
             const newLand = await registerLand(land)
-            dispatch({ type: 'set-lands', paypload: { lands : [...state.lands, newLand!] } })
+            dispatch({ type: 'set-lands', payload: { lands : [...state.lands, newLand!] } })
             navigate('/lands')
 
             toast.success("Terreno creado correctamente")

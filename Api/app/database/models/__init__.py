@@ -1,6 +1,7 @@
 from app.database.models.user_rol import UserRol
 from app.database.models.area import Area
 from app.database.models.user import User
+from app.database.models.user_title import UserTitle
 from app.database.models.client_type import ClientType
 from app.database.models.business_turn import BusinessTurn
 from app.database.models.document import Document

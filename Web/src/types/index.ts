@@ -7,6 +7,11 @@ export type UserRol = {
     name: string;
 }
 
+export type UserTitle = {
+    id: number
+    name: string
+}
+
 export type UserRolCreate = Pick<UserRol, 'name'>;
 
 // Area
@@ -25,11 +30,14 @@ export type User = {
     rol_id: number;
     area_id: number;
     hashed_password: string;
+    user_title_id: number
     rol?: UserRol;
     area?: Area;
 }
 
-export type UserCreate = Pick<User, 'full_name' | 'email' | 'rol_id' | 'area_id' | 'hashed_password'>;
+export type UserCreate = Pick<User, 'full_name' | 'email' | 'rol_id' | 'area_id' | 'user_title_id'> & {
+    password: string
+};
 export type UserUpdate = Partial<UserCreate>;
 
 // Client Type
