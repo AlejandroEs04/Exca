@@ -1,24 +1,35 @@
-from sqlalchemy import Column, Integer, String, Float, ForeignKey, DateTime, func
+from sqlalchemy import Boolean, Column, Integer, String, Float, ForeignKey, DateTime, func
 from sqlalchemy.orm import relationship
 from app.database.connection import Base
 
 class Land(Base):
     __tablename__ = "land"
     
-    id = Column(Integer, primary_key=True, index=True)
-    cadastral_file = Column(String, nullable=False)
-    area = Column(Float, nullable=False)
-    build_area = Column(Float, nullable=False)
-    price_per_area = Column(Float, nullable=False)
-    address = Column(String, nullable=False)
-    residential_development_id = Column(Integer, ForeignKey("residential_development.id"), nullable=False)
-    cadastral_value = Column(Float, nullable=True)
-    predial_payment = Column(Float, nullable=True)
-    global_status = Column(Integer, nullable=True)
-    name_last_update = Column(String, nullable=True)
-    path_predial_file = Column(String, nullable=True)
-    created_at = Column(DateTime, nullable=False, server_default=func.now())
-    updated_at = Column(DateTime, nullable=False, server_default=func.now(), onupdate=func.now())
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    municipality_id = Column(Integer, ForeignKey('municipios.id'), nullable=True)
+    state_id = Column(Integer, ForeignKey('estados.id'), nullable=True)
+    residential_development_id = Column(Integer, ForeignKey('residential_development.id'), nullable=True)
+    land_type_id = Column(Integer, ForeignKey('land_types.id'), nullable=True) 
+    category_id = Column(Integer, ForeignKey('land_categories.id'), nullable=True)
+    owner_company_id = Column(Integer, ForeignKey('owner.id'), nullable=True)
+    tax_payer_company_id = Column(Integer, ForeignKey('owner.id'), nullable=True)
+    user_last_update_id = Column(Integer, ForeignKey('user.id'), nullable=True)
+    status_id = Column(Integer, ForeignKey('land_statuses.id'), nullable=True)
+    is_trust_owned = Column(Boolean, nullable=True)
+    cadastral_file = Column(String(20), nullable=True)
+    block_lot = Column(String(30), nullable=True)
+    address = Column(String(255), nullable=True)
+    area = Column(Float, nullable=True)
+    built_area = Column(Float, nullable=True)
+    comments = Column(String(255), nullable=True)
+    has_water_service = Column(Boolean, nullable=True)
+    has_drainage_service = Column(Boolean, nullable=True)
+    has_cfe_service = Column(Boolean, nullable=True)
+    notes = Column(String(255), nullable=True)
+    incorporation = Column(String(50), nullable=True)
+    incorporation_notes = Column(String(255), nullable=True)
+    created_at = Column(DateTime, server_default="GETDATE()", nullable=False)
+    updated_at = Column(DateTime, server_default="GETDATE()", onupdate="GETDATE()", nullable=False)
     
     projects = relationship("ProjectLand", back_populates="land")
     residential_development = relationship("ResidentialDevelopment", back_populates="land")
