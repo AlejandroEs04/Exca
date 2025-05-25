@@ -5,9 +5,12 @@ class ResidentialDevelopmentSchema(BaseModel):
     name: str
     city: str
     state: str
-    
+
 class ResidentialDevelopmentCreate(ResidentialDevelopmentSchema):
     pass
+
+class ResidentialDevelopmentUpdate(ResidentialDevelopmentSchema):
+    id: int
 
 class ResidentialDevelopmentResponse(ResidentialDevelopmentSchema):
     id: int
