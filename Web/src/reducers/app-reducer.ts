@@ -2,6 +2,7 @@ import { Client, Condition, Individual, Land, Project, User } from "../types";
 
 export type AppActions =
     { type: 'set-lands', paypload: { lands: Land[] } } |
+    { type: 'add-land'; payload: Land } |
     { type: 'set-clients', paypload: { clients: Client[] } } | 
     { type: 'set-projects', paypload: { projects: Project[] } } |
     { type: 'set-users', paypload: { users: User[] } } |
@@ -35,6 +36,8 @@ export const AppReducer = (state: AppState, action: AppActions): AppState => {
             return { ...state, clients: action.paypload.clients }
         case 'set-lands':
             return { ...state, lands: action.paypload.lands }
+        case 'add-land':
+            return { ...state, lands: [...state.lands, action.payload] };
         case 'set-projects':
             return { ...state, projects: action.paypload.projects }
         case 'set-users':
