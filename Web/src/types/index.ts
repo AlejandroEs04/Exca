@@ -177,32 +177,49 @@ export type ResidentialDevelopmentUpdate = Partial<ResidentialDevelopmentCreate>
 
 // Land
 export type Land = {
-    id: number;
-    cadastral_file: string;
-    area: number;
-    build_area: number;
-    price_per_area: number;
-    address: string;
-    residential_development_id: number;
-    municipio?: string;
-    cadastral_value?: number;
-    predial_payment?: number;
-    global_status?: number;
-    name_last_update?: string;
-    path_predial_file?: string;
-    created_at: string;
-    updated_at: string;
-    residential_development?: ResidentialDevelopment;
-    project_lands?: ProjectLand[];
-}
+  id: number;
+  municipality_id?: number;
+  state_id?: number;
+  land_type_id?: number;
+  category_id?: number;
+  owner_company_id?: number;
+  tax_payer_company_id?: number;
+  user_last_update_id?: number;
+  status_id?: number;
+  cadastral_file?: string;
+  block_lot?: string;
+  address?: string;
+  area?: number;
+  built_area?: number;
+  comments?: string;
+  has_water_service?: boolean;
+  has_drainage_service?: boolean;
+  has_cfe_service?: boolean;
+  is_trust_owned?: boolean;
+  notes?: string;
+  incorporation?: string;
+  incorporation_notes?: string;
+  residential_development_id?: number;
+  created_at: string;
+  updated_at: string;
+  residential_development?: ResidentialDevelopment;
+  project_lands?: ProjectLand[];
+};
 
-export type LandCreate = 
-    Pick<Land, 'cadastral_file' | 'area' | 'build_area' | 'price_per_area' | 'address' | 'cadastral_value' | 'predial_payment'> & {
-        residential_development_name: string
-        city: string
-        state: string
-    };
-export type LandUpdate = Partial<LandCreate>;
+// For creating a new Land
+export type LandCreate = Omit<
+  Land,
+  "id" | "created_at" | "updated_at" | "residential_development" | "project_lands"
+> & {
+  residential_development_id: number;
+};
+
+// For updating an existing Land
+export type LandUpdate = Partial<
+  Omit<Land, "created_at" | "updated_at" | "residential_development" | "project_lands"
+> & { id: number }
+>;
+
 
 // Stage
 export type Stage = {
@@ -577,6 +594,39 @@ export type AuthResponse = {
 }
 
 export type City = {
-    id: number
-    descripcion: string
-}
+  id: number;
+  id_estado: number;
+  clave_municipio: number;
+  descripcion: string;
+};
+
+export type State = {
+  id: number;
+  clave_estado: number;
+  abreviacion_estado: string;
+  descripcion: string;
+  municipios?: City[];
+};
+
+export type LandType = {
+  id: number;
+  description: string;
+  created_at: string;
+  updated_at: string;
+};
+
+export type LandCategory = {
+  id: number;
+  description: string;
+  created_at: string;
+  updated_at: string;
+};
+
+
+
+export type LandStatus = {
+  id: number;
+  description: string;
+  created_at: string;
+  updated_at: string;
+};
