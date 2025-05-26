@@ -1,6 +1,7 @@
 from sqlalchemy import Boolean, Column, Integer, String, Float, ForeignKey, DateTime, func
 from sqlalchemy.orm import relationship
 from app.database.connection import Base
+from datetime import datetime
 
 class Land(Base):
     __tablename__ = "land"

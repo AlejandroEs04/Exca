@@ -94,7 +94,7 @@ export default function LeaseRequest() {
             } else {
                 response = await createRequest({...newRequest, project_id: +projectId!})
             }
-            dispatch({ type: 'set-projects', paypload: { projects: state.projects.map(p => p.id !== response?.project_id ? p : { ...p, lease_request: response }) } })
+            dispatch({ type: 'set-projects', payload: { projects: state.projects.map(p => p.id !== response?.project_id ? p : { ...p, lease_request: response }) } })
             toast.success("Cambios Guardados Correctamente")
             navigate(`/projects/${response?.project_id}`)
         } catch (error) {

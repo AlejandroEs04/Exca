@@ -1,6 +1,6 @@
 import { isAxiosError } from "axios"
 import api from "../lib/axios"
-import { Area, UserRol, User, UserCreate } from "../types"
+import { Area, UserRol, User, UserCreate, UserTitle } from "../types"
 
 export async function getUsers() {
     try {
@@ -38,6 +38,17 @@ export async function getAreas() {
 export async function getRoles() {
     try {
         const { data } = await api<UserRol[]>('/rol')
+        return data
+    } catch (error) {
+        if(isAxiosError(error) && error.response) {
+            throw new Error(error.response.data.error)
+        }
+    }
+}
+
+export async function getTitles() {
+    try {
+        const { data } = await api<UserTitle[]>('/user/titles')
         return data
     } catch (error) {
         if(isAxiosError(error) && error.response) {

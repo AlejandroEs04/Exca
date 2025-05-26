@@ -19,7 +19,7 @@ export default function Clients() {
             await deleteClient(id)
 
             const newClients = state.clients.filter((client) => client.id !== id)
-            dispatch({ type: 'set-clients', paypload: { clients: newClients } })
+            dispatch({ type: 'set-clients', payload: { clients: newClients } })
         } catch (error) {
             // SET AN ALERT
         }

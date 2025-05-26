@@ -21,4 +21,4 @@ class CaseResponse(CaseBase):
     conditions: list[CaseConditionResponse]
     
     class config:
-        orm_mode = True
+        from_attributes = True

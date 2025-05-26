@@ -7,9 +7,6 @@ class ApprovalRequestBase(BaseModel):
 class ApprovalRequestCreate(ApprovalRequestBase):
     flow_id: int
 
-class ApprovalRequestResponse(BaseModel):
-    id: int
-    response: bool
 
 class ApprovalRequestResponse(ApprovalRequestBase):
     id: int

@@ -17,6 +17,7 @@ interface AppContextProps {
     isLoading: boolean
     setIsLoading: React.Dispatch<React.SetStateAction<boolean>>
     setError: (error: any) => void
+    checkToken: () => Promise<void>
     handleLogOut: () => void
 }
 
@@ -28,7 +29,6 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     const navigate = useNavigate()
 
     const setError = (error: any) => {
-        console.log(error.message)
         if (error instanceof Error) {
             toast.error(error.message)
         } else {
@@ -69,7 +69,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
                 return
             }
 
-            dispatch({ type: 'set-auth', paypload: { auth: response } });
+            dispatch({ type: 'set-auth', payload: { auth: response } });
         } catch (error) {
             navigate('/login');
         } finally {
@@ -77,38 +77,67 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         }
     };
 
-    useEffect(() => {
-        const getInitials = async() => {
-            await checkToken();
-            setIsLoading(true)
+    const getInitials = async () => {
+        setIsLoading(true)
 
-            try {
-                const clients = await getClient()
-                const lands = await getLands()
-                const projects = await getProjects()
-                const users = await getUsers()
-                const individuals = await getIndividuals()
-                const conditions = await getConditions()
-    
-                if (!clients || !lands || !projects || !users || !individuals || !conditions) return
-    
-                dispatch({ type: 'set-clients', paypload: { clients } })
-                dispatch({ type: 'set-lands', paypload: { lands } })
-                dispatch({ type: 'set-projects', paypload: { projects } })
-                dispatch({ type: 'set-users', paypload: { users } })
-                dispatch({ type: 'set-individual', paypload: { individuals } })
-                dispatch({ type: 'set-conditions', paypload: { conditions } })
-            } catch(error) {
-                handleError(error)
-            } finally {
-                setIsLoading(false)
+        try {
+            // Carga los datos importantes primero
+            const [
+                projects,
+                clients,
+                lands,
+                users,
+                individuals
+            ] = await Promise.all([
+                getProjects(),
+                getClient(),
+                getLands(),
+                getUsers(),
+                getIndividuals()
+            ])
+
+            if(!clients || !lands || !projects || !users || !individuals) return 
+
+            dispatch({ type: 'set-clients', payload: { clients } })
+            dispatch({ type: 'set-lands', payload: { lands } })
+            dispatch({ type: 'set-projects', payload: { projects } })
+            dispatch({ type: 'set-users', payload: { users } })
+            dispatch({ type: 'set-individual', payload: { individuals } })
+
+            const conditionString = localStorage.getItem('conditions')
+            if(conditionString) {
+                const conditionsLocal = JSON.parse(conditionString)
+                dispatch({ type: 'set-conditions', payload: { conditions: conditionsLocal } })
+                return
+            } else {
+                getConditions().then((conditions) => {
+                    if(conditions)
+                        dispatch({ type: 'set-conditions', payload: { conditions } })
+                        localStorage.setItem('conditions', JSON.stringify(conditions))
+                }).catch((error) => {
+                    console.error("Error loading conditions:", error)
+                })
             }
+
+        } catch (error) {
+            handleError(error)
+        } finally {
+            setIsLoading(false)
         }
-        getInitials()
+    }
+
+    useEffect(() => {
+        if(state.auth) getInitials()
+    }, [state.auth])
+
+    useEffect(() => {
+        const getAuth = async() => await checkToken();
+
+        getAuth()
     }, [])
 
     return (
-        <AppContext.Provider value={{ state, dispatch, isLoading, setIsLoading, setError, handleLogOut }}>
+        <AppContext.Provider value={{ state, dispatch, isLoading, setIsLoading, setError, handleLogOut, checkToken }}>
             {children}
         </AppContext.Provider>
     );

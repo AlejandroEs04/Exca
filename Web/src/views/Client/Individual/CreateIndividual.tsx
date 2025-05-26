@@ -42,7 +42,7 @@ export default function CreateIndividual() {
 
         try {
             const newIndividual = await createIndividuals(individual);
-            dispatch({ type: 'set-individual', paypload: { individuals : [...state.individuals, newIndividual!] } })
+            dispatch({ type: 'set-individual', payload: { individuals : [...state.individuals, newIndividual!] } })
         
             const returnUrl = searchParams.get('return_url')
             if(returnUrl) {
