@@ -10,4 +10,4 @@ class RolResponse(RolBase):
     id: int
     
     class config:
-        from_attributes: True
+        from_attributes = True
