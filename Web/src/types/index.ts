@@ -173,14 +173,16 @@ export type IndividualDocumentCreate = Pick<IndividualDocument, 'individual_id' 
 export type ResidentialDevelopment = {
     id: number;
     name: string;
-    city: string;
-    state: string;
+    id_city: number;
+    id_state: number;
+    city:  City;
+    state: State;
     created_at: string;
     updated_at: string;
     lands?: Land[];
 }
 
-export type ResidentialDevelopmentCreate = Pick<ResidentialDevelopment, 'name' | 'city' | 'state'>;
+export type ResidentialDevelopmentCreate = Pick<ResidentialDevelopment, 'name' | 'id_city' | 'id_state'>;
 export type ResidentialDevelopmentUpdate = Partial<ResidentialDevelopmentCreate>;
 
 // Land
@@ -211,20 +213,21 @@ export type Land = {
   created_at: string;
   updated_at: string;
   residential_development?: ResidentialDevelopment;
+  land_status?: LandStatus 
   project_lands?: ProjectLand[];
 };
 
 // For creating a new Land
 export type LandCreate = Omit<
   Land,
-  "id" | "created_at" | "updated_at" | "residential_development" | "project_lands"
+  "id" | "created_at" | "updated_at" | "residential_development" | "project_lands" | "land_status" 
 > & {
   residential_development_id: number;
 };
 
 // For updating an existing Land
 export type LandUpdate = Partial<
-  Omit<Land, "created_at" | "updated_at" | "residential_development" | "project_lands"
+  Omit<Land, "created_at" | "updated_at" | "residential_development" | "project_lands" | "land_status"
 > & { id: number }
 >;
 
