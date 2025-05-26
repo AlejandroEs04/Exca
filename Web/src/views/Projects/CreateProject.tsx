@@ -112,7 +112,7 @@ export default function CreateProject() {
 
         try {
             const newProject = await registerProject(project)
-            dispatch({ type: 'set-projects', paypload: { projects: [...state.projects, newProject] }})
+            dispatch({ type: 'set-projects', payload: { projects: [...state.projects, newProject] }})
             navigate('/projects')
 
             toast.success("Projecto creado correctamente")
@@ -145,7 +145,7 @@ export default function CreateProject() {
                 const newBrand = await createBrand({ name: newLabel, client_id: clientId })
 
                 if(newBrand) {
-                    dispatch({ type: 'set-clients', paypload: { clients: state.clients.map(c => c.id === clientId ? { ...c, brands: [...c.brands!, newBrand] } : c) } })
+                    dispatch({ type: 'set-clients', payload: { clients: state.clients.map(c => c.id === clientId ? { ...c, brands: [...c.brands!, newBrand] } : c) } })
 
                     setProject({
                         ...project, 

@@ -3,6 +3,7 @@ import InputGroup, { PushEvent } from '../../components/forms/InputGroup'
 import { login } from '../../api/AuthApi'
 import { toast } from 'react-toastify'
 import { useNavigate } from 'react-router-dom'
+import { useAppContext } from '../../hooks/AppContext'
 
 export default function Login() {
     const [auth, setAuth] = useState({
@@ -10,6 +11,7 @@ export default function Login() {
         password: ''
     })
     const navigate = useNavigate()
+    const { checkToken } = useAppContext()
 
     const handleChange = (e: ChangeEvent<HTMLInputElement> | PushEvent) => {
         const { value, name } = e.target
@@ -22,12 +24,14 @@ export default function Login() {
 
     const handleSubmit = async(e: FormEvent) => {
         e.preventDefault()
-        
+
         try {
             const token = await login(auth)
             
             if(token)
                 localStorage.setItem("token", token)
+
+            checkToken()
 
             navigate('/')
         } catch (error) {
@@ -61,7 +65,7 @@ export default function Login() {
                     name='password'
                     placeholder='Contraseña' />
 
-                <button className='btn btn-primary w-max mt-1'>Iniciar Sesión</button>
+                <button type='submit' className='btn btn-primary w-max mt-1'>Iniciar Sesión</button>
             </form>
         </>
     )

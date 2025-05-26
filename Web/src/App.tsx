@@ -36,6 +36,10 @@ import TechnicalCase from "./views/Projects/TechnicalCase/TechnicalCase"
 import LeaseRequest from "./views/Projects/LeaseRequest/LeaseRequest"
 import LegalCase from "./views/Projects/LegalCase/LegalCase"
 import CreateIndividual from "./views/Client/Individual/CreateIndividual"
+import EditUser from "./views/User/EditUser"
+import NotificationSystems from "./views/Settings/NotificationSystem/NotificationSystems"
+import UpdateNotificationSystem from "./views/Settings/NotificationSystem/UpdateNotificationSystem"
+import CreateNotificationSystem from "./views/Settings/NotificationSystem/CreateNotificationSystem"
 
 
 function App() {
@@ -50,6 +54,7 @@ function App() {
           <Route path="/settings" element={<Settings />} />
           <Route path="/settings/users" element={<Users />} />
           <Route path="/settings/users/create" element={<CreateUser />} />
+          <Route path="/settings/users/edit/:id" element={<EditUser />} />
 
           <Route path="/projects" element={<Projects />} />
           <Route path="/projects/:id" element={<Project />} />
@@ -73,6 +78,9 @@ function App() {
 
           <Route path="/settings/approval-flows" element={<ApprovalFlows />} />
           <Route path="/settings/approval-flows/edit/:id" element={<ApprovalFlow />} />
+          <Route path="/settings/notification-systems" element={<NotificationSystems />} />
+          <Route path="/settings/notification-systems/create" element={<CreateNotificationSystem />} />
+          <Route path="/settings/notification-systems/edit/:id" element={<UpdateNotificationSystem />} />
 
           <Route path="/approval-requests" element={<ApprovalRequest />} />
 

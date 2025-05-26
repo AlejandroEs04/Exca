@@ -20,6 +20,7 @@
   --bg-touched: #c7c7c73d;
   --bg-hover-touched: #c7c7c754;
   --nav-background: #e7e7e7;
+  --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
 }
 * {
   margin: 0;

@@ -1,15 +1,33 @@
 .nav {
     display: flex;
-    gap: 0.5rem;
+    flex-direction: column;
+    background-color: var(--white);
+    border-radius: 10px;
+    box-shadow: var(--shadow);
 }
 .nav a {
-    background-color: var(--light-transparent);
-    padding: 2px 8px;
-    border-radius: 10px;
-    color: var(--white);
+    padding: 10px;
+    color: var(--black);
     transition: all ease-in-out 0.2s;
     font-size: 1.15rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+}
+.nav a div {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.nav a:first-of-type {
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+.nav a:last-of-type {
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
 }
 .nav a:hover {
-    background-color: var(--light-gray);
+    background-color: var(--bg-hover-touched);
 }

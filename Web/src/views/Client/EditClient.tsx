@@ -57,7 +57,7 @@ export default function EditClient() {
                 return client
             })
 
-            dispatch({ type: 'set-clients', paypload: { clients : newClients } })
+            dispatch({ type: 'set-clients', payload: { clients : newClients } })
             navigate('/clients')
 
             toast.success("Cliente actualizado correctamente")
