@@ -36,19 +36,19 @@ export const initialState: AppState = {
 export const AppReducer = (state: AppState, action: AppActions): AppState => {
     switch (action.type) {
         case 'set-clients':
-            return { ...state, clients: action.payload.clients }
+            return { ...state, clients: action.paypload.clients }
         case 'set-lands':
             return { ...state, lands: action.paypload.lands }
         case 'set-projects':
-            return { ...state, projects: action.payload.projects }
+            return { ...state, projects: action.paypload.projects }
         case 'set-users':
-            return { ...state, users: action.payload.users }
+            return { ...state, users: action.paypload.users }
         case 'set-auth':
-            return { ...state, auth: action.payload.auth }
+            return { ...state, auth: action.paypload.auth }
         case 'set-individual':
-            return { ...state, individuals: action.payload.individuals }
+            return { ...state, individuals: action.paypload.individuals }
         case 'set-conditions':
-            return { ...state, conditions: action.payload.conditions }
+            return { ...state, conditions: action.paypload.conditions }
         case 'set-notification-systems':
             return { ...state, notificationSystems: action.payload.notificationSystems }
         default:
