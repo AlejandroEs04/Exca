@@ -18,5 +18,5 @@ class ProjectLandResponse(ProjectLandBase):
     project_id: int
     land: LandResponse
     
-    class Config:
-        orm_mode = True
+    class config:
+        from_attributes = True

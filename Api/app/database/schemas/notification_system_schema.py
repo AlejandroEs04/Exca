@@ -15,4 +15,4 @@ class NotificationSystemResponse(NotificationSystemSchema):
     recipients: list[NotificationSystemRecipientResponse] = []
     
     class config:
-        orm_mode=True
+        from_attributes = True

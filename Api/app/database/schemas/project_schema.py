@@ -44,5 +44,5 @@ class ProjectDocResponse(ProjectBase):
     stage: StageResponse
     status: StatusResponse
     
-    class Config:
-        orm_mode = True
+    class config:
+        from_attributes = True
