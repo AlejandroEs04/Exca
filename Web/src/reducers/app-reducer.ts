@@ -56,8 +56,4 @@ export const AppReducer = (state: AppState, action: AppActions): AppState => {
         default:
             return state;
     }
-<<<<<<< HEAD
 };
-=======
-};
->>>>>>> dea7b60ab21d74e04a0785fba11b8f3744308705
