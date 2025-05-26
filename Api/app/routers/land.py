@@ -51,14 +51,11 @@ def create_land(land: LandCreate, db: Session = Depends(get_db)):
 
 @router.post("/updateLand", response_model=LandResponse)
 def update_land(land: LandUpdate, db: Session = Depends(get_db)):
-    # Buscar el objeto 'Land' por su ID
     existing_land = db.query(Land).filter(Land.id == land.id).first()
 
-    # Verificar que el objeto exista
     if not existing_land:
         raise HTTPException(status_code=404, detail="Land not found")
 
-    # Actualizar los valores del objeto 'Land' con los nuevos datos
     existing_land.cadastral_file             = land.cadastral_file
     existing_land.area                       = land.area
     existing_land.price_per_area             = land.price_per_area
@@ -69,16 +66,15 @@ def update_land(land: LandUpdate, db: Session = Depends(get_db)):
     existing_land.pago_predial               = land.pago_predial
     existing_land.area_construida            = land.area_construida
     existing_land.global_status              = land.global_status
+    
     try:
-        db.commit()  # Guardamos los cambios
-        db.refresh(existing_land)  # Refrescamos el objeto con los nuevos valores
+        db.commit()
+        db.refresh(existing_land)
     except IntegrityError:
         db.rollback()
         raise HTTPException(status_code=400, detail="Error updating land data.")
 
     return existing_land
-
-
 
 @router.get("/", response_model=list[LandResponse])
 def get_lands(db: Session = Depends(get_db)):

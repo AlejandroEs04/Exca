@@ -24,7 +24,7 @@ export default function Login() {
 
     const handleSubmit = async(e: FormEvent) => {
         e.preventDefault()
-        
+
         try {
             const token = await login(auth)
             
@@ -65,7 +65,7 @@ export default function Login() {
                     name='password'
                     placeholder='Contraseña' />
 
-                <button className='btn btn-primary w-max mt-1'>Iniciar Sesión</button>
+                <button type='submit' className='btn btn-primary w-max mt-1'>Iniciar Sesión</button>
             </form>
         </>
     )

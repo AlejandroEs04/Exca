@@ -21,3 +21,4 @@ class User(Base):
     lease_requests = relationship("LeaseRequest", back_populates="creator")
     approval_flow_steps = relationship("ApprovalFlowStep", back_populates="signator")
     title = relationship("UserTitle", back_populates="users")
+    recipients = relationship("NotificationSystemRecipient", back_populates="user")

@@ -44,11 +44,30 @@ export default function MainLayout() {
                                     </svg>
                                     Cartera Arrendatarios
                                 </Link>
+                                <Link to={'/administration'}>
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="icon">
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 7.5h18M4.5 21h15a.75.75 0 00.75-.75V6.75A.75.75 0 0019.5 6h-15a.75.75 0 00-.75.75v13.5c0 .414.336.75.75.75zM8.25 10.5h7.5M8.25 13.5h7.5M8.25 16.5h4.5" />
+                                    </svg>
+                                    Administración
+                                </Link>
                                 <Link className={pathname.includes('approval-requests') ? 'active' : ''} to={'/approval-requests'}>
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="icon">
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 0 1-1.043 3.296 3.745 3.745 0 0 1-3.296 1.043A3.745 3.745 0 0 1 12 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 0 1-3.296-1.043 3.745 3.745 0 0 1-1.043-3.296A3.745 3.745 0 0 1 3 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 0 1 1.043-3.296 3.746 3.746 0 0 1 3.296-1.043A3.746 3.746 0 0 1 12 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 0 1 3.296 1.043 3.746 3.746 0 0 1 1.043 3.296A3.745 3.745 0 0 1 21 12Z" />
                                     </svg>
                                     Seguimiento
+                                </Link>
+                                <Link to={'/verify-lands'}>
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="icon">
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
+                                    </svg>
+                                    Vaidar Terrenos
+                                </Link>
+                                <Link to={'/verify-projects'}>
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="icon">
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M10.125 2.25h-4.5c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125v-9M10.125 2.25h.375a9 9 0 0 1 9 9v.375M10.125 2.25A3.375 3.375 0 0 1 13.5 5.625v1.5c0 .621.504 1.125 1.125 1.125h1.5a3.375 3.375 0 0 1 3.375 3.375M9 15l2.25 2.25L15 12" />
+                                    </svg>
+                                    Vaidar Interesados
                                 </Link>
                                 <Link className={pathname.includes('settings') ? 'active' : ''} to={'/settings'}>
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="icon">
@@ -56,26 +75,6 @@ export default function MainLayout() {
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
                                     </svg>
                                     Configuraciones
-                                </Link>
-                                <Link to={'/verify-lands'}>
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="icon">
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9a3.75 3.75 0 1 0-7.5 0c0 2.5 3.75 6.75 3.75 6.75S15.75 11.5 15.75 9z" />
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 9h.008v.008H12V9z" />
-                                    </svg>
-                                    Vaidar Terrenos
-                                </Link>
-                                <Link to={'/verify-projects'}>
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="icon">
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9a3.75 3.75 0 1 0-7.5 0c0 2.5 3.75 6.75 3.75 6.75S15.75 11.5 15.75 9z" />
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 9h.008v.008H12V9z" />
-                                    </svg>
-                                    Vaidar Interesados
-                                </Link>
-                                <Link to={'/administration'}>
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="icon">
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 7.5h18M4.5 21h15a.75.75 0 00.75-.75V6.75A.75.75 0 0019.5 6h-15a.75.75 0 00-.75.75v13.5c0 .414.336.75.75.75zM8.25 10.5h7.5M8.25 13.5h7.5M8.25 16.5h4.5" />
-                                    </svg>
-                                    Administración
                                 </Link>
                             </nav>
                         </div>

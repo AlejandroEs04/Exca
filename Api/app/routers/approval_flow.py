@@ -97,14 +97,11 @@ def update_flow(flow_id: int, flow: ApprovalFlowCreate, db: Session = Depends(ge
 
     db.commit()
 
-    # Eliminar pasos que ya no están
     for step in existing_steps:
         if step.id not in updated_step_ids:
-            # Eliminar solicitudes pendientes asociadas a este paso
             requests = db.query(ApprovalRequest).filter(ApprovalRequest.step_id == step.id).all()
             for request in requests:
                 if request.response is None:
-                    # Buscar primer paso válido para este flujo
                     steps_query = db.query(ApprovalFlowStep).filter(ApprovalFlowStep.flow_id == step.flow_id)
                     steps = steps_query.order_by(ApprovalFlowStep.step_order).all()
 
@@ -123,7 +120,6 @@ def update_flow(flow_id: int, flow: ApprovalFlowCreate, db: Session = Depends(ge
                         )
                         db.add(new_approval)
 
-                        # Enviar correo
                         signator = db.query(User).filter(User.id == first_step.signator_id).first()
                         body = build_email_body("Solicitud de contrato", datetime.today(), "Alejandro Estrada", "Daniela Turrubiartes", f"{FRONTEND_URL}/contract-request/1")
                         if signator and signator.email:

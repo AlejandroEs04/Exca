@@ -588,3 +588,18 @@ export type City = {
     id: number
     descripcion: string
 }
+
+export type NotificationSystemRecipient = {
+    id: number
+    notification_system_id: number
+    user_id: number
+    is_active: boolean
+}
+
+export type NotificationSystem = {
+    id: number
+    name: string
+    description: string
+    is_active: boolean
+    recipients: NotificationSystemRecipient[]
+}

@@ -29,7 +29,6 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     const navigate = useNavigate()
 
     const setError = (error: any) => {
-        console.log(error.message)
         if (error instanceof Error) {
             toast.error(error.message)
         } else {
@@ -78,7 +77,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         }
     };
 
-const getInitials = async () => {
+    const getInitials = async () => {
         setIsLoading(true)
 
         try {
@@ -105,13 +104,21 @@ const getInitials = async () => {
             dispatch({ type: 'set-users', payload: { users } })
             dispatch({ type: 'set-individual', payload: { individuals } })
 
-            // Después carga las condiciones sin bloquear la interfaz
-            getConditions().then((conditions) => {
-                if(conditions)
-                    dispatch({ type: 'set-conditions', payload: { conditions } })
-            }).catch((error) => {
-                console.error("Error loading conditions:", error)
-            })
+            const conditionString = localStorage.getItem('conditions')
+            if(conditionString) {
+                const conditionsLocal = JSON.parse(conditionString)
+                dispatch({ type: 'set-conditions', payload: { conditions: conditionsLocal } })
+                return
+            } else {
+                getConditions().then((conditions) => {
+                    if(conditions)
+                        dispatch({ type: 'set-conditions', payload: { conditions } })
+                        localStorage.setItem('conditions', JSON.stringify(conditions))
+                }).catch((error) => {
+                    console.error("Error loading conditions:", error)
+                })
+            }
+
         } catch (error) {
             handleError(error)
         } finally {

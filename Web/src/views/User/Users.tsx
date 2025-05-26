@@ -34,6 +34,7 @@ export default function Users() {
                         <th>Nombre</th>
                         <th>Email</th>
                         <th>Rol</th>
+                        <th>Titulo</th>
                         <th>Área</th>
                         <th>Acciones</th>
                     </tr>
@@ -45,11 +46,12 @@ export default function Users() {
                             <td>{user.id}</td>
                             <td>{user.full_name}</td>
                             <td>{user.email}</td>
-                            <td>{user.rol.name}</td>
-                            <td>{user.area.name}</td>
+                            <td>{user.rol?.name}</td>
+                            <td>{user.user_title_id}</td>
+                            <td>{user.area?.name}</td>
                             <td>
                                 <div className="table-actions">
-                                    <Link to={`/users/edit/${user.id}`} className="text-blue"><EditIcon /></Link>
+                                    <Link to={`/settings/users/edit/${user.id}`} className="text-blue"><EditIcon /></Link>
                                     <button className="text-red"><TrashIcon /></button>
                                 </div>
                             </td>
