@@ -1,13 +1,14 @@
 import { Client, Condition, Individual, Land, NotificationSystem, Project, User } from "../types";
 
 export type AppActions =
-    { type: 'set-lands', payload: { lands: Land[] } } |
-    { type: 'set-clients', payload: { clients: Client[] } } | 
-    { type: 'set-projects', payload: { projects: Project[] } } |
-    { type: 'set-users', payload: { users: User[] } } |
-    { type: 'set-auth', payload: { auth: User } } |
-    { type: 'set-individual', payload: { individuals: Individual[] } } | 
-    { type: 'set-conditions', payload: { conditions: Condition[] } } |
+    { type: 'set-lands', paypload: { lands: Land[] } } |
+    { type: 'set-clients', paypload: { clients: Client[] } } | 
+    { type: 'add-land'; payload: Land } |
+    { type: 'set-projects', paypload: { projects: Project[] } } |
+    { type: 'set-users', paypload: { users: User[] } } |
+    { type: 'set-auth', paypload: { auth: User } } |
+    { type: 'set-individual', paypload: { individuals: Individual[] } } | 
+    { type: 'set-conditions', paypload: { conditions: Condition[] } } | 
     { type: 'set-notification-systems', payload: { notificationSystems: NotificationSystem[] } } 
 
 export type AppState = {
@@ -37,7 +38,7 @@ export const AppReducer = (state: AppState, action: AppActions): AppState => {
         case 'set-clients':
             return { ...state, clients: action.payload.clients }
         case 'set-lands':
-            return { ...state, lands: action.payload.lands }
+            return { ...state, lands: action.paypload.lands }
         case 'set-projects':
             return { ...state, projects: action.payload.projects }
         case 'set-users':
