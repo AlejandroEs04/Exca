@@ -3,6 +3,7 @@ import { Client, Condition, Individual, Land, NotificationSystem, Project, User 
 export type AppActions =
     | { type: 'set-lands'; payload: { lands: Land[] } }
     | { type: 'add-land'; payload: Land }
+    | { type: 'update-land'; payload: Land }
     | { type: 'set-clients'; payload: { clients: Client[] } }
     | { type: 'set-projects'; payload: { projects: Project[] } }
     | { type: 'set-users'; payload: { users: User[] } }
@@ -53,6 +54,14 @@ export const AppReducer = (state: AppState, action: AppActions): AppState => {
             return { ...state, conditions: action.payload.conditions };
         case 'set-notification-systems':
             return { ...state, notificationSystems: action.payload.notificationSystems };
+        case 'update-land':
+            return {
+                ...state,
+                lands: state.lands.map(land =>
+                    land.id === action.payload.id ? action.payload : land
+                )
+            };
+
         default:
             return state;
     }

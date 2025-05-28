@@ -1,6 +1,6 @@
 import { isAxiosError } from "axios"
 import api from "../lib/axios"
-import { City, LandCreate, Land, ResidentialDevelopment } from "../types"
+import { City, LandCreate, Land, ResidentialDevelopment, PropertyTax } from "../types"
 import {
   State,
   LandType,
@@ -10,14 +10,14 @@ import {
 } from "../types";
 
 export async function getLands() {
-    try {
-        const { data } = await api<Land[]>('/land')
-        return data
-    } catch (error) {
-        if(isAxiosError(error) && error.response) {
-            throw new Error(error.response.data.error)
-        }
-    }
+  try {
+      const { data } = await api<Land[]>('/land')
+      return data
+  } catch (error) {
+      if(isAxiosError(error) && error.response) {
+          throw new Error(error.response.data.error)
+      }
+  }
 }
 
 export async function registerLand(land: LandCreate) {
@@ -30,9 +30,9 @@ export async function registerLand(land: LandCreate) {
         }
     }
 }
-export async function updateLand(land: Land) {
+export async function updateLand(land: LandCreate & { id: number }) {
     try {
-        const { data } = await api.post<Land>('/land/updateLand', land)
+        const { data } = await api.put<Land>('/land', land)
         return data
     } catch (error) {
         if(isAxiosError(error) && error.response) {
@@ -40,6 +40,35 @@ export async function updateLand(land: Land) {
         }
     }
 }
+export async function getLandById(id: number): Promise<Land> {
+  try {
+    const { data } = await api.get<Land>(`/land/getLandById/${id}`);
+    return data;
+  } catch (error) {
+    if (isAxiosError(error) && error.response) {
+      throw new Error(error.response.data.error);
+    }
+    throw new Error("Error al obtener terreno");
+  }
+}
+export async function getPropertyTaxesByLandId(id: number): Promise<PropertyTax[]> {
+  try {
+    const { data } = await api<PropertyTax[]>(`/land/${id}/property-taxes`)
+    return data
+  } catch (error) {
+    if (isAxiosError(error) && error.response) {
+      // si tu backend envía el mensaje de error en otro campo, ajústalo aquí
+      const msg =
+        (error.response.data as any).detail ??
+        (error.response.data as any).error ??
+        'Error fetching property taxes'
+      throw new Error(msg)
+    }
+    // para cualquier otro tipo de excepción
+    throw new Error('Unexpected error fetching property taxes')
+  }
+}
+
 
 export async function getResidentialDevelopments () {
     try {

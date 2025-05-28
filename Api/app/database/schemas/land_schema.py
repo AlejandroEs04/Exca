@@ -26,6 +26,11 @@ class LandBase(BaseModel):
     incorporation: Optional[str] = None
     incorporation_notes: Optional[str] = None
 
+    current_tax_year: Optional[int]
+    current_value_per_built_area: Optional[float] = None
+    current_value_per_area: Optional[float] = None
+    current_cadastral_value: Optional[float] = None
+
 class LandCreate(LandBase):
     residential_development_id: Optional[int]
 
