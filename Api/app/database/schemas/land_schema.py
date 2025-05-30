@@ -13,6 +13,7 @@ class LandBase(BaseModel):
     tax_payer_company_id: Optional[int]
     user_last_update_id: Optional[int]
     status_id: Optional[int]
+    residential_development_id: Optional[int]
     cadastral_file: Optional[str] = None
     block_lot: Optional[str] = None
     address: Optional[str] = None
@@ -33,13 +34,13 @@ class LandBase(BaseModel):
 
 class LandCreate(LandBase):
     residential_development_id: Optional[int]
-
+    
 class LandUpdate(LandBase):
     id: int
 
 class LandResponse(LandBase):
     id: int
-    residential_development_id: Optional[int]
+   
     residential_development: Optional[ResidentialDevelopmentResponse]
     land_status: Optional[LandStatusResponse]
     created_at: datetime

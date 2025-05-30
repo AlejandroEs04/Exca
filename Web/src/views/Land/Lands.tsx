@@ -36,7 +36,7 @@ export default function Lands() {
                         <th>Ex. Catastral</th>
                         <th>Area</th>
                         <th>Area Construida</th>
-                        <th>Status</th>
+                        <th>Estatus</th>
                         <th>Acciones</th>
 
                     </tr>

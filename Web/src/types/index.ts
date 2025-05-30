@@ -664,22 +664,29 @@ export type NotificationSystem = {
 //property tax
 export type PropertyTax = {
   id: number;
-  landId?: number;
-  propertyTaxStatusId?: number;
-  verifiedUserId?: number;
-  taxYear?: number;
-  cadastralValue?: number;
-  cadastralValuePerArea?: number;
-  cadastralValuePerBuiltArea?: number;
-  receiptFileUrl?: string;
-  taxAmount?: number;
+  land_id?: number;
+  property_tax_estatus_id?: number;
+  verified_user_id?: number;
+  tax_year?: number;
+  cadastral_value?: number;
+  cadastral_value_per_area?: number;
+  cadastral_value_per_built_area?: number;
+  receipt_file_url?: string;
+  tax_amount?: number;
+  charges?: number;
   penalties?: number;
-  otherCharges?: number;
-  totalTax?: number;
+  other_charges?: number;
+  total_tax?: number;
   discount?: number;
   bonuses?: number;
   others?: number;
-  netPayable?: number;
-  createdAt: string;
-  updatedAt: string;
+  net_payable?: number;
+  created_at: string;
+  updated_at: string;
+};
+export type PropertyTaxStatus  = {
+  id: number;
+  description: string;
+  created_at: string;
+  updated_at: string;
 };

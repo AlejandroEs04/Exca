@@ -21,6 +21,7 @@ export async function getLands() {
 }
 
 export async function registerLand(land: LandCreate) {
+  console.log("REGISTRANDO LAND");
     try {
         const { data } = await api.post<Land>('/land', land)
         return data

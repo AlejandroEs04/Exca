@@ -1,6 +1,6 @@
 // src/pages/lands/CreateOrEditLand.tsx
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import Breadcrumb from "../../components/shared/Breadcrumb/Breadcrumb";
 import SaveIcon from "../../components/shared/Icons/SaveIcon";
 import InputGroup from "../../components/forms/InputGroup";
@@ -23,6 +23,8 @@ import { getLandTypes } from "../../api/LandTypeApi";
 import { getLandCategories } from "../../api/LandCategoryApi";
 import { getOwners } from "../../api/OwnerApi";
 import { getLandStatuses } from "../../api/LandStatusApi";
+import PlusIcon from "../../components/shared/Icons/PlusIcon";
+import EditIcon from "../../components/shared/Icons/EditIcon";
 
 
 type FormLand = LandCreate & {
@@ -196,6 +198,19 @@ export default function CreateOrEditLand() {
       toast.error("Error al guardar terreno");
     }
   };
+  const formatCurrency = (value: number | null | undefined) =>
+    value != null ? new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN' }).format(value) : '-';
+  const parseCurrencyToNumber= (value: string | number) => {
+      if (typeof value === 'number') return value;
+
+      // Eliminar $ , espacios y cualquier símbolo que no sea número o punto decimal
+      const cleaned = value.replace(/[^0-9.-]+/g, '');
+
+      const num = parseFloat(cleaned);
+      return isNaN(num) ? 0 : num;
+  }
+
+
 
   if (isLoading) return <Loader />;
 
@@ -226,14 +241,16 @@ export default function CreateOrEditLand() {
           <SelectGroup id="owner_company_id" name="owner_company_id" label="Empresa propietaria" value={land.owner_company_id ?? 0} options={companyOptions} placeholder="Selecciona empresa" onChangeFnc={handleSelect} />
           <SelectGroup id="land_type_id" name="land_type_id" label="Tipo de terreno" value={land.land_type_id ?? 0} options={typeOptions} placeholder="Selecciona tipo" onChangeFnc={handleSelect} />
           <SelectGroup id="status_id" name="status_id" label="Status actual" value={land.status_id ?? 0} options={statusOptions} placeholder="Selecciona status" onChangeFnc={handleSelect} />
+          
           <SelectGroup id="tax_payer_company_id" name="tax_payer_company_id" label="Empresa contribuyente" value={land.tax_payer_company_id ?? 0} options={companyOptions} placeholder="Selecciona empresa" onChangeFnc={handleSelect} />
+        
         </div>
 
         <div className="mt-2">
           <p>Estado: {stateOptions.find(e => e.value === residentials.find(a=> a.id ===land.residential_development_id)?.state.id 
       
           )?.label ?? ''}</p>
-          <p>Municipio: {stateOptions.find(e => e.value === residentials.find(a=> a.id ===land.residential_development_id)?.city.id 
+          <p>Municipio: {municipalOptions.find(e => e.value === residentials.find(a=> a.id ===land.residential_development_id)?.city.id 
             
           )?.label ?? ''}</p>
         </div>
@@ -258,13 +275,55 @@ export default function CreateOrEditLand() {
         <>
             <h2>{"PAGOS DE PREDIALES"}</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              <InputGroup id="current_tax_year" name="current_tax_year" label="Año" value={land.current_tax_year ?? 0} placeholder="AÑO" onChangeFnc={handleChange} disable={true} />
-              <InputGroup id="current_cadastral_value" name="current_cadastral_value" type="number" label="Valor Catastral" value={land.current_cadastral_value ?? 0} placeholder="0" onChangeFnc={handleChange} disable={true} />
-              <InputGroup id="current_value_per_area" name="current_value_per_area" label="Valor por m²" value={land.current_value_per_area ?? 0} placeholder="Dirección" onChangeFnc={handleChange} disable={true} />
-              <InputGroup id="current_value_per_built_area" name="current_value_per_built_area" type="number" label="Valor por m² construido" value={land.current_value_per_built_area ?? 0} placeholder="0" onChangeFnc={handleChange} disable={true} />
+              
+              <div>
+                <p>Año Más Reciente:</p>
+                {land.current_tax_year ?? '-'}
+
+              </div>
+              <div>
+                <p>Valor Catastral: </p>
+                
+                {formatCurrency(land.current_cadastral_value) ?? '-'}
+              </div>
+              <div>
+                <p>Valor por m²:</p>
+                {formatCurrency(land.current_value_per_area) ?? '-'}
+              </div>
+              <div>
+                <p>Valor por m² construido:</p>
+                {formatCurrency(land.current_value_per_built_area) ?? '-'}
+              </div>
+              {
+
+                /*
+                <InputGroup id="current_tax_year" 
+                name="current_tax_year" label="Año" 
+                value={land.current_tax_year ?? 0} 
+                placeholder="AÑO" onChangeFnc={handleChange} disable={true} />
+                <InputGroup id="current_cadastral_value" 
+                name="current_cadastral_value" type="number" 
+                label="Valor Catastral" 
+                value={land.current_cadastral_value ?? 0} 
+                placeholder="0" onChangeFnc={handleChange} 
+                disable={true} />
+
+                <InputGroup id="current_value_per_area" name="current_value_per_area" label="Valor por m²" value={land.current_value_per_area ?? 0} placeholder="Dirección" onChangeFnc={handleChange} disable={true} />
+                <InputGroup id="current_value_per_built_area" name="current_value_per_built_area" type="number" label="Valor por m² construido" value={land.current_value_per_built_area ?? 0} placeholder="0" onChangeFnc={handleChange} disable={true} />
+                
+                
+                */
+              }
               
             </div>
             <h3 className="mt-2 mb-2">{"Historial de Pagos"}</h3>
+             <Link
+                to={`/lands/form-land/${id}/property-taxes/form`}
+                className="btn btn-primary flex items-center gap-2 mb-4"
+              >
+                <PlusIcon />
+                Registrar
+              </Link>
             <table style={{ fontSize: '0.75rem' }}>
             <thead>
               <tr>
@@ -293,19 +352,26 @@ export default function CreateOrEditLand() {
               ) : (
                 propertyTaxes.map(pt => (
                   <tr key={pt.id}>
-                    <td>{pt.taxYear ?? '-'}</td>
-                    <td>{pt.cadastralValue?.toFixed(2) ?? '-'}</td>
-                    <td>{pt.cadastralValuePerArea?.toFixed(2) ?? '-'}</td>
-                    <td>{pt.cadastralValuePerBuiltArea?.toFixed(2) ?? '-'}</td>
-                    <td>{pt.taxAmount?.toFixed(2) ?? '-'}</td>
-                    <td>{pt.penalties?.toFixed(2) ?? '-'}</td>
-                    <td>{pt.otherCharges?.toFixed(2) ?? '-'}</td>
-                    <td>{pt.totalTax?.toFixed(2) ?? '-'}</td>
-                    <td>{pt.discount?.toFixed(2) ?? '-'}</td>
-                    <td>{pt.bonuses?.toFixed(2) ?? '-'}</td>
-                    <td>{pt.others?.toFixed(2) ?? '-'}</td>
-                    <td>{pt.netPayable?.toFixed(2) ?? '-'}</td>
-                    <td>{''}</td>
+                    <td>{pt.tax_year ?? '-'}</td>
+                    <td>{formatCurrency(pt.cadastral_value ?? 0)}</td>
+                    <td>{formatCurrency(pt.cadastral_value_per_area ?? 0)}</td>
+                    <td>{formatCurrency(pt.cadastral_value_per_built_area ?? 0)}</td>
+                    <td>{formatCurrency(pt.tax_amount ?? 0)}</td>
+                    <td>{formatCurrency(pt.penalties ?? 0)}</td>
+                    <td>{formatCurrency(pt.other_charges ?? 0)}</td>
+                    <td>{formatCurrency(pt.total_tax ?? 0)}</td>
+                    <td>{formatCurrency(pt.discount ?? 0)}</td>
+                    <td>{formatCurrency(pt.bonuses ?? 0)}</td>
+                    <td>{formatCurrency(pt.others ?? 0)}</td>
+                    <td>{formatCurrency(pt.net_payable ?? 0)}</td>
+                    <td>
+                      <div className="table-actions">
+                                                
+                          <Link to={`/lands/form-land/${id}/property-taxes/form/${pt.id}`} className="text-indigo">
+                              <EditIcon />
+                          </Link>
+                      </div>
+                      </td>
                   </tr>
                 ))
               )}

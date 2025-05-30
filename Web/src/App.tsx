@@ -41,6 +41,7 @@ import NotificationSystems from "./views/Settings/NotificationSystem/Notificatio
 import UpdateNotificationSystem from "./views/Settings/NotificationSystem/UpdateNotificationSystem"
 import CreateNotificationSystem from "./views/Settings/NotificationSystem/CreateNotificationSystem"
 import FormLand from "./views/Land/FormLand"
+import PropertyTaxFormFromLand from "./views/Land/PropertyTaxFormFromLand"
 
 
 function App() {
@@ -74,6 +75,10 @@ function App() {
           <Route path="/lands/create" element={<CreateLand />} />
           <Route path="/lands/edit/:id" element={<EditLand />} />
           <Route path="/lands/form-land/:id?" element={<FormLand />} />
+          <Route
+            path="/lands/form-land/:land_id?/property-taxes/form/:propertyTaxId?"
+            element={<PropertyTaxFormFromLand />}
+          />
 
           <Route path="/contract-request/:projectId" element={<LeaseRequest />} />
           <Route path="/contract-request/:projectId/:leaseRequestId" element={<LeaseRequest />} />

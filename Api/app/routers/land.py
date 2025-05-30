@@ -32,6 +32,7 @@ def update_land(payload: LandUpdate, db: Session = Depends(get_db)):
 
     for field, value in payload.model_dump(exclude_unset=True).items():
         setattr(land, field, value)
+    
 
     try:
         db.commit()
