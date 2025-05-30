@@ -23,7 +23,6 @@ def create_task(task: TaskCreate, current_user: User = Depends(get_current_user)
     db.add(new_task)
     db.commit()
     db.refresh(new_task)
-    
     return new_task
 
 @router.get("/", response_model=list[TaskResponse])

@@ -67,3 +67,12 @@ def build_notify_sended(document: str, item_id: str, url: str, message: str | No
         <a href="{FRONTEND_URL}{url}" style="background-color: green; color:white; padding:5px 10px;text-decoration:none;border-radius:10px;font-size:1.3rem">Ver más información</a>
     """
     return html_body
+
+def build_notify_task_message(task_id: int, message: str, originator: str):
+    html_body = f"""
+        <h1>{originator} envio un mensaje</h1>
+        <p style="font-size: 1.2rem;">{originator} envio un mensaje en la tarea con el id: {task_id}</p>
+        
+        <p>Mensaje: {message}</p>
+    """
+    return html_body

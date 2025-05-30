@@ -23,3 +23,4 @@ class Task(Base):
     project = relationship("Project", back_populates="tasks")
     parent = relationship("Task", remote_side=[id], backref="subtasks")
     messages = relationship("TaskMessage", back_populates="task")
+    users_related = relationship("TaskUser", back_populates="task")
