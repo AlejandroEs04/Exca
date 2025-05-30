@@ -36,3 +36,6 @@ from app.database.models.case import Case
 from app.database.models.case_condition import CaseCondition
 from app.database.models.notification_system import NotificationSystem
 from app.database.models.notification_system_recipient import NotificationSystemRecipient
+from app.database.models.task import Task
+from app.database.models.task_message import TaskMessage
+from app.database.models.task_status import TaskStatus

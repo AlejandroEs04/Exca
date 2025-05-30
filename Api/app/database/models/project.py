@@ -22,3 +22,4 @@ class Project(Base):
     lease_request = relationship("LeaseRequest", back_populates="project", uselist=False, lazy="joined")
     events = relationship("ProjectEvent", back_populates="project")
     cases = relationship("Case", back_populates="project", uselist=True, lazy="joined")
+    tasks = relationship("Task", back_populates="project")

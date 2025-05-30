@@ -3,8 +3,7 @@ def build_email_body(document, date, originator, client, url):
         <h1>Solicitud de aprobación</h1>
 
         <p style="font-size: 1.2rem;">Se solicito su aprobación para una {document}</p>
-        <p style="font-size: 1.2rem;">Si quiere más detalles sobre la petición, haga click en el siguiente enlace: <a href="{url}">Haga click aquí</a></p>
-
+        
         <h2>Resumen de la petición</h2>
         <p style="font-size: 1.2rem;">Originador: {originator}</p>
         <p style="font-size: 1.2rem;">Fecha de la solicitud: {date}</p>

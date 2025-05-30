@@ -60,7 +60,7 @@ const handleSubmit = async() => {
     const handleSend = async() => {
         try {
             await handleSubmit()
-            const response = await sendCase(+projectId!)
+            const response = await sendCase(+caseId!)
             dispatch({ 
                 type: 'set-projects', 
                 payload: { projects: state.projects.map(project => project.id !== +projectId! ? project : { ...project, technical_case: response! }) } 

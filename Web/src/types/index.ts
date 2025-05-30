@@ -602,17 +602,10 @@ export type AuthResponse = {
 }
 
 export type City = {
-<<<<<<< HEAD
     id: number;
     id_estado: number;
     clave_municipio: number;
     descripcion: string;
-=======
-  id: number;
-  id_estado: number;
-  clave_municipio: number;
-  descripcion: string;
->>>>>>> dea7b60ab21d74e04a0785fba11b8f3744308705
 };
 
 export type NotificationSystemRecipient = {
@@ -621,6 +614,7 @@ export type NotificationSystemRecipient = {
     user_id: number
     is_active: boolean
 }
+export type NotificationSystemRecipientCreate = Pick<NotificationSystemRecipient, 'user_id'>
 
 export type NotificationSystem = {
     id: number
@@ -629,7 +623,9 @@ export type NotificationSystem = {
     is_active: boolean
     recipients: NotificationSystemRecipient[]
 }
-  
+export type NotificationSystemCreate = Pick<NotificationSystem, 'name' | 'description' | 'is_active'> & {
+    recipients: NotificationSystemRecipientCreate[]
+}
 
 export type State = {
   id: number;
@@ -661,21 +657,3 @@ export type LandStatus = {
   created_at: string;
   updated_at: string;
 };
-<<<<<<< HEAD
-=======
-
-export type NotificationSystemRecipient = {
-    id: number
-    notification_system_id: number
-    user_id: number
-    is_active: boolean
-}
-
-export type NotificationSystem = {
-    id: number
-    name: string
-    description: string
-    is_active: boolean
-    recipients: NotificationSystemRecipient[]
-}
->>>>>>> dea7b60ab21d74e04a0785fba11b8f3744308705

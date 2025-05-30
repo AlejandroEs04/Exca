@@ -99,7 +99,7 @@ def update_flow(flow_id: int, flow: ApprovalFlowCreate, db: Session = Depends(ge
 
     for step in existing_steps:
         if step.id not in updated_step_ids:
-            requests = db.query(ApprovalRequest).filter(ApprovalRequest.step_id == step.id).all()
+            requests = db.query(ApprovalRequest).filter(ApprovalRequest.flow_step_id == step.id).all()
             for request in requests:
                 if request.response is None:
                     steps_query = db.query(ApprovalFlowStep).filter(ApprovalFlowStep.flow_id == step.flow_id)
@@ -107,18 +107,22 @@ def update_flow(flow_id: int, flow: ApprovalFlowCreate, db: Session = Depends(ge
 
                     if steps:
                         first_step = steps[0]
-                        existing_req = db.query(ApprovalRequest).filter(
-                            ApprovalRequest.item_id == request.item_id,
-                            ApprovalRequest.step_id == first_step.id
-                        ).first()
-                        if existing_req:
-                            db.delete(existing_req)
+                        if first_step and first_step.id is not None:
+                            existing_req = db.query(ApprovalRequest).filter(
+                                ApprovalRequest.item_id == request.item_id,
+                                ApprovalRequest.flow_step_id == first_step.id
+                            ).first()
+                            
+                            if existing_req:
+                                db.delete(existing_req)
+                                db.commit()
 
-                        new_approval = ApprovalRequest(
-                            item_id=request.item_id,
-                            step_id=first_step.id
-                        )
-                        db.add(new_approval)
+                            new_approval = ApprovalRequest(
+                                item_id=request.item_id,
+                                flow_step_id=first_step.id
+                            )
+
+                            db.add(new_approval)
 
                         signator = db.query(User).filter(User.id == first_step.signator_id).first()
                         body = build_email_body("Solicitud de contrato", datetime.today(), "Alejandro Estrada", "Daniela Turrubiartes", f"{FRONTEND_URL}/contract-request/1")

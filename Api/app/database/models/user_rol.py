@@ -9,4 +9,3 @@ class UserRol(Base):
     name = Column(String, nullable=False, unique=True)
     
     users = relationship("User", back_populates="rol")
-    approval_steps = relationship("ApprovalFlowStep", back_populates="rol")
