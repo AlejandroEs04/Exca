@@ -7,11 +7,12 @@ class Task(Base):
     __tablename__ = "task"
     
     id: Mapped[int] = mapped_column(primary_key=True, index=True)
+    title: Mapped[str] = mapped_column(nullable=False)
     description: Mapped[str] = mapped_column(nullable=False)
     originator_id: Mapped[int] = mapped_column(ForeignKey("user.id"), nullable=False)
     responsible_id: Mapped[int] = mapped_column(ForeignKey("user.id"), nullable=False)
     project_id: Mapped[int] = mapped_column(ForeignKey("project.id"), nullable=False)
-    status_id: Mapped[int] = mapped_column(ForeignKey("task_status.id"), nullable=False)
+    status_id: Mapped[int] = mapped_column(ForeignKey("task_status.id"), nullable=False, default=1)
     due_date: Mapped[datetime] = mapped_column(nullable=False)
     task_id: Mapped[int] = mapped_column(ForeignKey("task.id"), nullable=True)
     created_at: Mapped[datetime] = mapped_column(nullable=False, server_default=func.now())

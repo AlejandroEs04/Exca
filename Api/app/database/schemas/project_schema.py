@@ -8,6 +8,7 @@ from app.database.schemas.brand_schema import BrandResponse
 from app.database.schemas.status_schema import StatusResponse
 from app.database.schemas.lease_request_schema import LeaseRequestResponse
 from app.database.schemas.case_schema import CaseResponse
+from app.database.schemas.task_schema import TaskResponse
 
 from datetime import datetime
 
@@ -31,6 +32,7 @@ class ProjectResponse(ProjectBase):
     status: StatusResponse
     lease_request: LeaseRequestResponse | None = None
     cases: list[CaseResponse] = []
+    tasks: list[TaskResponse] = []
 
 class ProjectDocResponse(ProjectBase):
     id: int

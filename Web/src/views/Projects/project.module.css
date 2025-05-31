@@ -1,0 +1,43 @@
+.formFloat {
+    position: absolute;
+    width: 100%;
+    max-width: 450px;
+    right: 1.5rem;
+    bottom: 3rem;
+    background-color: var(--white);
+    padding: 1em;
+    box-shadow: var(--shadow);
+    border-radius: 1rem;
+}
+table.tableActivities {
+    box-shadow: none;
+    border: none;
+    border-collapse: separate;
+    border-spacing: 0 8px;
+}
+.tableActivities thead tr th:first-of-type,
+.tableActivities tbody tr td:first-of-type {
+    border-top-left-radius: 0.5rem;
+    border-bottom-left-radius: 0.5rem;
+}
+.tableActivities thead tr th:last-of-type,
+.tableActivities tbody tr td:last-of-type {
+    border-top-right-radius: 0.5rem;
+    border-bottom-right-radius: 0.5rem;
+}
+.tableActivities tr td,
+.tableActivities tr th {
+    padding: 0.6rem;
+}
+.tableActivities thead tr th {
+    background-color: var(--primary);
+    color: var(--white);
+}
+.tableActivities tbody tr {
+    background-color: var(--white);
+    border-radius: 0.5rem;
+    box-shadow: var(--shadow);
+}
+.tableActivities .btnIcon svg {
+    width: 1.5rem;
+}

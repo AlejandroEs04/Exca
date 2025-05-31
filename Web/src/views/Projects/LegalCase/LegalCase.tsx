@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useAppContext } from "../../../hooks/AppContext";
 import { useEffect, useState } from "react";
 import { Case, CaseConditionCreate, CaseCreate, Project } from "../../../types";
@@ -11,6 +11,7 @@ import { createCase, sendCase, updateCase } from "../../../api/CaseApi";
 import { formatDateToInput } from "../../../utils";
 import SaveIcon from "../../../components/shared/Icons/SaveIcon";
 import SendIcon from "../../../components/shared/Icons/SendIcon";
+import ListIcon from "../../../components/shared/Icons/ListIcon";
 
 export default function LegalCase() {
     const { projectId, caseId } = useParams()
@@ -114,6 +115,11 @@ const handleSubmit = async() => {
                         <SendIcon />
                         Enviar
                     </button>
+
+                    <Link to={`/projects/${projectId}/tasks`} className="btn btn-primary">
+                        <ListIcon />
+                        Tareas
+                    </Link>
                 </div>
             )}
 

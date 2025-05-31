@@ -58,7 +58,7 @@ function App() {
 
           <Route path="/projects" element={<Projects />} />
           <Route path="/projects/:id" element={<Project />} />
-          <Route path="/projects/:id/activities" element={<Activities />} />
+          <Route path="/projects/:id/tasks" element={<Activities />} />
           <Route path="/projects/create" element={<CreateProject />} />
           <Route path="/projects/edit/:id" element={<EditProject />} />
 

@@ -271,6 +271,7 @@ export type Project = {
     lease_request?: LeaseRequest;
     cases?: Case[];
     activities?: ProjectActivity[];
+    tasks: Task[]
 }
 
 export type ProjectCreate = Pick<Project, 'brand_id'> & {
@@ -493,7 +494,7 @@ export type ApprovalRequest = {
     responded_at?: string;
     response?: boolean;
     comments?: string;
-    flow_step?: ApprovalFlowStep;
+    step?: ApprovalFlowStep;
     requester?: User;
 }
 
@@ -657,3 +658,27 @@ export type LandStatus = {
   created_at: string;
   updated_at: string;
 };
+
+export type Task = {
+    id: number
+    title: string
+    description: string
+    responsible_id: number
+    project_id: number
+    due_date: string
+    task_id: number | null
+    originator_id: number
+    status_id: number
+    created_at: string
+    updated_at: string
+    subtasks: Task[]
+}
+
+export type TaskCreate = 
+    Pick<Task, 'description' | 'due_date' | 'responsible_id' | 'project_id' | 'task_id' | 'title' | 'status_id'>
+
+export type TaskStatus = {
+    id: number
+    name: string
+    description: string
+}

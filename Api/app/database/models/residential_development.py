@@ -7,8 +7,8 @@ class ResidentialDevelopment(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, nullable=False)
-    city = Column(String, nullable=False)
-    state = Column(String, nullable=False)
+    city_id = Column(Integer, nullable=False)
+    state_id = Column(Integer, nullable=False)
     created_at = Column(DateTime, nullable=False, server_default=func.now())
     updated_at = Column(DateTime, nullable=False, server_default=func.now(), onupdate=func.now())
     

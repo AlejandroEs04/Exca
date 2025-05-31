@@ -39,3 +39,5 @@ from app.database.models.notification_system_recipient import NotificationSystem
 from app.database.models.task import Task
 from app.database.models.task_message import TaskMessage
 from app.database.models.task_status import TaskStatus
+from app.database.models.task_user import TaskUser
+from app.database.models.task_user_permission import TaskUserPermission

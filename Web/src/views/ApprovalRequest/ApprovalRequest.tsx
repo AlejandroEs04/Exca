@@ -15,15 +15,17 @@ export default function ApprovalRequest() {
     ]
     const [requests, setRequests] = useState<ApprovalRequestType[]>()
     const navigate = useNavigate()
-    const { setError } = useAppContext()
+    const { setError, state } = useAppContext()
 
     const navigateApprovation = (id: number) => {
         const currentRequest = requests?.find(r => r.id === id)
+        const leaseRequests = state.projects.map(p => p.lease_request)
+        const projectId = leaseRequests.find(l => l?.id === id)?.project_id
         
-        switch (currentRequest?.flow_step?.flow_id) {
+        switch (currentRequest?.step?.flow_id) {
             case 1: 
                 // Lease Request
-                navigate(`/contract-request/${currentRequest.item_id}`)
+                navigate(`/contract-request/${projectId}/${currentRequest.item_id}`)
             break;
         }
     }
@@ -70,7 +72,7 @@ export default function ApprovalRequest() {
                         {requests?.filter(r => r.response === null).map(r => (
                             <tr key={r.id} onDoubleClick={() => navigateApprovation(r.id)}>
                                 <td>{r.id}</td>
-                                <td>{r.flow_step?.flow?.name}</td>
+                                <td>{r.step?.flow?.name}</td>
                                 <td>
                                     <div className="table-actions">
                                         <button onClick={() => handleResponse(r.id, true)}>

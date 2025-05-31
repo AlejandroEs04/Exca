@@ -50,6 +50,10 @@ body {
   color: #333; 
   background-color: #fafafa;
 }
+main {
+  position: relative;
+  min-height: 100%;
+}
 a {
   text-decoration: none; 
   color: inherit;
@@ -257,6 +261,9 @@ button, input, textarea, select {
 .text-indigo {
   color: var(--indigo);
 }
+.text-center {
+  text-align: center;
+}
 .checkbox-group {
   display: flex;
   align-items: center;
@@ -312,7 +319,6 @@ input.input-error {
 }
 .combo-box {
   position: relative;
-  margin-bottom: 1rem;
 }
 
 .combo-box-options {
@@ -864,4 +870,25 @@ input.input-error {
   50%  { border-radius: 45% 55% 35% 65%; }
   75%  { border-radius: 60% 40% 40% 60%; }
   100% { border-radius: 50% 50% 50% 50%; }
+}
+
+.dot {
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+}
+.dot.red {
+  background-color: red;
+}
+.dot.orange {
+  background-color: orangered;
+}
+.dot.purple {
+  background-color: purple;
+}
+.dot.blue {
+  background-color: blue;
+}
+.dot.green {
+  background-color: green;
 }

@@ -3,6 +3,7 @@ from typing import Optional, List
 from datetime import datetime
 
 class TaskBase(BaseModel):
+    title: str
     description: str
     responsible_id: int
     project_id: int

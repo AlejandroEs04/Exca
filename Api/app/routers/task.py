@@ -13,6 +13,7 @@ router = APIRouter(prefix="/task", tags=["Tasks"])
 @router.post(path="/", response_model=TaskResponse)
 def create_task(task: TaskCreate, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
     new_task = Task(
+        title=task.title,
         description=task.description, 
         responsible_id=task.responsible_id, 
         project_id=task.project_id, 
@@ -39,6 +40,7 @@ def update_task(task: TaskUpdate, task_id: int, current_user: User = Depends(get
     if task_exists.originator_id != current_user.id:
         raise HTTPException(status_code=401, detail="No tiene los permisos para actualizar la tarea")
     
+    task_exists.title = task.title
     task_exists.description = task.description
     task_exists.due_date = task.due_date
     task_exists.responsible_id = task.responsible_id
@@ -47,7 +49,6 @@ def update_task(task: TaskUpdate, task_id: int, current_user: User = Depends(get
     db.add(task_exists)
     db.commit()
     db.refresh(task_exists)
-    
     return task_exists
     
 @router.delete(path="/{task_id}", status_code=status.HTTP_200_OK)
