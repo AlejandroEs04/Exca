@@ -6,6 +6,6 @@ class UserRol(Base):
     __tablename__ = "user_rol"
     
     id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, nullable=False, unique=True)
+    name = Column(String, nullable=False)
     
     users = relationship("User", back_populates="rol")

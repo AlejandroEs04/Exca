@@ -672,6 +672,7 @@ export type Task = {
     created_at: string
     updated_at: string
     subtasks: Task[]
+    messages: TaskMessage[]
 }
 
 export type TaskCreate = 
@@ -681,4 +682,12 @@ export type TaskStatus = {
     id: number
     name: string
     description: string
+}
+
+export type TaskMessage = {
+    id: number
+    message: string
+    originator_id: number
+    task_id: number
+    submitted_at: string
 }

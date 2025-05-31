@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from app.routers import \
-    brand,client,land,project,user,condition,lease_request,area,rol,approval_flow,owner,individual,auth,approval_request,document,case,property_tax,property_tax_status,land_category,land_status,land_type,state,city,residential_development,notification_system,task,task_status
+    brand,client,land,project,user,condition,lease_request,area,rol,approval_flow,owner,individual,auth,approval_request,document,case,property_tax,property_tax_status,land_category,land_status,land_type,state,city,residential_development,notification_system,task,task_status,task_message
 from app.database.connection import Base, engine
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -39,6 +39,7 @@ app.include_router(document.router)
 app.include_router(case.router)
 app.include_router(task.router)
 app.include_router(task_status.router)
+app.include_router(task_message.router)
 
 app.include_router(property_tax.router)
 app.include_router(property_tax_status.router)

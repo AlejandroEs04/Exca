@@ -1,21 +1,22 @@
-import styles from './project.module.css'
-import { useParams } from "react-router-dom"
-import Breadcrumb from "../../components/shared/Breadcrumb/Breadcrumb"
+import styles from '../project.module.css'
+import { Link, useParams } from "react-router-dom"
+import Breadcrumb from "../../../components/shared/Breadcrumb/Breadcrumb"
 import { ChangeEvent, useEffect, useMemo, useState } from "react"
-import InputGroup from "../../components/forms/InputGroup"
-import { Project, TaskCreate, TaskStatus } from "../../types"
-import { handleFormChange } from "../../utils/onChange"
-import { useAppContext } from "../../hooks/AppContext"
-import XMark from '../../components/shared/Icons/XMark'
-import ComboBox from '../../components/forms/ComboBox'
+import InputGroup from "../../../components/forms/InputGroup"
+import { Project, TaskCreate, TaskStatus } from "../../../types"
+import { handleFormChange } from "../../../utils/onChange"
+import { useAppContext } from "../../../hooks/AppContext"
+import XMark from '../../../components/shared/Icons/XMark'
+import ComboBox from '../../../components/forms/ComboBox'
 import { toast } from 'react-toastify'
-import { createTask, getTaskStatus, updateTask } from '../../api/TaskApi'
+import { createTask, getTaskStatus, updateTask } from '../../../api/TaskApi'
 import { motion, AnimatePresence } from 'framer-motion'
-import PlusIcon from '../../components/shared/Icons/PlusIcon'
-import TrashIcon from '../../components/shared/Icons/TrashIcon'
-import EditIcon from '../../components/shared/Icons/EditIcon'
-import { formatDateToInput } from '../../utils'
-import SelectGroup from '../../components/forms/SelectGroup'
+import PlusIcon from '../../../components/shared/Icons/PlusIcon'
+import TrashIcon from '../../../components/shared/Icons/TrashIcon'
+import EditIcon from '../../../components/shared/Icons/EditIcon'
+import { formatDateToInput } from '../../../utils'
+import SelectGroup from '../../../components/forms/SelectGroup'
+import EyeIcon from '../../../components/shared/Icons/EyeIcon'
 
 export default function Activities() {
     const { id } = useParams()
@@ -24,7 +25,7 @@ export default function Activities() {
         {name:"Dashboard",url:'/'},
         {name:"Proyectos",url:'/projects'},
         {name:"Proyecto",url:`/projects/${id}`},
-        {name:"Tareas",url:`/projects/${id}/activities`},
+        {name:"Tareas",url:`/projects/${id}/tasks`},
     ]
     const initialState = {
         title: '',
@@ -186,6 +187,7 @@ export default function Activities() {
                             <td>{formatDateToInput(t.due_date)}</td>
                             <td>
                                 <div className='flex g-1'>
+                                    <Link to={`${t.id}`} className={`${styles.btnIcon} text-indigo`}><EyeIcon /></Link>
                                     <button onClick={() => handleFillForm(t.id)} className={`${styles.btnIcon} text-blue`}><EditIcon /></button>
                                     <button className={`${styles.btnIcon} text-red`}><TrashIcon /></button>
                                 </div>

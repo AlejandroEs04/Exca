@@ -1,6 +1,7 @@
 from pydantic import BaseModel
 from typing import Optional, List
 from datetime import datetime
+from app.database.schemas.task_message_schema import TaskMessageResponse
 
 class TaskBase(BaseModel):
     title: str
@@ -22,7 +23,8 @@ class TaskResponse(TaskBase):
     status_id: int
     created_at: datetime
     updated_at: datetime
-    subtask: list['TaskResponse'] = []
+    subtasks: list['TaskResponse'] = []
+    messages: list[TaskMessageResponse] = []
     
     class config:
         orm_mode=True

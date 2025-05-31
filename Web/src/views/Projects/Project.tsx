@@ -66,7 +66,7 @@ export default function Project() {
                             <DocumentTextIcon />
                             Carátula Legal
                         </Link>
-                        <Link to={`activities`} className='btn btn-esmerald w-max'>
+                        <Link to={`tasks`} className='btn btn-esmerald w-max'>
                             <ActivitiesIcon />
                             Actividades
                         </Link>

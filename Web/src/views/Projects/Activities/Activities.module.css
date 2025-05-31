@@ -1,0 +1,174 @@
+.infoGray {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--light-gray);
+}
+.infoGray span {
+    font-weight: 800;
+}
+
+.activityContainer {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 2rem;
+}
+
+@media (min-width: 1200px) {
+    .activityContainer {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 1768px) {
+    .activityContainer {
+        grid-template-columns: 6fr 4fr
+    }
+}
+
+.infoContainer table {
+    box-shadow: none;
+    border: none;
+}
+.infoContainer table td {
+    padding: 0.4rem 0;
+    font-size: 1.15rem;
+}
+.infoContainer table td:first-of-type {
+    font-weight: 600;
+}
+.infoContainer table td:last-of-type {
+    text-align: end;
+}
+
+.chatContainer {
+    padding: 1rem;
+    background-color: var(--white);
+    box-shadow: var(--shadow);
+    border-radius: 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.messageTextBox {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+.messageTextBox input {
+    border: 1px solid var(--light-gray);
+    padding: 0.2rem 0.5rem;
+    border-radius: 0.5rem;
+    width: 100%;
+}
+.messageTextBox button {
+    display: flex;
+}   
+.messageTextBox button svg {
+    width: 1.5rem;
+}
+
+.alertMessage {
+    font-size: 1.2rem;
+    color: var(--light-gray);
+    font-weight: 800;
+}
+.chat {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    max-height: 60vh;
+    overflow-y: auto;
+    padding-right: 10px;
+    padding-bottom: 10px;
+}
+.chat::-webkit-scrollbar {
+  width: 3px;
+}
+.chat::-webkit-scrollbar-track {
+  background: transparent;
+}
+.chat::-webkit-scrollbar-thumb {
+  background-color: var(--gray);
+  border-radius: 20px;
+  transition: all ease 0.2s;
+}
+.messageContent {
+    background-color: var(--nav-background);
+    padding: 0.4rem;
+    width: max-content;
+    border-radius: 0.5rem;
+    max-width: 70%;
+}
+.message .originator {
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+.message .date {
+    height: 0;
+    overflow: hidden;
+    font-size: 0.8rem;
+    color: var(--light-gray);
+    font-weight: 800;
+    interpolate-size: allow-keywords;
+    transition: height ease-in-out 0.2s 0.2s;
+}
+.message:hover .date {
+    height: auto;
+}
+.message.right {
+    display: flex;
+    flex-direction: column;
+    align-items: end;
+    text-align: end;
+}
+.message.right .messageContent {
+    background-color: var(--primary);
+    color: var(--white);
+}
+
+.formFloat {
+    position: absolute;
+    width: 100%;
+    max-width: 450px;
+    right: 1.5rem;
+    bottom: 3rem;
+    background-color: var(--white);
+    padding: 1em;
+    box-shadow: var(--shadow);
+    border-radius: 1rem;
+}
+table.tableActivities {
+    box-shadow: none;
+    border: none;
+    border-collapse: separate;
+    border-spacing: 0 8px;
+}
+.tableActivities thead tr th:first-of-type,
+.tableActivities tbody tr td:first-of-type {
+    border-top-left-radius: 0.5rem;
+    border-bottom-left-radius: 0.5rem;
+}
+.tableActivities thead tr th:last-of-type,
+.tableActivities tbody tr td:last-of-type {
+    border-top-right-radius: 0.5rem;
+    border-bottom-right-radius: 0.5rem;
+}
+.tableActivities tr td,
+.tableActivities tr th {
+    padding: 0.6rem;
+}
+.tableActivities thead tr th {
+    background-color: var(--primary);
+    color: var(--white);
+}
+.tableActivities tbody tr {
+    background-color: var(--white);
+    border-radius: 0.5rem;
+    box-shadow: var(--shadow);
+}
+.tableActivities .btnIcon svg {
+    width: 1.5rem;
+}
+table.tableActivities tbody td {
+    font-size: 1rem;
+}

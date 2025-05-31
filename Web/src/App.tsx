@@ -22,7 +22,7 @@ import ApprovalRequest from "./views/ApprovalRequest/ApprovalRequest"
 import Settings from "./views/Settings/Settings"
 import Following from "./views/Following/Following"
 import Client from "./views/Client/Client"
-import Activities from "./views/Projects/Activities"
+import Activities from "./views/Projects/Activities/Activities"
 
 import Index from "./views"
 import ProjectsToVerify from "./views/verifies/verifyProjects"
@@ -40,6 +40,7 @@ import EditUser from "./views/User/EditUser"
 import NotificationSystems from "./views/Settings/NotificationSystem/NotificationSystems"
 import UpdateNotificationSystem from "./views/Settings/NotificationSystem/UpdateNotificationSystem"
 import CreateNotificationSystem from "./views/Settings/NotificationSystem/CreateNotificationSystem"
+import Activity from "./views/Projects/Activities/Activity"
 
 
 function App() {
@@ -59,6 +60,7 @@ function App() {
           <Route path="/projects" element={<Projects />} />
           <Route path="/projects/:id" element={<Project />} />
           <Route path="/projects/:id/tasks" element={<Activities />} />
+          <Route path="/projects/:id/tasks/:taskId" element={<Activity />} />
           <Route path="/projects/create" element={<CreateProject />} />
           <Route path="/projects/edit/:id" element={<EditProject />} />
 
