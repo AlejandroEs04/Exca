@@ -12,6 +12,7 @@ class PropertyTaxBase(BaseModel):
     cadastral_value_per_built_area: Optional[float]
     receipt_file_url: Optional[str]
     tax_amount: Optional[float]
+    charges: Optional[float]
     penalties: Optional[float]
     other_charges: Optional[float]
     total_tax: Optional[float]

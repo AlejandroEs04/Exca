@@ -15,3 +15,6 @@ class City(Base):
         'State',
         back_populates='municipios'
     )
+    residential_developments = relationship(
+        "ResidentialDevelopment", back_populates="city"
+    )

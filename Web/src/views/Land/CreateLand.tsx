@@ -6,7 +6,7 @@ import SaveIcon from "../../components/shared/Icons/SaveIcon";
 import InputGroup from "../../components/forms/InputGroup";
 import SelectGroup, { Option } from "../../components/forms/SelectGroup";
 import { useAppContext } from "../../hooks/AppContext";
-import { LandCreate } from "../../types";
+import { LandCreate, ResidentialDevelopment } from "../../types";
 import { toast } from "react-toastify";
 import Loader from "../../components/shared/Loader/Loader";
 import {
@@ -20,6 +20,7 @@ import {getLandTypes,} from "../../api/LandTypeApi";
 import {getLandCategories,} from "../../api/LandCategoryApi";
 import {getOwners,} from "../../api/OwnerApi";
 import {getLandStatuses,} from "../../api/LandStatusApi";
+
 // Extend LandCreate for form state including required residential_development_id and checkboxes
 type FormLand = LandCreate & {
   municipality_id?: number;
@@ -43,6 +44,8 @@ export default function CreateLand() {
     { name: "Inventario de terrenos", url: "/lands" },
     { name: "Registrar Terreno", url: "/lands/create" },
   ];
+  const { state } = useAppContext();
+  
 
   const { dispatch, isLoading } = useAppContext();
   const navigate = useNavigate();
@@ -84,6 +87,7 @@ export default function CreateLand() {
   const [companyOptions, setCompanyOptions] = useState<Option[]>([]);
   const [userOptions, setUserOptions] = useState<Option[]>([]);
   const [statusOptions, setStatusOptions] = useState<Option[]>([]);
+  const [ResidentialDevelopment, setResidentialDevelopmentOptions] = useState<ResidentialDevelopment[]>([]);
 
   useEffect(() => {
     Promise.all([
@@ -105,7 +109,10 @@ export default function CreateLand() {
         usersArr = [],
         statusesArr = [],
     ]) => {
-        setResidentialOptions(residentials.map(r => ({ label: r.name, value: r.id })));
+        setResidentialOptions(residentials.map(r => ({ 
+          label: r.name, value: r.id, city_id: r.id, state_id: r.id
+
+        })));
         setMunicipalOptions(muns.map(m => ({ label: m.descripcion, value: m.id })));
         setStateOptions(statesArr.map(s => ({ label: s.descripcion, value: s.id })));
         setTypeOptions(typesArr.map(t => ({ label: t.description, value: t.id })));
@@ -113,10 +120,12 @@ export default function CreateLand() {
         setCompanyOptions(compsArr.map(c => ({ label: c.name, value: c.id })));
         setUserOptions(usersArr.map(u => ({ label: u.full_name, value: u.id })));
         setStatusOptions(statusesArr.map(st => ({ label: st.description, value: st.id })));
+        setResidentialDevelopmentOptions(residentials);
     });
     }, []);
+  
 
-
+  
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
     setLand(prev => ({
@@ -143,13 +152,13 @@ export default function CreateLand() {
       incorporation: land.incorporation ?? "",
       incorporation_notes: land.incorporation_notes ?? "",
       residential_development_id: land.residential_development_id,
-      municipality_id: land.municipality_id,
-      state_id: land.state_id,
+      municipality_id: ResidentialDevelopment.find(a=> a.id ===land.residential_development_id)?.city.id,
+      state_id: ResidentialDevelopment.find(a=> a.id ===land.residential_development_id)?.state.id ,
       land_type_id: land.land_type_id,
       category_id: land.category_id,
       owner_company_id: land.owner_company_id,
       tax_payer_company_id: land.tax_payer_company_id,
-      user_last_update_id: land.user_last_update_id,
+      user_last_update_id: state.auth?.id,
       status_id: land.status_id,
       is_trust_owned: land.is_trust_owned,
       has_water_service: land.has_water_service,
@@ -175,6 +184,9 @@ export default function CreateLand() {
       <Breadcrumb list={breadcrumbList} />
       <h1>Registrar Terreno</h1>
       <form onSubmit={handleSubmit} className="space-y-4">
+        
+        <p><strong>Última actualización por:</strong> {userOptions.find(u => u.value === land.user_last_update_id)?.label ?? ''}</p>
+
   {/* Sección 1: Inputs de texto y número */}
   <div className="grid grid-cols-2 g-1">
     <InputGroup
@@ -237,33 +249,28 @@ export default function CreateLand() {
       placeholder="Selecciona fraccionamiento"
       onChangeFnc={handleSelect}
     />
-    <SelectGroup
-      id="municipality_id"
-      name="municipality_id"
-      label="Municipio"
-      value={land.municipality_id ?? 0}
-      options={municipalOptions}
-      placeholder="Selecciona municipio"
-      onChangeFnc={handleSelect}
-    />
-    <SelectGroup
-      id="state_id"
-      name="state_id"
-      label="Estado"
-      value={land.state_id ?? 0}
-      options={stateOptions}
-      placeholder="Selecciona estado"
-      onChangeFnc={handleSelect}
-    />
-    <SelectGroup
-      id="land_type_id"
-      name="land_type_id"
-      label="Tipo de terreno"
-      value={land.land_type_id ?? 0}
-      options={typeOptions}
-      placeholder="Selecciona tipo"
-      onChangeFnc={handleSelect}
-    />
+    {
+      /*
+      <SelectGroup
+            id="municipality_id"
+            name="municipality_id"
+            label="Municipio"
+            value={land.municipality_id ?? 0}
+            options={municipalOptions}
+            placeholder="Selecciona municipio"
+            onChangeFnc={handleSelect}
+          />
+          <SelectGroup
+            id="state_id"
+            name="state_id"
+            label="Estado"
+            value={land.state_id ?? 0}
+            options={stateOptions}
+            placeholder="Selecciona estado"
+            onChangeFnc={handleSelect}
+          />
+          */
+    }
     <SelectGroup
       id="category_id"
       name="category_id"
@@ -282,6 +289,27 @@ export default function CreateLand() {
       placeholder="Selecciona empresa"
       onChangeFnc={handleSelect}
     />
+    
+    
+    
+    <SelectGroup
+      id="land_type_id"
+      name="land_type_id"
+      label="Tipo de terreno"
+      value={land.land_type_id ?? 0}
+      options={typeOptions}
+      placeholder="Selecciona tipo"
+      onChangeFnc={handleSelect}
+    />
+    <SelectGroup
+      id="status_id"
+      name="status_id"
+      label="Status actual"
+      value={land.status_id ?? 0}
+      options={statusOptions}
+      placeholder="Selecciona status"
+      onChangeFnc={handleSelect}
+    />
     <SelectGroup
       id="tax_payer_company_id"
       name="tax_payer_company_id"
@@ -291,24 +319,14 @@ export default function CreateLand() {
       placeholder="Selecciona empresa"
       onChangeFnc={handleSelect}
     />
-    <SelectGroup
-      id="user_last_update_id"
-      name="user_last_update_id"
-      label="Usuario actualización"
-      value={land.user_last_update_id ?? 0}
-      options={userOptions}
-      placeholder="Selecciona usuario"
-      onChangeFnc={handleSelect}
-    />
-    <SelectGroup
-      id="status_id"
-      name="status_id"
-      label="Estado actual"
-      value={land.status_id ?? 0}
-      options={statusOptions}
-      placeholder="Selecciona estado"
-      onChangeFnc={handleSelect}
-    />
+    <p>Estado: {stateOptions.find(e => e.value === ResidentialDevelopment.find(a=> a.id ===land.residential_development_id)?.state.id 
+      
+    )?.label ?? ''}</p>
+    <p>Municipio: {stateOptions.find(e => e.value === ResidentialDevelopment.find(a=> a.id ===land.residential_development_id)?.city.id 
+      
+    )?.label ?? ''}</p>
+    
+    
   </div>
   <br/>
   <hr />

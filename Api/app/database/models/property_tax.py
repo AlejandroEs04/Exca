@@ -14,6 +14,7 @@ class PropertyTax(Base):
     cadastral_value_per_built_area = Column(Float, nullable=True)
     receipt_file_url = Column(String(255), nullable=True)
     tax_amount = Column(Float, nullable=True)
+    charges = Column(Float, nullable=True)
     penalties = Column(Float, nullable=True)
     other_charges = Column(Float, nullable=True)
     total_tax = Column(Float, nullable=True)

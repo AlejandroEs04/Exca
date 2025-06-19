@@ -5,7 +5,7 @@ import Projects from "./views/Projects/Projects"
 import CreateProject from "./views/Projects/CreateProject"
 import Lands from "./views/Land/Lands"
 import LandsToVerify from "./views/verifies/verifyLands"
-import FormLand from "./views/verifies/FormLand"
+//import FormLand from "./views/verifies/FormLand"
 import CreateLand from "./views/Land/CreateLand"
 import Clients from "./views/Client/Clients"
 import CreateClient from "./views/Client/CreateClient"
@@ -41,6 +41,8 @@ import NotificationSystems from "./views/Settings/NotificationSystem/Notificatio
 import UpdateNotificationSystem from "./views/Settings/NotificationSystem/UpdateNotificationSystem"
 import CreateNotificationSystem from "./views/Settings/NotificationSystem/CreateNotificationSystem"
 import Activity from "./views/Projects/Activities/Activity"
+import FormLand from "./views/Land/FormLand"
+import PropertyTaxFormFromLand from "./views/Land/PropertyTaxFormFromLand"
 
 
 function App() {
@@ -74,6 +76,11 @@ function App() {
           <Route path="/lands/:id" element={<Land />} />
           <Route path="/lands/create" element={<CreateLand />} />
           <Route path="/lands/edit/:id" element={<EditLand />} />
+          <Route path="/lands/form-land/:id?" element={<FormLand />} />
+          <Route
+            path="/lands/form-land/:land_id?/property-taxes/form/:propertyTaxId?"
+            element={<PropertyTaxFormFromLand />}
+          />
 
           <Route path="/contract-request/:projectId" element={<LeaseRequest />} />
           <Route path="/contract-request/:projectId/:leaseRequestId" element={<LeaseRequest />} />
@@ -92,7 +99,10 @@ function App() {
           <Route path="/technical-case/:projectId/:caseId" element={<TechnicalCase />} />
 
           <Route path="/verify-lands" element={<LandsToVerify />} />
-          <Route path="/verify-lands/form-land/:id?" element={<FormLand />} />
+          {/**
+           <Route path="/verify-lands/form-land/:id?" element={<VerifyFormLand />} />
+          */}
+          
 
           <Route path="/verify-projects" element={<ProjectsToVerify />} />
           <Route path="/verify-projects/form-project/:id?" element={<FormProject />} />

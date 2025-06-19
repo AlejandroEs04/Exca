@@ -163,10 +163,21 @@ export default function MainLayout() {
                   className={catalogsOpen ? 'submenu-toggle active' : 'submenu-toggle'}
                   onClick={() => setCatalogsOpen(open => !open)}
                 >
-                    <svg xmlns="http://www.w3.org/2000/svg" className="icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M3 7.5A2.25 2.25 0 015.25 5.25h4.5L12 7.5h6.75A2.25 2.25 0 0121 9.75v8.25A2.25 2.25 0 0118.75 20.25H5.25A2.25 2.25 0 013 18V7.5z" />
-                    </svg>
-                    <span className="link-text">Catálogos</span>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="icon"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={1.5}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M3 7.5A2.25 2.25 0 015.25 5.25h4.5L12 7.5h6.75A2.25 2.25 0 0121 9.75v8.25A2.25 2.25 0 0118.75 20.25H5.25A2.25 2.25 0 013 18V7.5z"
+                    />
+                  </svg>
+                  <span className="link-text">Catálogos</span>
                 </a>
 
                     <div className={`submenu ${catalogsOpen ? 'active' : ''}`}>
