@@ -215,6 +215,11 @@ export type Land = {
   residential_development?: ResidentialDevelopment;
   land_status?: LandStatus 
   project_lands?: ProjectLand[];
+
+  current_tax_year?: number;
+  current_value_per_built_area?: number;
+  current_value_per_area?: number;
+  current_cadastral_value?: number;
 };
 
 // For creating a new Land
@@ -656,3 +661,32 @@ export type NotificationSystem = {
     is_active: boolean
     recipients: NotificationSystemRecipient[]
 }
+//property tax
+export type PropertyTax = {
+  id: number;
+  land_id?: number;
+  property_tax_estatus_id?: number;
+  verified_user_id?: number;
+  tax_year?: number;
+  cadastral_value?: number;
+  cadastral_value_per_area?: number;
+  cadastral_value_per_built_area?: number;
+  receipt_file_url?: string;
+  tax_amount?: number;
+  charges?: number;
+  penalties?: number;
+  other_charges?: number;
+  total_tax?: number;
+  discount?: number;
+  bonuses?: number;
+  others?: number;
+  net_payable?: number;
+  created_at: string;
+  updated_at: string;
+};
+export type PropertyTaxStatus  = {
+  id: number;
+  description: string;
+  created_at: string;
+  updated_at: string;
+};

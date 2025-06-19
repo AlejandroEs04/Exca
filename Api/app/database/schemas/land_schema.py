@@ -13,6 +13,7 @@ class LandBase(BaseModel):
     tax_payer_company_id: Optional[int]
     user_last_update_id: Optional[int]
     status_id: Optional[int]
+    residential_development_id: Optional[int]
     cadastral_file: Optional[str] = None
     block_lot: Optional[str] = None
     address: Optional[str] = None
@@ -22,19 +23,25 @@ class LandBase(BaseModel):
     has_water_service: Optional[bool] = None
     has_drainage_service: Optional[bool] = None
     has_cfe_service: Optional[bool] = None
+    is_trust_owned: Optional[bool] = None
     notes: Optional[str] = None
     incorporation: Optional[str] = None
     incorporation_notes: Optional[str] = None
 
+    current_tax_year: Optional[int] = None
+    current_value_per_built_area: Optional[float] = None
+    current_value_per_area: Optional[float] = None
+    current_cadastral_value: Optional[float] = None
+
 class LandCreate(LandBase):
     residential_development_id: Optional[int]
-
+    
 class LandUpdate(LandBase):
     id: int
 
 class LandResponse(LandBase):
     id: int
-    residential_development_id: Optional[int]
+   
     residential_development: Optional[ResidentialDevelopmentResponse]
     land_status: Optional[LandStatusResponse]
     created_at: datetime

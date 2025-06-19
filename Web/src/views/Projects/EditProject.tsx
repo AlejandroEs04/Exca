@@ -5,7 +5,7 @@ import Breadcrumb from "../../components/shared/Breadcrumb/Breadcrumb"
 import InputGroup, { PushEvent, Option } from "../../components/forms/InputGroup"
 import SaveIcon from "../../components/shared/Icons/SaveIcon"
 import SelectGroup from "../../components/forms/SelectGroup"
-import { ProjectView, RentLand, ResidentialDevelopment } from "../../types"
+import { Land,Project, ResidentialDevelopment } from "../../types"
 import PlusIcon from "../../components/shared/Icons/PlusIcon"
 import { currencyFormat } from "../../utils"
 import { getResidentialDevelopments } from "../../api/LandApi"
@@ -21,15 +21,15 @@ export default function EditProject() {
     ]
 
     const { state } = useAppContext()
-    const [project, setProject] = useState<ProjectView | null>(null)
+    const [project, setProject] = useState<Project | null>(null)
     const [rentOptions, setRentOptions] = useState<Option[]>([])
     const [residentialOptions, setResidentialOptions] = useState<Option[]>([])
     const [residentialDevelopments, setResidentialDevelopments] = useState<ResidentialDevelopment[]>([])
-    const [lands, setLands] = useState<RentLand[]>([])
+    const [lands, setLands] = useState<Land[]>([])
     
     const clientsOptions = state.clients.map(client => {
         return {
-            label: client.business_name,
+            label: client.business_name || '', 
             value: client.id
         }
     })
@@ -64,11 +64,11 @@ export default function EditProject() {
         })
     }
 
-    const addLand = (newLand: RentLand) => {
-        const landExists = lands.find(land => land.land_id === newLand.land_id)
+    const addLand = (newLand: Land) => {
+        const landExists = lands.find(land => land.id === newLand.id)
 
         if (landExists) {
-            setLands(lands.map(land => land.land_id === newLand.land_id ? newLand : land))
+            setLands(lands.map(land => land.id === newLand.id ? newLand : land))
         } else {
             setLands([...lands, newLand])
         }
@@ -123,12 +123,12 @@ export default function EditProject() {
                 </button>
             
                 <div className="mt-1">
-                    <InputGroup name="name" label="Nombre" value={project.name} placeholder="Nombre del proyecto" onChangeFnc={onChangeProject} />
+                    <InputGroup name="name" label="Nombre" value={project.id || ''} placeholder="Nombre del proyecto" onChangeFnc={onChangeProject} />
                 </div>
             
                 <div className="grid grid-cols-2 mt-2">
-                    <InputGroup name="client" label="Razón social" value={project.brand.client.business_name} placeholder="Razón social" onChangeFnc={onChangeProject} options={clientsOptions} />
-                    <InputGroup name="brand" label="Marca" value={project.brand.name} placeholder="Nombre de la marca" onChangeFnc={onChangeProject} />
+                    <InputGroup name="client" label="Razón social" value={project.brand?.client?.business_name || ''} placeholder="Razón social" onChangeFnc={onChangeProject} options={clientsOptions} />
+                    <InputGroup name="brand" label="Marca" value={project.brand?.name || ''} placeholder="Nombre de la marca" onChangeFnc={onChangeProject} />
                 </div>
             
                 <div className="grid grid-cols-2 mt-2">
@@ -146,9 +146,9 @@ export default function EditProject() {
                     <thead>
                         <tr>
                             <th>Expediente Catastral</th>
-                            <th>Precio/m<sup>2</sup></th>
+                            
                             <th>Metros<sup>2</sup></th>
-                            <th>Renta mensual</th>
+                            
                         </tr>
                     </thead>
             
@@ -156,20 +156,21 @@ export default function EditProject() {
                         {lands.map(land => (
                             <tr key={land.land_id}>
                                 <td>{state.lands.find(l => l.id === land.land_id)?.cadastral_file}</td>
-                                <td>{currencyFormat(state.lands.find(l => l.id === land.land_id)?.price_per_area!)}</td>
                                 <td>{land.area}</td>
-                                <td>{currencyFormat(+((state.lands.find(l => l.id === land.land_id)?.price_per_area || 0) * land.area).toFixed(2))}</td>
+                                
                             </tr>
                         ))}
 
-                        {project.lands.map(land => (
+                        {
+                            /*
+                        project.lands.map(land => (
                             <tr>
                                 <td>{land.land.cadastral_file}</td>
-                                <td>{currencyFormat(land.land.price_per_area)}</td>
                                 <td>{land.area}</td>
-                                <td>{currencyFormat(+((land.land.price_per_area) * land.area).toFixed(2))}</td>
                             </tr>
-                        ))}
+                        ))
+                            */
+                            }
                     </tbody>
                 </table>
             </form>

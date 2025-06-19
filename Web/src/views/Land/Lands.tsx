@@ -3,7 +3,8 @@ import Breadcrumb from "../../components/shared/Breadcrumb/Breadcrumb";
 import PlusIcon from "../../components/shared/Icons/PlusIcon";
 import { useAppContext } from "../../hooks/AppContext";
 import Loader from "../../components/shared/Loader/Loader";
-import EyeIcon from "../../components/shared/Icons/EyeIcon";
+//import EyeIcon from "../../components/shared/Icons/EyeIcon";
+import EditIcon from "../../components/shared/Icons/EditIcon";
 
 export default function Lands() {
     const list = [
@@ -18,9 +19,9 @@ export default function Lands() {
     return (
         <>
             <Breadcrumb list={list} />
-            <h1>Inventario de terrenos</h1>
+            <h1>Inventario de propiedades</h1>
 
-            <Link to={'create'} className="btn btn-primary">
+            <Link to={'form-land'} className="btn btn-primary">
                 <PlusIcon />
                 Registrar
             </Link>
@@ -35,7 +36,7 @@ export default function Lands() {
                         <th>Ex. Catastral</th>
                         <th>Area</th>
                         <th>Area Construida</th>
-                        <th>Status</th>
+                        <th>Estatus</th>
                         <th>Acciones</th>
 
                     </tr>
@@ -68,8 +69,9 @@ export default function Lands() {
                         <td>{land.land_status?.description ?? 'Not Found'}</td>
                         <td>
                             <div className="table-actions">
-                            <Link to={`/lands/${land.id}`} className="text-indigo">
-                                <EyeIcon />
+                            
+                            <Link to={`form-land/${land.id}`} className="text-indigo">
+                                <EditIcon />
                             </Link>
                             </div>
                         </td>
