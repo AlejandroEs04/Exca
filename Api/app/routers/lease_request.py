@@ -126,7 +126,7 @@ def get_leases(db: Session = Depends(get_db)):
 
 @router.post("/send-to-approval", status_code=status.HTTP_201_CREATED, response_model=ProjectResponse)
 def send_approval(approvalRequest: ApprovalRequestCreate, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
-    request_exists = db.query(LeaseRequest).where(LeaseRequest.project_id == approvalRequest.item_id).first()
+    request_exists = db.query(LeaseRequest).where(LeaseRequest.id == approvalRequest.item_id).first()
     
     if not request_exists:
         raise HTTPException(

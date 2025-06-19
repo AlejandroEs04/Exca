@@ -188,7 +188,7 @@ export default function CreateLand() {
         <p><strong>Última actualización por:</strong> {userOptions.find(u => u.value === land.user_last_update_id)?.label ?? ''}</p>
 
   {/* Sección 1: Inputs de texto y número */}
-  <div className="grid grid-cols-2 gap-4">
+  <div className="grid grid-cols-2 g-1">
     <InputGroup
       id="cadastral_file"
       name="cadastral_file"
@@ -239,7 +239,7 @@ export default function CreateLand() {
   <br/>
 
   {/* Sección 2: Selects */}
-  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 g-1">
     <SelectGroup
       id="residential_development_id"
       name="residential_development_id"

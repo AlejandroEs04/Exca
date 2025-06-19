@@ -5,10 +5,13 @@ from app.database.models.approval_request import ApprovalRequest
 from app.database.schemas.approval_request_schema import ApprovalRequestResponse
 from app.database.models.approval_flow_step import ApprovalFlowStep
 from app.database.models.lease_request import LeaseRequest
+from app.database.models.case import Case
 from app.database.models.project import Project
+from app.database.models.notification_system_recipient import NotificationSystemRecipient
 from app.database.models.user import User
 from app.middleware.auth import get_current_user
 from app.utils.send_approval_email import build_email_body
+from app.utils.body_generator import build_reject_approvation, build_finish_approvation, build_send_approbation_request
 from app.services.email import send_email
 from datetime import datetime
 from app.config import FRONTEND_URL
@@ -56,7 +59,7 @@ def response_approval_request(request_id: int, response: bool, current_user: Use
       
     if not response:
         #Rejected
-        reject_flow(current_step.flow_id, approval_request.item_id, db)
+        reject_flow(current_step.flow_id, approval_request.item_id, current_user, db, approval_request.comments)
         return
         
     next_step = db.query(ApprovalFlowStep).filter(
@@ -65,7 +68,7 @@ def response_approval_request(request_id: int, response: bool, current_user: Use
     ).first()
     
     if not next_step:
-        finish_flow(current_step.flow_id, approval_request.item_id, db)
+        finish_flow(current_step.flow_id, approval_request.item_id, current_user, db)
         return
     else:
         new_request = ApprovalRequest(
@@ -88,8 +91,8 @@ def response_approval_request(request_id: int, response: bool, current_user: Use
     send_email("Solicitud de aprobación", signator.email, body)
 
 
-def finish_flow(flow_id: int, item_id: str, db: Session):
-    if(flow_id == 1):
+def finish_flow(flow_id: int, item_id: str, user: User, db: Session):
+    if flow_id == 1:
         lease_request = db.query(LeaseRequest).filter(LeaseRequest.id == item_id).first()
         
         if not lease_request:
@@ -111,12 +114,41 @@ def finish_flow(flow_id: int, item_id: str, db: Session):
         db.add(project)
         db.add(lease_request)
         db.commit()
+    elif flow_id == 2:
+        case_exists = db.query(Case).where(Case.id == item_id).first()
+        if not case_exists:
+            raise HTTPException(status_code=404, detail="No se encontro la caratula")
         
-        # Send to legal area
-        return
+        case_exists.status_id = 3
+        db.add(case_exists)
+        
+        project = db.query(Project).where(Project.id == case_exists.project_id).first()
+        if not project:
+            raise HTTPException(status_code=404, detail="No se encontro el proyecto")
+        
+        project.stage_id = 4
+        db.add(project)
+        
+        db.commit()
+        
+        recipients = db.query(NotificationSystemRecipient).where(NotificationSystemRecipient.notification_system_id == 3).all()
+        for recipient in recipients:
+            user = db.query(User).where(User.id == recipient.user_id).first()
+            if not user:
+                raise HTTPException(
+                    status_code=404, 
+                    detail="El usuario recipiente no fue encontrado"
+                )
+            body = build_email_body("Carátula técnica terminada", datetime.now, user.full_name, user.full_name, "")
+            send_email("Caratula técnica finalizada", user.email, body)
             
-def reject_flow(flow_id: int, item_id: str, db: Session):
-    if(flow_id == 1):
+def reject_flow(flow_id: int, item_id: str, user: User, db: Session, reason: str | None = "No hay razón"):
+    document_name = ""
+    url_address = ""
+    to_address = ""
+    
+    if flow_id == 1:
+        document_name = "Solicitud de contrato"
         lease_request = db.query(LeaseRequest).filter(LeaseRequest.id == item_id).first()
         
         if not lease_request:
@@ -128,7 +160,34 @@ def reject_flow(flow_id: int, item_id: str, db: Session):
         lease_request.status_id = 5
         db.commit()
         
-        # Send to originator
-        return
-            
+        originator = db.query(User).where(User.id == lease_request.created_by).first()
+        
+        if not originator:
+            raise HTTPException(status_code=404, detail="Usuario no encontrado")
+        
+        to_address = originator.email
+    elif flow_id == 2:
+        case_exists = db.query(Case).where(Case.id == item_id).first()
+        
+        if not case_exists:
+            raise HTTPException(status_code=404, detail="No se encontro la caratula")
+        
+        if case_exists.case_type_id == 1:
+            document_name = "Caratula Técnica"
+        else:
+            document_name = "Caratula Legal"
+        
+        case_exists.status_id = 5
+        db.add(case_exists)
+        db.commit()
+        
+        originator = db.query(User).where(User.id == case_exists.originator_id).first()
+        
+        if not originator:
+            raise HTTPException(status_code=404, detail="Usuario no encontrado")
+        
+        to_address = originator.email
+    
+    body = build_reject_approvation(document_name, user.full_name, reason, item_id, url_address)
+    send_email("Solicitud rechazada", to_address, body)
         

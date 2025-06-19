@@ -23,7 +23,7 @@ export async function createCase(newCase: CaseCreate) {
 
 export async function sendCase(id: number) {
     try {
-        const { data } = await api<Case>(`/case/send/${id}`)
+        const { data } = await api.post<Case>(`/case/send/${id}`)
         console.log(data)
         return data
     } catch (error) {

@@ -22,3 +22,7 @@ class User(Base):
     approval_flow_steps = relationship("ApprovalFlowStep", back_populates="signator")
     title = relationship("UserTitle", back_populates="users")
     recipients = relationship("NotificationSystemRecipient", back_populates="user")
+    tasks_created = relationship("Task", back_populates="originator", foreign_keys="[Task.originator_id]")
+    tasks_assigned = relationship("Task", back_populates="responsible", foreign_keys="[Task.responsible_id]")
+    task_messages = relationship("TaskMessage", back_populates="originator")
+    task_related = relationship("TaskUser", back_populates="user")
