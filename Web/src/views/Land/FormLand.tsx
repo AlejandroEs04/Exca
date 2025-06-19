@@ -50,7 +50,7 @@ export default function CreateOrEditLand() {
   const breadcrumbList = [
     { name: "Dashboard", url: "/" },
     { name: "Inventario de terrenos", url: "/lands" },
-    { name: isEditing ? "Editar Terreno" : "Registrar Terreno", url: "#" },
+    { name: isEditing ? "Editar Propiedad" : "Registrar Propiedad", url: "#" },
   ];
   const checkboxFields = [
     { name: "is_trust_owned", label: "¿Pertenece al Fideicomiso?" },
@@ -217,7 +217,7 @@ export default function CreateOrEditLand() {
   return (
     <>
       <Breadcrumb list={breadcrumbList} />
-      <h1>{isEditing ? "Editar Terreno" : "Registrar Terreno"}</h1>
+      <h1>{isEditing ? "Editar Propiedad" : "Registrar Propiedad"}</h1>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         

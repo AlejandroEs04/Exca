@@ -21,16 +21,20 @@ export async function getLands() {
 }
 
 export async function registerLand(land: LandCreate) {
-  console.log("REGISTRANDO LAND");
-    try {
-        const { data } = await api.post<Land>('/land', land)
-        return data
-    } catch (error) {
-        if(isAxiosError(error) && error.response) {
-            throw new Error(error.response.data.error)
-        }
+  console.log("REGISTRANDO LAND", land);
+  try {
+    const { data } = await api.post<Land>('/land', land);
+    return data;
+  } catch (error) {
+    if (isAxiosError(error) && error.response) {
+      console.error("Error detalle completo:", error.response.data); // 👈 aquí
+      throw new Error(JSON.stringify(error.response.data, null, 2)); // ← esto muestra en el toast todos los errores bien formateados
     }
+    throw new Error("Error desconocido al registrar terreno.");
+  }
 }
+
+
 export async function updateLand(land: LandCreate & { id: number }) {
     try {
         const { data } = await api.put<Land>('/land', land)
@@ -58,7 +62,7 @@ export async function getPropertyTaxesByLandId(id: number): Promise<PropertyTax[
     return data
   } catch (error) {
     if (isAxiosError(error) && error.response) {
-      // si tu backend envía el mensaje de error en otro campo, ajústalo aquí
+      
       const msg =
         (error.response.data as any).detail ??
         (error.response.data as any).error ??

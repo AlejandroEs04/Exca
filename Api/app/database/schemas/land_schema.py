@@ -23,11 +23,12 @@ class LandBase(BaseModel):
     has_water_service: Optional[bool] = None
     has_drainage_service: Optional[bool] = None
     has_cfe_service: Optional[bool] = None
+    is_trust_owned: Optional[bool] = None
     notes: Optional[str] = None
     incorporation: Optional[str] = None
     incorporation_notes: Optional[str] = None
 
-    current_tax_year: Optional[int]
+    current_tax_year: Optional[int] = None
     current_value_per_built_area: Optional[float] = None
     current_value_per_area: Optional[float] = None
     current_cadastral_value: Optional[float] = None

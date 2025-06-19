@@ -3,7 +3,7 @@ import Breadcrumb from "../../components/shared/Breadcrumb/Breadcrumb";
 import PlusIcon from "../../components/shared/Icons/PlusIcon";
 import { useAppContext } from "../../hooks/AppContext";
 import Loader from "../../components/shared/Loader/Loader";
-import EyeIcon from "../../components/shared/Icons/EyeIcon";
+//import EyeIcon from "../../components/shared/Icons/EyeIcon";
 import EditIcon from "../../components/shared/Icons/EditIcon";
 
 export default function Lands() {
@@ -19,7 +19,7 @@ export default function Lands() {
     return (
         <>
             <Breadcrumb list={list} />
-            <h1>Inventario de terrenos</h1>
+            <h1>Inventario de propiedades</h1>
 
             <Link to={'form-land'} className="btn btn-primary">
                 <PlusIcon />
