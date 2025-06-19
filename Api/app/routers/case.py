@@ -6,6 +6,11 @@ from app.database.models.case import Case
 from app.database.schemas.case_schema import CaseCreate, CaseResponse
 from app.database.models.user import User
 from app.database.models.case_condition import CaseCondition
+from app.database.models.notification_system_recipient import NotificationSystemRecipient
+from app.database.models.approval_flow_step import ApprovalFlowStep
+from app.database.models.approval_request import ApprovalRequest
+from app.services.email import send_email
+from app.utils.send_approval_email import build_email_body
 from datetime import datetime
 
 router = APIRouter(prefix="/case", tags=["Cases"])
@@ -110,12 +115,49 @@ def send_case(case_id: int, current_user: User = Depends(get_current_user), db: 
             detail="No se encontro la cáratula"
         )
         
+    if exists_case.case_type_id == 2:
+        exists_technical_case = db.query(Case).where(Case.project_id == exists_case.project_id, Case.case_type_id == 1).first()
+        
+        if not exists_technical_case:
+            raise HTTPException(status_code=401, detail="Es necesario completar la caratula técnica antes de mandar la caratula legal")
+        
+        if exists_technical_case.status_id != 5:
+            raise HTTPException(status_code=401, detail="Es necesario que la catula técnica sea enviada antes de enviar la caratula legal")
+        
     exists_case.status_id = 2
     exists_case.sended_at = datetime.now()
     
     if exists_case.case_type_id == 1:
-        print("Technical case")
+        recipients = db.query(NotificationSystemRecipient).where(NotificationSystemRecipient.notification_system_id == 3).all()
+        for recipient in recipients:
+            user = db.query(User).where(User.id == recipient.user_id).first()
+            if not user:
+                raise HTTPException(
+                    status_code=404, 
+                    detail="El usuario recipiente no fue encontrado"
+                )
+            body = build_email_body("Carátula técnica terminada", datetime.now, current_user.full_name, user.full_name, "")
+            send_email("Caratula técnica finalizada", user.email, body)
+            
+        exists_case.status_id = 5
     elif exists_case.case_type_id == 2:
-        print("Start approval flow")
+        first_step = db.query(ApprovalFlowStep).where(ApprovalFlowStep.flow_id == 2, ApprovalFlowStep.step_order == 1).first()
+        
+        if not first_step:
+            raise HTTPException(status_code=404, detail="No se pudo encontrar el flujo de aprobación")
+        
+        approval_request = db.query(ApprovalRequest).where(ApprovalRequest.item_id == case_id, ApprovalRequest.flow_step_id == first_step.id).first()
+        
+        if approval_request:
+            raise HTTPException(status_code=401, detail="Aprobación en curso")
+        
+        new_approval = ApprovalRequest(
+            item_id=case_id, 
+            flow_step_id=first_step.id, 
+            requested_by=current_user.id
+        )
+        db.add(new_approval)
+    db.add(exists_case)
+    db.commit()
         
     return exists_case

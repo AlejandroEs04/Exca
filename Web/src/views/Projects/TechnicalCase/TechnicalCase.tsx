@@ -36,6 +36,7 @@ export default function TechnicalCase() {
                 description: '', 
                 conditions: newConditions
             }
+            
             let response;
 
             if(caseId) {

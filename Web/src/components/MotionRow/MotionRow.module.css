@@ -1,0 +1,9 @@
+.motionRow {
+  display: table-row;
+}
+
+.motionCell {
+  display: table-cell;
+  padding: 8px;
+  border-bottom: 1px solid #ccc;
+}

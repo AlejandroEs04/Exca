@@ -9,3 +9,4 @@ class UserTitle(Base):
     name: Mapped[str] = mapped_column(nullable=False)
     
     users = relationship("User", back_populates="title")
+    approval_steps = relationship("ApprovalFlowStep", back_populates="rol")

@@ -2,11 +2,10 @@ import { useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useAppContext } from '../../hooks/AppContext'
 import Breadcrumb from '../../components/shared/Breadcrumb/Breadcrumb'
-import { currencyFormat, dateFormat } from '../../utils'
+import { dateFormat } from '../../utils'
 import Loader from '../../components/shared/Loader/Loader'
 import { toast } from 'react-toastify'
 import InputGroup from '../../components/forms/InputGroup'
-import LeaseRequestInformation from '../../components/LeaseRequest/LeaseRequestInformation'
 import ListIcon from '../../components/shared/Icons/ListIcon'
 import DocumentTextIcon from '../../components/shared/Icons/DocumentTextIcon'
 import ActivitiesIcon from '../../components/shared/Icons/ActivitiesIcon'
@@ -50,7 +49,12 @@ export default function Project() {
             <p className='mt-1'>Estatus: {project.stage?.name}</p>
 
             <div className='mt-1 flex g-1'>
-                <Link to={`/contract-request/${id}/${project.lease_request !== null ? project.lease_request?.id : ''}`} className='btn btn-primary w-max'>Solicitud de contrato</Link>
+                <Link to={`/contract-request/${id}/${project.lease_request !== null ? project.lease_request?.id : ''}`} className='btn btn-primary w-max'>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="icon">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 7.5V6.108c0-1.135.845-2.098 1.976-2.192.373-.03.748-.057 1.123-.08M15.75 18H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08M15.75 18.75v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5A3.375 3.375 0 0 0 6.375 7.5H5.25m11.9-3.664A2.251 2.251 0 0 0 15 2.25h-1.5a2.251 2.251 0 0 0-2.15 1.586m5.8 0c.065.21.1.433.1.664v.75h-6V4.5c0-.231.035-.454.1-.664M6.75 7.5H4.875c-.621 0-1.125.504-1.125 1.125v12c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V16.5a9 9 0 0 0-9-9Z" />
+                    </svg>
+                    Solicitud de contrato
+                </Link>
 
                 {(project.stage_id === 3) && (
                     <>
@@ -58,11 +62,11 @@ export default function Project() {
                             <ListIcon />
                             Carátula técnica
                         </Link>
-                        <Link to={`/legal-case/${id}`} className='btn btn-indigo w-max'>
+                        <Link to={`/legal-case/${id}/${project.cases?.find(c => c.case_type_id === 2)?.id ?? ''}`} className='btn btn-indigo w-max'>
                             <DocumentTextIcon />
                             Carátula Legal
                         </Link>
-                        <Link to={`activities`} className='btn btn-esmerald w-max'>
+                        <Link to={`tasks`} className='btn btn-esmerald w-max'>
                             <ActivitiesIcon />
                             Actividades
                         </Link>
@@ -84,8 +88,6 @@ export default function Project() {
                     <tr>
                         <th>Expediente Catastral</th>
                         <th>Área</th>
-                        <th>Precio por Área</th>
-                        <th>Renta Mensual</th>
                         <th>Tipo de arrendamiento</th>
                     </tr>
                 </thead>
@@ -95,27 +97,11 @@ export default function Project() {
                         <tr key={land.id}>
                             <td>{land.land?.cadastral_file}</td>
                             <td>{land.area}</td>
-                            <td>{currencyFormat(land.land?.price_per_area!)}</td>
-                            <td>{currencyFormat(land.area * land.land?.price_per_area!)}</td>
                             <td>{land.type?.name}</td>
                         </tr>
                     ))}
                 </tbody>
             </table>
-
-            <div className='mt-2'>
-                {project.lease_request && <LeaseRequestInformation leaseRequest={project.lease_request} />}
-                
-                <div className='flex items-center g-2'>
-                    <h3>Aprobaciones: </h3>
-                    {/* {project?.approvations?.filter(a => a.step?.flow_id === 1).map(a => (
-                        <div>
-                            <p className={`approbation-name ${a.response ? 'text-green' : 'text-red'}`}>{a.step?.signator.full_name}</p>
-                        </div>
-                    ))} */}
-                </div>
-                
-            </div>
         </>
     )
 }

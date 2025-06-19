@@ -4,7 +4,7 @@ import { Case, CaseCreate } from "../types"
 
 export async function createTechnicalCase(newTechnicalCase: CaseCreate) {
     try {
-        const { data } = await api.post<Case[]>('/technical-case', newTechnicalCase)
+        const { data } = await api.post<Case[]>('/case', newTechnicalCase)
         return data
     } catch (error) {
         if(isAxiosError(error) && error.response) {
@@ -15,7 +15,7 @@ export async function createTechnicalCase(newTechnicalCase: CaseCreate) {
 
 export async function sendTechnicalCase(id: number) {
     try {
-        const { data } = await api<Case>(`/technical-case/send/${id}`)
+        const { data } = await api.post<Case>(`/case/send/${id}`)
         console.log(data)
         return data
     } catch (error) {

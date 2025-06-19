@@ -1,4 +1,6 @@
-import { Icon } from "../../../types";
+export type Icon = {
+    color?: 'text-red'
+}
 
 export default function XMark({ color } : Icon) {
     return (
