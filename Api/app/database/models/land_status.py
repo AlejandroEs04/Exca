@@ -8,3 +8,8 @@ class LandStatus(Base):
     description = Column(String(50), nullable=False)
     created_at = Column(DateTime, server_default=func.getdate(), nullable=False)
     updated_at = Column(DateTime, server_default=func.getdate(), onupdate=func.getdate(), nullable=False)
+
+    lands = relationship('Land', back_populates='land_status')
+
+
+

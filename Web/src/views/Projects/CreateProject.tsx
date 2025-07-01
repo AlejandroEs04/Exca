@@ -73,10 +73,11 @@ export default function CreateProject() {
             if(optionsLands) {
                 const options = optionsLands.map(land => {
                     return {
-                        label: land.cadastral_file,
+                        label: land.cadastral_file || '',
                         value: land.id
                     }
                 })
+                
                 setLandOptions(options)
             }
         }
@@ -170,7 +171,7 @@ export default function CreateProject() {
         const brandsOptions : OptionCB[] = clientSelected?.brands?.map(b => {
             return {
                 id: b.id, 
-                label: b.name
+                label: b.name 
             }
         }) ?? []
 
@@ -274,9 +275,9 @@ export default function CreateProject() {
                     <thead>
                         <tr>
                             <th>Expediente Catastral</th>
-                            <th>Precio/m<sup>2</sup></th>
+                            
                             <th>Metros<sup>2</sup></th>
-                            <th>Renta mensual</th>
+                            
                             <th>Tipo</th>
                         </tr>
                     </thead>
@@ -285,9 +286,7 @@ export default function CreateProject() {
                         {project.lands.map(land => (
                             <tr key={land.land_id}>
                                 <td>{state.lands.find(l => l.id === land.land_id)?.cadastral_file}</td>
-                                <td>{currencyFormat(state.lands.find(l => l.id === land.land_id)?.price_per_area!)}</td>
                                 <td>{land.area}</td>
-                                <td>{currencyFormat(+((state.lands.find(l => l.id === land.land_id)?.price_per_area || 0) * land.area).toFixed(2))}</td>
                                 <td>{rentOptions.find(r => r.value === land.type_id)?.label}</td>
                             </tr>
                         ))}

@@ -29,8 +29,17 @@ class Land(Base):
     notes = Column(String(255), nullable=True)
     incorporation = Column(String(50), nullable=True)
     incorporation_notes = Column(String(255), nullable=True)
-    created_at = Column(DateTime, server_default="GETDATE()", nullable=False)
-    updated_at = Column(DateTime, server_default="GETDATE()", onupdate="GETDATE()", nullable=False)
+    created_at = Column(DateTime, server_default=func.getdate(), nullable=False)
+    updated_at = Column(DateTime, server_default=func.getdate(), onupdate=func.getdate(), nullable=False)
+
+    current_tax_year = Column(Integer, nullable=True)
+    current_value_per_built_area = Column(Float, nullable=True)
+    current_value_per_area = Column(Float, nullable=True)
+    current_cadastral_value = Column(Float, nullable=True)
+
     
     projects = relationship("ProjectLand", back_populates="land")
     residential_development = relationship("ResidentialDevelopment", back_populates="land")
+
+    land_status = relationship('LandStatus', back_populates='lands')
+

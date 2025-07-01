@@ -1,6 +1,9 @@
 from pydantic import BaseModel
 from datetime import datetime
 
+from app.database.schemas.city_schema import CityResponse
+from app.database.schemas.state_schema import StateResponse
+
 class ResidentialDevelopmentSchema(BaseModel):
     name: str
     city_id: int
@@ -14,6 +17,8 @@ class ResidentialDevelopmentUpdate(ResidentialDevelopmentSchema):
 
 class ResidentialDevelopmentResponse(ResidentialDevelopmentSchema):
     id: int
+    city:  CityResponse
+    state: StateResponse
     created_at: datetime
     updated_at: datetime
 

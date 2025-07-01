@@ -391,6 +391,9 @@ input.input-error {
 .grid-cols-3 {
   grid-template-columns: repeat(3, 1fr);
 }
+.grid-cols-4 {
+  grid-template-columns: repeat(4, 1fr);
+}
 .grid-summary {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -416,6 +419,9 @@ input.input-error {
   }
   .lg\:grid-cols-3 {
     grid-template-columns: repeat(3, 1fr);
+  }
+  .lg\:grid-cols-4 {
+    grid-template-columns: repeat(4, 1fr);
   }
 }
 
