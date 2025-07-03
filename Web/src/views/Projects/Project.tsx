@@ -68,7 +68,7 @@ export default function Project() {
                         </Link>
                         <Link to={`tasks`} className='btn btn-esmerald w-max'>
                             <ActivitiesIcon />
-                            Actividades
+                            Obligaciones
                         </Link>
                     </>
                 )}

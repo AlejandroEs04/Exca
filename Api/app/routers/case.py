@@ -109,11 +109,14 @@ def update_case(case_id: int, case: CaseCreate, current_user: User = Depends(get
 @router.post("/send/{case_id}", status_code=status.HTTP_200_OK, response_model=CaseResponse)
 def send_case(case_id: int, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
     exists_case = db.query(Case).where(Case.id == case_id).first()
+    
     if not exists_case:
         raise HTTPException(
             status_code=404, 
             detail="No se encontro la cáratula"
         )
+        
+    print(exists_case.id)
         
     if exists_case.case_type_id == 2:
         exists_technical_case = db.query(Case).where(Case.project_id == exists_case.project_id, Case.case_type_id == 1).first()

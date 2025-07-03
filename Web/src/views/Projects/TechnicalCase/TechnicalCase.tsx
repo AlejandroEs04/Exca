@@ -53,7 +53,7 @@ export default function TechnicalCase() {
     const handleSend = async() => {
         try {
             await handleSubmit()
-            const response = await sendTechnicalCase(+projectId!)
+            const response = await sendTechnicalCase(+caseId!)
             dispatch({ 
                 type: 'set-projects', 
                 payload: { projects: state.projects.map(project => project.id !== +projectId! ? project : { ...project, technical_case: response! }) } 
