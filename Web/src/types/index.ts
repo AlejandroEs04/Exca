@@ -173,8 +173,8 @@ export type IndividualDocumentCreate = Pick<IndividualDocument, 'individual_id' 
 export type ResidentialDevelopment = {
     id: number;
     name: string;
-    id_city: number;
-    id_state: number;
+    city_id: number;
+    state_id: number;
     city:  City;
     state: State;
     created_at: string;
@@ -182,7 +182,7 @@ export type ResidentialDevelopment = {
     lands?: Land[];
 }
 
-export type ResidentialDevelopmentCreate = Pick<ResidentialDevelopment, 'name' | 'id_city' | 'id_state'>;
+export type ResidentialDevelopmentCreate = Pick<ResidentialDevelopment, 'name' | 'city_id' | 'state_id'>;
 export type ResidentialDevelopmentUpdate = Partial<ResidentialDevelopmentCreate>;
 
 // Land

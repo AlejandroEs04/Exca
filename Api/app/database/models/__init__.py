@@ -41,3 +41,4 @@ from app.database.models.task_message import TaskMessage
 from app.database.models.task_status import TaskStatus
 from app.database.models.task_user import TaskUser
 from app.database.models.task_user_permission import TaskUserPermission
+from app.database.models.client_roll import ClientRoll

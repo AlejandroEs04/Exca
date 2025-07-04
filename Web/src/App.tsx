@@ -43,6 +43,8 @@ import CreateNotificationSystem from "./views/Settings/NotificationSystem/Create
 import Activity from "./views/Projects/Activities/Activity"
 import FormLand from "./views/Land/FormLand"
 import PropertyTaxFormFromLand from "./views/Land/PropertyTaxFormFromLand"
+import ResidentialDevelopments from "./views/ResidentialDevelopment/ResidentialDevelopments"
+import CreateResidentialDevelopment from "./views/ResidentialDevelopment/CreateResidentialDevelopment"
 
 
 function App() {
@@ -72,6 +74,8 @@ function App() {
           <Route path="/clients/edit/:id" element={<EditClient />} />
           <Route path="/clients/individual/create" element={<CreateIndividual />} />
 
+          <Route path="/residential-development" element={<ResidentialDevelopments />} />
+          <Route path="/residential-development/create" element={<CreateResidentialDevelopment />} />
           <Route path="/lands" element={<Lands />} />
           <Route path="/lands/:id" element={<Land />} />
           <Route path="/lands/create" element={<CreateLand />} />
