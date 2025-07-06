@@ -117,11 +117,6 @@ export default function EditProject() {
             <h1>Editar Proyecto</h1>
 
             <form>
-                <button className="btn btn-success">
-                    <SaveIcon />
-                    Guardar
-                </button>
-            
                 <div className="mt-1">
                     <InputGroup name="name" label="Nombre" value={project.id || ''} placeholder="Nombre del proyecto" onChangeFnc={onChangeProject} />
                 </div>
@@ -173,6 +168,11 @@ export default function EditProject() {
                             }
                     </tbody>
                 </table>
+
+                <button className="btn btn-success mt-2">
+                    <SaveIcon />
+                    Guardar
+                </button>
             </form>
         </>
     )

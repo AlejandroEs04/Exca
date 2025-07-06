@@ -79,7 +79,7 @@ export default function Project() {
             <div className='grid grid-cols-3 g-1'>
                 <InputGroup label='Empresa' placeholder='Nombre de la empresa' value={project.brand?.client?.business_name!} name='bussiness_name' />
                 <InputGroup label='Cliente' placeholder='Nombre del cliente' value={project.brand?.name!} name='brand_name' />
-                <InputGroup label='Giro de la empresa' placeholder='Giro de la empresa' value={''} name='business_turn' />
+                <InputGroup label='Giro de la empresa' placeholder='Giro de la empresa' value={project.brand?.client?.roll?.name ?? ''} name='business_turn' />
             </div>
 
             <h2 className='mt-2'>Datos del inmueble objeto de arrendamiento</h2>

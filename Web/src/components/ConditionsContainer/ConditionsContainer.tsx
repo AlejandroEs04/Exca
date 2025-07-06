@@ -20,6 +20,7 @@ export default function ConditionsContainer({
     handleGetValue
 } : ConditionsContainerType) {
     const [inputChecked, setInputChecked] = useState(false)
+    const [inputCheckedMap, setInputCheckedMap] = useState<Record<number, boolean>>({});
 
     const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { value, name } = e.target as HTMLInputElement | HTMLSelectElement;
@@ -45,6 +46,10 @@ export default function ConditionsContainer({
             setNewConditions([...newConditions, conditionCreate])
         }
     }
+
+    const toggleInputChecked = (id: number, checked: boolean) => {
+        setInputCheckedMap(prev => ({ ...prev, [id]: checked }));
+    };
 
     return (
         <div className={!isNotGrid ? "conditions-list" : ''}>
@@ -75,8 +80,10 @@ export default function ConditionsContainer({
                     )}
                     {condition.type_id === 4 && (
                         <div className='checkbox'>
-                            <input checked={handleGetValue(condition.id) as boolean} onChange={handleChange} type='checkbox' name={condition.name} id={condition.id.toString()} placeholder={condition.name} />
+                            <input checked={handleGetValue(condition.id) as boolean} onChange={e => { handleChange(e); toggleInputChecked(condition.id, e.target.checked) }} type='checkbox' name={condition.name} id={condition.id.toString()} placeholder={condition.name} />
                             <span className="checkmark"></span>
+
+                            <p>{`${inputCheckedMap[condition.id] ?? false ? 'Si' : 'No'}`}</p>
                         </div>
                     )}
                     {condition.type_id === 5 && (
@@ -87,8 +94,6 @@ export default function ConditionsContainer({
                             ))}
                         </select>
                     )}
-
-                    
                 </div>
             ))}
         </div>

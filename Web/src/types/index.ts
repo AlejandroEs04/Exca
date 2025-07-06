@@ -91,9 +91,11 @@ export type Client = {
     brands?: Brand[];
     type?: ClientType;
     turn?: BusinessTurn;
+    roll_id: number
+    roll?: ClientRoll
 }
 
-export type ClientCreate = Pick<Client, 'business_name' | 'email' | 'phone_number' | 'tax_id' | 'type_id' | 'turn_id'> & {
+export type ClientCreate = Pick<Client, 'business_name' | 'email' | 'phone_number' | 'tax_id' | 'type_id' | 'turn_id' | 'roll_id'> & {
     address: ClientAddressCreate
 };
 export type ClientUpdate = Partial<ClientCreate>;
@@ -734,3 +736,10 @@ export type PropertyTaxStatus  = {
   created_at: string;
   updated_at: string;
 };
+
+export type ClientRoll = {
+    id: number
+    name: string
+}
+
+export type ClientRollCreate = Pick<ClientRoll, 'name'>

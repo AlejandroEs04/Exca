@@ -230,12 +230,7 @@ export default function CreateProject() {
             <h1>Registrar Proyecto</h1>
 
             <form onSubmit={onSubmit}>
-                <button disabled={submitDisable} className="btn btn-primary">
-                    <SaveIcon />
-                    Guardar
-                </button>
-
-                <div className="grid grid-cols-2 mt-2 g-1">
+                <div className="grid grid-cols-2 mt-1 g-1">
                     <ComboBox 
                         name="client" 
                         value={clientId} 
@@ -291,6 +286,11 @@ export default function CreateProject() {
                         ))}
                     </tbody>
                 </table>
+
+                <button disabled={submitDisable} className="btn btn-success mt-2">
+                    <SaveIcon />
+                    Guardar
+                </button>
             </form>
         </>
     )

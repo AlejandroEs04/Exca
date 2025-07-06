@@ -628,6 +628,8 @@ input.input-error {
   display: flex;
   width: 100%;
   justify-content: start;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .checkbox {

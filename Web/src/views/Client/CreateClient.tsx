@@ -8,8 +8,11 @@ import { useAppContext } from "../../hooks/AppContext";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import SelectGroup from "../../components/forms/SelectGroup";
-import { ClientCreate } from "../../types";
+import { ClientCreate, ClientRoll } from "../../types";
 import { handleFormChange } from "../../utils/onChange";
+import { createClientRoll, getClientRolls } from "../../api/ClientRollApi";
+import { label } from "framer-motion/client";
+import ComboBox from "../../components/forms/ComboBox";
 
 export default function CreateClient() {
     const list = [
@@ -34,12 +37,13 @@ export default function CreateClient() {
             is_primary: true, 
         },
         turn_id: null,
-        type_id: 0
+        type_id: 0,
+        roll_id: 0
     })
 
     const navigate = useNavigate()
-
     const onChange = (e: ChangeEvent<HTMLElement>) => handleFormChange(e, client, setClient)
+    const [rolls, setRolls] = useState<ClientRoll[]>([])
 
     const onSubmit = async (e: FormEvent) => {
         e.preventDefault();
@@ -71,6 +75,33 @@ export default function CreateClient() {
     const isDisable = useMemo(() => 
         isNullOrEmpty(client.business_name), [client])
 
+    const handleSelect = (id: string | number, name: string) => {
+        setClient({
+            ...client, 
+            [name] : id
+        })
+    };
+    
+    const handleCreate = async(newLabel: string, name: string) => {
+        switch(name) {
+            case 'roll_id':
+                try {
+                    const newRoll = await createClientRoll({ name: newLabel })
+
+                    if(!newRoll) return
+    
+                    setRolls([...rolls, newRoll])
+                    setClient({
+                        ...client, 
+                        [name] : newRoll.id
+                    })
+                } catch (error) {   
+                    console.log(error)
+                }
+                break;
+        }    
+    }
+    
     const options = [
         {
             label: "Persona Moral", 
@@ -83,6 +114,12 @@ export default function CreateClient() {
     ]
 
     useEffect(() => {
+        const getInfo = async() => {
+            const rollsApi = await getClientRolls()
+
+            if(rollsApi) setRolls(rollsApi)
+        }
+
         const nameParam = searchParams.get('business_name')
         
         if(nameParam) {
@@ -91,6 +128,8 @@ export default function CreateClient() {
                 business_name: nameParam
             })
         }
+
+        getInfo()
     }, [])
 
     return (
@@ -99,27 +138,35 @@ export default function CreateClient() {
             <h1>Registrar Arrendatario</h1>
 
             <form onSubmit={onSubmit}>
-                <button disabled={isDisable} className="btn btn-success">
-                    <SaveIcon />
-                    Guardar
-                </button>
-
-                <div className="grid grid-cols-3 mt-2 g-1">
+                <div className="grid grid-cols-3 g-1 mt-1">
                     <InputGroup name="business_name" label="Razón social" value={client.business_name} placeholder="Razón social" onChangeFnc={onChange} />
                     <InputGroup type="tel" name="phone_number" label="Número telefonico" value={client.phone_number ?? ''} placeholder="Ej. 81102933829" onChangeFnc={onChange} />
                     <InputGroup type="email" name="email" label="Correo de contacto" value={client.email ?? ''} placeholder="Ej. correo@correo.com" onChangeFnc={onChange} />
                     <InputGroup name="tax_id" label="RFC" value={client.tax_id ?? ''} placeholder="RFC" onChangeFnc={onChange} />
                     <SelectGroup name="type_id" label="Tipo de cliente" value={client.type_id} options={options} onChangeFnc={onChange} placeholder="Seleccione tipo" />
+                    <ComboBox 
+                        name="roll_id" 
+                        value={client.roll_id} 
+                        options={rolls.map(r => ({ label: r.name, id: r.id }))} 
+                        placeholder="Giro de la empresa" 
+                        label="Giro de la empresa" 
+                        onCreate={handleCreate}
+                        onSelect={handleSelect} />
                 </div>         
                 
-                <h2 className="mt-2">Dirección del fraccionamiento</h2>
+                <h2 className="mt-2">Dirección</h2>
                 <div className="grid grid-cols-3 g-1">
                     <InputGroup name="address.street" label="Calle / Avenida" value={client.address.street} placeholder="Calle / Avenida" onChangeFnc={onChange} />
                     <InputGroup name="address.postal_code" label="Código Postal" value={client.address.postal_code} placeholder="Código Postal" onChangeFnc={onChange} />
                     <InputGroup name="address.city" label="Ciudad / Municipio" value={client.address.city} placeholder="Ciudad / Municipio" onChangeFnc={onChange} />
                     <InputGroup name="address.state" label="Estado" value={client.address.state} placeholder="Estado" onChangeFnc={onChange} />
                     <InputGroup name="address.country" label="País" value={client.address.country} placeholder="País" onChangeFnc={onChange} />
-                </div>         
+                </div>       
+
+                <button disabled={isDisable} className="btn btn-success mt-2">
+                    <SaveIcon />
+                    Guardar
+                </button>  
             </form>
         </>
     )
