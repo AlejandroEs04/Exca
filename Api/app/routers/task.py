@@ -63,3 +63,19 @@ def delete_task(task_id: int, current_user: User = Depends(get_current_user), db
     
     db.delete(task_exists)
     db.commit()
+    
+@router.get("/{task_id}/finish", response_model=TaskResponse)
+def finish_task(task_id: int, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    task_exists = db.query(Task).where(Task.id == task_id).first()
+    
+    if not task_exists:
+        raise HTTPException(status_code=404, detail="No se encontro la tarea")
+    
+    if task_exists.originator_id != current_user.id:
+        raise HTTPException(status_code=401, detail="No tiene los permisos para actualizar la tarea")
+    
+    task_exists.status_id = 5
+    db.add(task_exists)
+    db.commit()
+    db.refresh(task_exists)
+    return task_exists

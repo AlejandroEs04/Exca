@@ -25,7 +25,7 @@ export default function Activities() {
         {name:"Dashboard",url:'/'},
         {name:"Proyectos",url:'/projects'},
         {name:"Proyecto",url:`/projects/${id}`},
-        {name:"Tareas",url:`/projects/${id}/tasks`},
+        {name:"Obligacines",url:`/projects/${id}/tasks`},
     ]
     const initialState = {
         title: '',
@@ -156,9 +156,9 @@ export default function Activities() {
     return (
         <>
             <Breadcrumb list={list} />   
-            <h1>Actividades</h1>
+            <h1>Obligaciones</h1>
 
-            <button onClick={() => { setShowForm(true); setTask(initialState) }} className='btn btn-primary w-max'><PlusIcon /> Nueva Actividad</button>
+            <button onClick={() => { setShowForm(true); setTask(initialState) }} className='btn btn-primary w-max'><PlusIcon /> Nueva Obligación</button>
             
             <table className={`mt-1 ${styles.tableActivities}`}>
                 <thead>
@@ -212,8 +212,8 @@ export default function Activities() {
                                 Cerrar
                             </button>
                         </div>
-                        <h1>Nueva actividad</h1>
-                        <p>Complete el formulario para agregar una nueva tarea</p>
+                        <h1>Nueva Obligación</h1>
+                        <p>Complete el formulario para agregar una nueva obligación</p>
                         <div className="flex flex-col g-1 mt-2">
                             <InputGroup name="title" value={task.title} onChangeFnc={handleChange} placeholder="Titulo" label="Titulo" />
                             <InputGroup name="description" value={task.description} onChangeFnc={handleChange} placeholder="Descripcion" label="Descripcion" />
@@ -232,7 +232,7 @@ export default function Activities() {
                                 <SelectGroup onChangeFnc={handleChange} name='status_id' placeholder='Seleccione un estatus' value={task.status_id} label='Estatus' options={status.map(s => { return { label: s.name, value: s.id } })} />
                             )}
 
-                            <button disabled={isDisable} onClick={handleSubmit} className='btn btn-primary w-max flex text-center'>Guardar Actividad</button>
+                            <button disabled={isDisable} onClick={handleSubmit} className='btn btn-primary w-max flex text-center'>Guardar Obligación</button>
                             <button onClick={handleCloseForm} className='btn btn-danger w-max flex text-center mt-2'>Cancelar</button>
                         </div>
                     </motion.div>

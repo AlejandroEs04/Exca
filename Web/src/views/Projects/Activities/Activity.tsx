@@ -25,12 +25,13 @@ export default function Activity() {
     const { state, dispatch, setError } = useAppContext()
     const [task, setTask] = useState<Task>()
     const [status, setStatus] = useState<TaskStatus[]>([])
+    const [title, setTitle] = useState("")
     const list = [
         {name:"Dashboard",url:'/'},
         {name:"Proyectos",url:'/projects'},
         {name:"Proyecto",url:`/projects/${id}`},
-        {name:"Tareas",url:`/projects/${id}/tasks`},
-        {name:"Tarea",url:`/projects/${id}/tasks/${taskId}`},
+        {name:"Obligaciones",url:`/projects/${id}/tasks`},
+        {name: title,url:`/projects/${id}/tasks/${taskId}`},
     ]
     const initialState = {
         title: '',
@@ -115,36 +116,36 @@ export default function Activity() {
     }
 
     const handleSubmit = async() => {
-            try {
-                if(subTaskId) {
-                    const response = await updateTask(subTaskId, subTask)
+        try {
+            if(subTaskId) {
+                const response = await updateTask(subTaskId, subTask)
 
-                    if(response) 
-                        if (task) {
-                            setTask({
-                                ...task,
-                                subtasks: task.subtasks.map(subtask => subtask.id !== response.id ? subtask : response)
-                            });
-                        }
-                    toast.success("Traea Actualizado Correctamente")
-                } else {
-                    const response = await createTask(subTask)
-                    if(response) {
-                        if(task) {
-                            setTask({
-                                ...task, 
-                                subtasks: [...task.subtasks, response]
-                            })
-                        }
+                if(response) 
+                    if (task) {
+                        setTask({
+                            ...task,
+                            subtasks: task.subtasks.map(subtask => subtask.id !== response.id ? subtask : response)
+                        });
                     }
-                    toast.success("Traea Creada Correctamente")
+                toast.success("Traea Actualizado Correctamente")
+            } else {
+                const response = await createTask(subTask)
+                if(response) {
+                    if(task) {
+                        setTask({
+                            ...task, 
+                            subtasks: [...task.subtasks, response]
+                        })
+                    }
                 }
-                setShowForm(false)
-                setSubTaskId(null)
-            } catch (error) {
-                setError(error)
-            }        
-        }
+                toast.success("Traea Creada Correctamente")
+            }
+            setShowForm(false)
+            setSubTaskId(null)
+        } catch (error) {
+            setError(error)
+        }        
+    }
 
     const handleGetStatusColor = (id: number) => {
         switch(id) {
@@ -174,7 +175,10 @@ export default function Activity() {
             const currentProject = state.projects.find(p => p.id === +id!)
             const task = currentProject?.tasks.find(t => t.id === +taskId!)
 
-            if(task) setTask(task)
+            if(task) {
+                setTask(task)
+                setTitle(task.title)
+            }
         }
     }, [state.projects, taskId])
     
@@ -253,14 +257,14 @@ export default function Activity() {
                                 </table>
                             </>
                         ) : (
-                            <p>No hay ninguna subtarea ingresada</p>
+                            <p className="mt-1">No hay ninguna subtarea ingresada</p>
                         )}
                     </div>
                 </div>
 
                 <div className={styles.chatContainer}>
                     <div className={styles.messages}>
-                        <h2>Chat de la tarea</h2>
+                        <h2>Chat</h2>
                         <div className={styles.chat}>
                             {task?.messages.length ? task.messages.map(message => (
                                 <div className={`${styles.message} ${message.originator_id === state.auth?.id ? styles.right : styles.left}`}>
