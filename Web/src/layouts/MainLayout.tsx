@@ -12,19 +12,26 @@ import Build from '../components/shared/Icons/Build'
 import CheckListCircle from '../components/shared/Icons/CheckListCircle'
 import Calendar from '../components/shared/Icons/Calendar'
 import Gear from '../components/shared/Icons/Gear'
+import HomeFill from '../components/shared/Icons/HomeFill'
+import ListFill from '../components/shared/Icons/ListFill'
+import DocumentTextFill from '../components/shared/Icons/DocumentTextFill'
+import BuildingsFill from '../components/shared/Icons/BuildingsFill'
+import CheckListFill from '../components/shared/Icons/CheckListFill'
+import GearFill from '../components/shared/Icons/GearFill'
 
 type ThemedLinkProps = {
   to: string
   icon: ReactElement
   text: string
+  iconFill?: ReactElement
 }
 
-const ThemedLink = ({ to, icon, text } : ThemedLinkProps) => {
+const ThemedLink = ({ to, icon, text, iconFill = undefined } : ThemedLinkProps) => {
   const { pathname } = useLocation()
 
   return (
     <Link to={to} className={`${pathname === to ? 'active' : ''}`}>
-      {icon}
+      {(iconFill && pathname === to) ? iconFill : icon}
       <p>{text}</p>
     </Link>
   )
@@ -42,12 +49,12 @@ export default function MainLayout() {
           <div className="nav-container">
             <div>
               <nav className="mt-2">
-                <h1>GP Vivienda</h1>
-                <ThemedLink to='/' text='Resumen Ejecutivo' icon={<Home />} />
-                <ThemedLink to='/lands' text='Inventario de terrenos' icon={<List />} />
-                <ThemedLink to='/projects' text='Cartera de Interesados' icon={<DocumentTextIcon />} />
-                <ThemedLink to='/clients' text='Cartera de arrendatarios' icon={<Build />} />
-                <ThemedLink to='/approval-requests' text='Seguimiento' icon={<CheckListCircle />} />
+                <h1 className='logo-title'>GP<span>vivienda</span></h1>
+                <ThemedLink to='/' text='Resumen Ejecutivo' icon={<Home />} iconFill={<HomeFill />} />
+                <ThemedLink to='/lands' text='Inventario de terrenos' icon={<List />} iconFill={<ListFill />} />
+                <ThemedLink to='/projects' text='Cartera de Interesados' icon={<DocumentTextIcon />} iconFill={<DocumentTextFill />} />
+                <ThemedLink to='/clients' text='Cartera de arrendatarios' icon={<Build />} iconFill={<BuildingsFill />} />
+                <ThemedLink to='/approval-requests' text='Seguimiento' icon={<CheckListCircle />} iconFill={<CheckListFill />} />
                 <ThemedLink to='/administration' text='Administración' icon={<Calendar />} />
                 <a
                   className={catalogsOpen ? 'submenu-toggle active' : 'submenu-toggle'}
@@ -106,12 +113,12 @@ export default function MainLayout() {
                         </Link>
                         
                     </div>
-                    <ThemedLink text='Configuraciones' to='settings' icon={<Gear />} />
+                    <ThemedLink text='Configuraciones' to='settings' icon={<Gear />} iconFill={<GearFill />} />
               </nav>
             </div>
 
             <div className="p-nav mb-2">
-              <button onClick={handleLogOut} className="btn btn-primary w-full">
+              <button onClick={handleLogOut} className="btn btn-primary w-full flex justify-center g-1 items-center">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"

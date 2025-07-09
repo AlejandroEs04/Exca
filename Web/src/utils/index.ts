@@ -41,6 +41,19 @@ export const dateFormat = (date: string) => {
     return prettyFormat
 }
 
+export const simpleDateFormat = (date: string) => {
+    const newDate = new Date(date);
+
+    const options: Intl.DateTimeFormatOptions = {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+    };
+
+    const prettyFormat = newDate.toLocaleString('es-ES', options);
+    return prettyFormat
+}
+
 export function formatDateToInput(datetimeString: string) {
     const date = new Date(datetimeString);
 

@@ -684,6 +684,9 @@ export type Task = {
     updated_at: string
     subtasks: Task[]
     messages: TaskMessage[]
+    responsible: User
+    originator: User
+    status: TaskStatus
 }
 
 export type TaskCreate = 

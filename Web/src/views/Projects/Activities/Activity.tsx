@@ -5,7 +5,7 @@ import { Task, TaskCreate, TaskStatus } from "../../../types"
 import Breadcrumb from "../../../components/shared/Breadcrumb/Breadcrumb"
 import { createTask, getTaskStatus, sendMessage, updateTask } from "../../../api/TaskApi"
 import styles from './Activities.module.css'
-import { dateFormat, formatDateToInput } from "../../../utils"
+import { dateFormat, formatDateToInput, simpleDateFormat } from "../../../utils"
 import SendIcon from "../../../components/shared/Icons/SendIcon"
 import { toast } from "react-toastify"
 import TrashIcon from "../../../components/shared/Icons/TrashIcon"
@@ -19,6 +19,7 @@ import { AnimatePresence, motion } from "framer-motion"
 import { handleFormChange } from "../../../utils/onChange"
 import PlusIcon from "../../../components/shared/Icons/PlusIcon"
 import CheckIcon from "../../../components/shared/Icons/CheckIcon"
+import { progressDictionary } from "../../../locals/dictionaries"
 
 export default function Activity() {
     const { id, taskId } = useParams()
@@ -147,21 +148,6 @@ export default function Activity() {
         }        
     }
 
-    const handleGetStatusColor = (id: number) => {
-        switch(id) {
-            case 1:
-                return 'red'
-            case 2:
-                return 'purple'
-            case 3:
-                return 'blue'
-            case 4: 
-                return 'orange'
-            case 5: 
-                return 'green'
-        }
-    }
-
     useEffect(() => {
         const getInfo = async() => {
             const taskStatus = await getTaskStatus()
@@ -194,9 +180,9 @@ export default function Activity() {
                 <button className="btn btn-indigo"><XMark /> Cancelar</button>
             </div>
         
-            <div className={`${styles.activityContainer} mt-2`}>
+            <div className={`flex g-4 mt-2`}>
                 <div className={styles.infoContainer}>
-                    <div className={styles.chatContainer}>
+                    <div>
                         <h2>Información General</h2>
                         <table>
                             <tr>
@@ -219,11 +205,9 @@ export default function Activity() {
                     <div>
                         {task?.subtasks.length ? (
                             <>
-                                <table className={`mt-1 ${styles.tableActivities}`}>
+                                <table className={`mt-1`}>
                                     <thead>
                                         <tr>
-                                            <th>No.</th>
-                                            <th>Titulo</th>
                                             <th>Descripcion</th>
                                             <th>Estatus</th>
                                             <th>Fecha de vencimiento</th>
@@ -234,18 +218,29 @@ export default function Activity() {
                                     <tbody>
                                         {task.subtasks.map(t => (
                                             <tr key={t.id}>
-                                                <td>{t.id}</td>
-                                                <td>{t.title}</td>
                                                 <td>{t.description}</td>
                                                 <td>
-                                                    <div className='flex items-center justify-between'>
-                                                        {status.find(s => s.id === t.status_id)?.name}
-                                                        <div className={`dot ${handleGetStatusColor(t.status_id)}`}></div>
+                                                    <div className='progress-container'>
+                                                        <div
+                                                            style={{
+                                                                width: progressDictionary[`${t.status_id}`],
+                                                                height: '100%'
+                                                            }}
+                                                            className={`
+                                                                progress-bar
+                                                                ${t.status_id === 1 && 'bg-red'}
+                                                                ${t.status_id === 2 && 'bg-yellow'}
+                                                                ${t.status_id === 3 && 'bg-blue'}
+                                                                ${t.status_id === 4 && 'bg-orange'}
+                                                                ${t.status_id === 5 && 'bg-green complete'}
+                                                                `}
+                                                        ></div>
+                                                        <span className='progress-text'>{t.status.name}</span>
                                                     </div>
                                                 </td>
-                                                <td>{formatDateToInput(t.due_date)}</td>
+                                                <td>{simpleDateFormat(t.due_date)}</td>
                                                 <td>
-                                                    <div className='flex g-1'>
+                                                    <div className='table-actions'>
                                                         <button className={`${styles.btnIcon} text-indigo`}><EyeIcon /></button>
                                                         <button onClick={() => handleFillForm(t.id)} className={`${styles.btnIcon} text-blue`}><EditIcon /></button>
                                                         <button className={`${styles.btnIcon} text-red`}><TrashIcon /></button>

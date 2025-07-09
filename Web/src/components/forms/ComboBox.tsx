@@ -65,14 +65,14 @@ export default function ComboBox({
     };
 
     const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
-        if (e.key === "Enter") {
+        if (e.key === "Enter" || e.key === 'Tab') {
             e.preventDefault();
             // Si hay opciones filtradas, seleccionar la primera
             if (filteredOptions.length > 0) {
                 handleSelectOption(filteredOptions[0]);
             } else {
                 // Si no hay opciones, crear un nuevo ítem
-                onCreate(inputValue, name);
+                onCreate(inputValue.trim(), name);
                 setInputValue("");
             }
         }
@@ -115,7 +115,7 @@ export default function ComboBox({
 
             {showOptions && filteredOptions.length === 0 && inputValue && (
                 <div className="combo-box-create">
-                    <span>Crear nuevo: "{inputValue}"</span>
+                    <span>Enter para crear nuevo: "{inputValue}"</span>
                 </div>
             )}
         </div>

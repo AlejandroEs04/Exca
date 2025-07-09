@@ -1,6 +1,15 @@
 import styles from './index.module.css'
 import { Link, useNavigate } from "react-router-dom"
 import { useAppContext } from "../hooks/AppContext"
+import { simpleDateFormat } from '../utils'
+
+const progressDictionary : {[key: string] : string} = {
+    1: '10%',
+    2: '30%',
+    3: '50%',
+    4: '70%',
+    5: '100%'
+}
 
 export default function Index() {
     const { state } = useAppContext()
@@ -51,39 +60,88 @@ export default function Index() {
             </div>
 
             <h2 className='mt-3'>Proyectos activos</h2>
-            <table className="mt-1">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Fraccionamiento</th>
-                        <th>Cliente</th>
-                        <th>Marca</th>
-                        <th>Estatus</th>
-                    </tr>
-                </thead>
-                
-                <tbody>
-                    {state.projects.map(project => (
-                        <tr onClick={() => handleProject(project.id)} key={project.id}>
-                            <td>{project.id}</td>
-                            <td>
-                                {project?.lands?.map(land => land.land?.residential_development?.name).join(', ')}
-                            </td>
-                            <td>{project.brand?.client?.business_name}</td>
-                            <td>{project.brand?.name}</td>
-                            <td
-                                className={`
-                                    ${project.stage_id === 1 && ''}
-                                    ${project.stage_id === 2 && ''}
-                                    ${project.stage_id === 3 && ''}
-                                    `}
-                            >{project.stage?.name}</td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
+            <div className='scroll-container'>
+                <div className='scroll-x-box'>
+                    <table className="mt-1">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Fraccionamiento</th>
+                                <th>Cliente</th>
+                                <th>Marca</th>
+                                <th>Estatus</th>
+                            </tr>
+                        </thead>
+                        
+                        <tbody>
+                            {state.projects.map(project => (
+                                <tr onClick={() => handleProject(project.id)} key={project.id}>
+                                    <td>{project.id}</td>
+                                    <td>
+                                        {project?.lands?.map(land => land.land?.residential_development?.name).join(', ')}
+                                    </td>
+                                    <td>{project.brand?.client?.business_name}</td>
+                                    <td>{project.brand?.name}</td>
+                                    <td
+                                        className={`
+                                            ${project.stage_id === 1 && ''}
+                                            ${project.stage_id === 2 && ''}
+                                            ${project.stage_id === 3 && ''}
+                                            `}
+                                    >{project.stage?.name}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
 
-            <h2 className='mt-2'>Cumplimiento de pagos</h2>
+            <h2 className='mt-4'>Obligaciones</h2>
+            <div className='scroll-container'>
+                <div className='scroll-x-box'>
+                    <table className="mt-1">
+                        <thead>
+                            <tr>
+                                <th>Description</th>
+                                <th>Responsable</th>
+                                <th>Fecha Inicio</th>
+                                <th>Fecha Limite</th>
+                                <th>Estatus</th>
+                            </tr>
+                        </thead>
+                        
+                        <tbody>
+                            {state.tasks.map(task => (
+                                <tr key={task.id}>
+                                    <td>{task.description}</td>
+                                    <td>{task.responsible.full_name}</td>
+                                    <td>{simpleDateFormat(task.created_at)}</td>
+                                    <td>{simpleDateFormat(task.due_date)}</td>
+                                    <td>
+                                        <div className='progress-container'>
+                                            <div
+                                                style={{
+                                                    width: progressDictionary[`${task.status_id}`],
+                                                    height: '100%'
+                                                }}
+                                                className={`
+                                                    progress-bar
+                                                    ${task.status_id === 1 && 'bg-red'}
+                                                    ${task.status_id === 2 && 'bg-yellow'}
+                                                    ${task.status_id === 3 && 'bg-blue'}
+                                                    ${task.status_id === 4 && 'bg-orange'}
+                                                    ${task.status_id === 5 && 'bg-green complete'}
+                                                    `}
+                                            ></div>
+                                            <span className='progress-text'>{task.status.name}</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </>
     )
 }

@@ -14,9 +14,10 @@ import { motion, AnimatePresence } from 'framer-motion'
 import PlusIcon from '../../../components/shared/Icons/PlusIcon'
 import TrashIcon from '../../../components/shared/Icons/TrashIcon'
 import EditIcon from '../../../components/shared/Icons/EditIcon'
-import { formatDateToInput } from '../../../utils'
+import { formatDateToInput, simpleDateFormat } from '../../../utils'
 import SelectGroup from '../../../components/forms/SelectGroup'
 import EyeIcon from '../../../components/shared/Icons/EyeIcon'
+import { progressDictionary } from '../../../locals/dictionaries'
 
 export default function Activities() {
     const { id } = useParams()
@@ -121,21 +122,6 @@ export default function Activities() {
         }        
     }
 
-    const handleGetStatusColor = (id: number) => {
-        switch(id) {
-            case 1:
-                return 'red'
-            case 2:
-                return 'purple'
-            case 3:
-                return 'blue'
-            case 4: 
-                return 'orange'
-            case 5: 
-                return 'green'
-        }
-    }
-
     useEffect(() => {
         const getInfo = async() => {
             const taskStatus = await getTaskStatus()
@@ -160,7 +146,7 @@ export default function Activities() {
 
             <button onClick={() => { setShowForm(true); setTask(initialState) }} className='btn btn-primary w-max'><PlusIcon /> Nueva Obligación</button>
             
-            <table className={`mt-1 ${styles.tableActivities}`}>
+            <table className={`mt-1`}>
                 <thead>
                     <tr>
                         <th>No.</th>
@@ -179,17 +165,36 @@ export default function Activities() {
                             <td>{t.title}</td>
                             <td>{t.description}</td>
                             <td>
+                                <div className='progress-container'>
+                                    <div
+                                        style={{
+                                            width: progressDictionary[`${t.status_id}`],
+                                            height: '100%'
+                                        }}
+                                        className={`
+                                            progress-bar
+                                            ${t.status_id === 1 && 'bg-red'}
+                                            ${t.status_id === 2 && 'bg-yellow'}
+                                            ${t.status_id === 3 && 'bg-blue'}
+                                            ${t.status_id === 4 && 'bg-orange'}
+                                            ${t.status_id === 5 && 'bg-green complete'}
+                                            `}
+                                    ></div>
+                                    <span className='progress-text'>{t.status.name}</span>
+                                </div>
+                            </td>
+                            {/* <td>
                                 <div className='flex items-center justify-between'>
                                     {status.find(s => s.id === t.status_id)?.name}
                                     <div className={`dot ${handleGetStatusColor(t.status_id)}`}></div>
                                 </div>
-                            </td>
-                            <td>{formatDateToInput(t.due_date)}</td>
+                            </td> */}
+                            <td>{simpleDateFormat(t.due_date)}</td>
                             <td>
-                                <div className='flex g-1'>
-                                    <Link to={`${t.id}`} className={`${styles.btnIcon} text-indigo`}><EyeIcon /></Link>
-                                    <button onClick={() => handleFillForm(t.id)} className={`${styles.btnIcon} text-blue`}><EditIcon /></button>
-                                    <button className={`${styles.btnIcon} text-red`}><TrashIcon /></button>
+                                <div className='table-actions'>
+                                    <Link to={`${t.id}`} className={`text-indigo`}><EyeIcon /></Link>
+                                    <button onClick={() => handleFillForm(t.id)} className={`text-blue`}><EditIcon /></button>
+                                    <button className={`text-red`}><TrashIcon /></button>
                                 </div>
                             </td>
                         </tr>

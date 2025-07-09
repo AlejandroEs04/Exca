@@ -10,6 +10,7 @@ import { getConditions } from '../api/ConditionApi';
 import { handleError } from '../utils';
 import { getAuth } from '../api/AuthApi';
 import { useNavigate } from 'react-router-dom';
+import { getTasks } from '../api/TaskApi';
 
 interface AppContextProps {
     state: AppState
@@ -87,22 +88,25 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
                 clients,
                 lands,
                 users,
-                individuals
+                individuals,
+                tasks
             ] = await Promise.all([
                 getProjects(),
                 getClient(),
                 getLands(),
                 getUsers(),
-                getIndividuals()
+                getIndividuals(),
+                getTasks()
             ])
 
-            if(!clients || !lands || !projects || !users || !individuals) return 
+            if(!clients || !lands || !projects || !users || !individuals || !tasks) return 
 
             dispatch({ type: 'set-clients', payload: { clients } })
             dispatch({ type: 'set-lands', payload: { lands } })
             dispatch({ type: 'set-projects', payload: { projects } })
             dispatch({ type: 'set-users', payload: { users } })
             dispatch({ type: 'set-individual', payload: { individuals } })
+            dispatch({ type: 'set-tasks', payload: { tasks } })
 
             const conditionString = localStorage.getItem('conditions')
             if(conditionString) {
