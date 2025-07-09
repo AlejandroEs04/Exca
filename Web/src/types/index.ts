@@ -313,9 +313,10 @@ export type ProjectLand = {
     land?: Land; 
     type?: ProjectLandType;
     build_area: number
+    deed_sale?: string
 }
 
-export type ProjectLandCreate = Pick<ProjectLand, 'project_id' | 'land_id' | 'area' | 'type_id' | 'build_area'>;
+export type ProjectLandCreate = Pick<ProjectLand, 'project_id' | 'land_id' | 'area' | 'type_id' | 'build_area' | 'deed_sale'>;
 export type ProjectLandUpdate = Partial<ProjectLandCreate>;
 
 // Project Event

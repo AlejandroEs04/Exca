@@ -1,5 +1,6 @@
 import { ChangeEvent, Dispatch, SetStateAction, useState } from "react"
 import { CaseConditionCreate, Condition, Project } from "../../types"
+import InputGroup from "../forms/InputGroup"
 
 type ConditionsContainerType = {
     conditionsList: Condition[]
@@ -9,6 +10,7 @@ type ConditionsContainerType = {
     isNotGrid?: boolean
     isChecked?: boolean
     handleGetValue: (id: number) => string | number | boolean | undefined
+    type?: 'default' | 'procedures'
 }
 
 export default function ConditionsContainer({ 
@@ -17,7 +19,8 @@ export default function ConditionsContainer({
     setNewConditions,
     isNotGrid = false,
     isChecked = false,
-    handleGetValue
+    handleGetValue,
+    type = 'default'
 } : ConditionsContainerType) {
     const [inputChecked, setInputChecked] = useState(false)
     const [inputCheckedMap, setInputCheckedMap] = useState<Record<number, boolean>>({});
@@ -51,6 +54,33 @@ export default function ConditionsContainer({
         setInputCheckedMap(prev => ({ ...prev, [id]: checked }));
     };
 
+    if(type === 'procedures') return (
+        <div className={'flex flex-col g-2'}>
+            {conditionsList.map(condition => (
+                <div key={condition.id} className="procedures-condition">
+                    <div className="flex justify-between">
+                        <label htmlFor={condition.id.toString()}>{condition.name}</label>
+                        
+                        <div className="checkbox">
+                            <input checked={inputCheckedMap[condition.id] || handleGetValue(condition.id) as boolean} onChange={e => { toggleInputChecked(condition.id, e.target.checked) }} type='checkbox' name={condition.name} id={condition.id.toString()} placeholder={condition.name} />
+                            <span className="checkmark"></span>
+                            <label htmlFor="isRequired">Es requerido</label>
+                        </div>
+                    </div>
+                    
+
+                    <div>
+                        {(inputCheckedMap[condition.id] || (handleGetValue(condition.id) as string)) && (
+                            <>
+                                <InputGroup label="Tiempo para tramite" value={handleGetValue(condition.id) as string} onChangeFnc={handleChange} type="date" name={condition.name} id={condition.id.toString()} placeholder={condition.name} />
+                            </>
+                        )}
+                    </div>
+                </div>
+            ))}
+        </div>
+    )
+
     return (
         <div className={!isNotGrid ? "conditions-list" : ''}>
             {conditionsList.map(condition => (
@@ -83,7 +113,7 @@ export default function ConditionsContainer({
                             <input checked={handleGetValue(condition.id) as boolean} onChange={e => { handleChange(e); toggleInputChecked(condition.id, e.target.checked) }} type='checkbox' name={condition.name} id={condition.id.toString()} placeholder={condition.name} />
                             <span className="checkmark"></span>
 
-                            <p>{`${inputCheckedMap[condition.id] ?? false ? 'Si' : 'No'}`}</p>
+                            <p>{`${inputCheckedMap[condition.id] ?? handleGetValue(condition.id) as boolean ? 'Si' : 'No'}`}</p>
                         </div>
                     )}
                     {condition.type_id === 5 && (

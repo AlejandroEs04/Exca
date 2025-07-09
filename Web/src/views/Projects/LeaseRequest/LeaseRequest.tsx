@@ -16,6 +16,8 @@ import ComboBox, { OptionCB } from "../../../components/forms/ComboBox"
 import { formatDateToInput, handleError } from "../../../utils"
 import { createRequest, sendToApprovalRequest, updateRequest } from "../../../api/LeaseRequestApi"
 import { toast } from "react-toastify"
+import { handleFormChange } from "../../../utils/onChange"
+import { updateProjectLand } from "../../../api/ProjectLandApi"
 
 export default function LeaseRequest() {
     const { projectId, leaseRequestId } = useParams()
@@ -32,7 +34,7 @@ export default function LeaseRequest() {
     const [individualsOptions, setIndividualsOptions] = useState<OptionCB[]>([])
     const [newRequest, setNewRequest] = useState<LeaseRequestCreate>({
         project_id: 0, 
-        guarantee_id: 0,
+        guarantee_id: undefined,
         guarantee_type_id: 0, 
         owner_id: 0, 
         commission_agreement: false, 
@@ -49,21 +51,36 @@ export default function LeaseRequest() {
     const navigate = useNavigate()
 
     const isDisable = useMemo(() => 
-        newRequest.guarantee_type_id === 0 || 
-        newRequest.owner_id === 0, [newRequest]) || 
         newConditions.length === 0 ||
-        newRequest.guarantee_id === 0
+    newRequest.owner_id === 0, [newRequest]) 
 
-    const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-        const { value, name } = e.target as HTMLInputElement | HTMLSelectElement;
-        const checked = (e.target as HTMLInputElement).checked;
+    const handleChange = (e: ChangeEvent<HTMLElement>) => handleFormChange(e, newRequest, setNewRequest)
 
-        const isChecked = ['commission_agreement', 'assignment_income'].includes(name)
+    const handleChangeLand = async(id: number, e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+        const { name, value } = e.target
 
-        setNewRequest({
-            ...newRequest, 
-            [name]: isChecked ? checked : value
-        })
+        try {
+            const projectLand = project?.lands?.find(l => l.id === id)
+
+            if(projectLand) {
+                const landUpdated = await updateProjectLand(id, { ...projectLand, [name]: value })
+
+                console.log(landUpdated)
+
+                if(landUpdated) {
+                    if(project && project.id !== undefined) {
+                        setProject({
+                            ...project, 
+                            lands: project?.lands?.map(l => l.id !== id ? l : landUpdated)
+                        })
+                        toast.success("Cambios guardados con éxito")
+                    }
+                }
+                
+            }
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     const handleSelect = (id: string | number, name: string) => {
@@ -96,7 +113,6 @@ export default function LeaseRequest() {
             }
             dispatch({ type: 'set-projects', payload: { projects: state.projects.map(p => p.id !== response?.project_id ? p : { ...p, lease_request: response }) } })
             toast.success("Cambios Guardados Correctamente")
-            navigate(`/projects/${response?.project_id}`)
         } catch (error) {
             handleError(error);
         }
@@ -251,19 +267,19 @@ export default function LeaseRequest() {
 
             <h2 className='mt-2'>I. Datos del arrendatario</h2>
             <div className='grid grid-cols-2'>
-                <div className='condition-container'>
+                <div className='condition-container g-2'>
                     <label htmlFor="owner">Nombre del arrendatario</label>
                     <input type="text" value={project.brand?.client?.business_name} readOnly disabled />
                 </div>
-                <div className='condition-container'>
+                <div className='condition-container g-2'>
                     <label htmlFor="owner">Giro Comercial</label>
-                    <input type="text" value={project.brand?.client?.type_id} readOnly disabled />
+                    <input type="text" value={project.brand?.client?.roll?.name} readOnly disabled />
                 </div>
-                <div className='condition-container'>
+                <div className='condition-container g-2'>
                     <label htmlFor="owner">Fraccionamiento / Proyecto</label>
                     <input type="text" readOnly value={project.lands?.[0]?.land?.residential_development?.name ?? ''} disabled />
                 </div>
-                <div className='condition-container'>
+                <div className='condition-container g-2'>
                     <label htmlFor="owner">Fecha de solicitud</label>
                     <input type="date" value={formatDateToInput(project.lease_request?.created_at ?? '')} readOnly disabled />
                 </div>
@@ -289,6 +305,7 @@ export default function LeaseRequest() {
                     onCreate={handleCreate}
                     onSelect={handleSelect}
                     options={individualsOptions}
+                    isHorizontal
                 />
                 <InputGroup 
                     disable
@@ -325,7 +342,7 @@ export default function LeaseRequest() {
                 />
                 <div></div>
 
-                <div className='condition-container'>
+                <div className='condition-container g-2'>
                     <label htmlFor="commission_agreement">Pacto comisiorio</label>
                     <div className='checkbox'>
                         <input type='checkbox' onChange={handleChange} checked={newRequest.commission_agreement} name='commission_agreement' id='commission_agreement' />
@@ -333,7 +350,7 @@ export default function LeaseRequest() {
                     </div>
                 </div>
 
-                <div className='condition-container'>
+                <div className='condition-container g-2'>
                     <label htmlFor="assignment_income">Cesión de renta a FIMSA</label>
                     <div className='checkbox'>
                         <input type='checkbox' onChange={handleChange} checked={newRequest.assignment_income} name='assignment_income' id='assignment_income' />
@@ -346,37 +363,34 @@ export default function LeaseRequest() {
             {project.lands?.map((land, index) => (
                 <div key={land.id}>
                     <div className={`${index !== 0 && 'pt-3'} grid grid-cols-2`} key={land.id}>
-                        <div className='condition-container'>
+                        <div className='condition-container g-2'>
                             <label htmlFor="landType">Inmueble a arrendar</label>
-                            <select onChange={handleChange} value={land.type_id} name={`land[${index}].type_id`} id="landType">
+                            <select onChange={(e) => handleChangeLand(land.id, e)} value={land.type_id} name='type_id' id="landType">
                                 <option value="">Seleccione una opción</option>
                                 {types.map(type => (
                                     <option value={type.id} key={type.id}>{type.name}</option>
                                 ))}
                             </select>
                         </div>
-                        <div className='condition-container'>
-                            <label htmlFor="type">Escritura en compraventa</label>
-                            <div className='checkbox'>
-                                <input type='checkbox' name='' id='' />
-                                <span className="checkmark"></span>
-                            </div>
+                        <div className='condition-container g-2'>
+                            <label htmlFor="deedSale">Escritura en compraventa</label>
+                            <input onBlur={(e) => handleChangeLand(land.id, e)} type="text" name={`deed_sale`} defaultValue={land.deed_sale} id='deedSale' placeholder='Escritura en compraventa' />
                         </div>
-                        <div className='condition-container'>
+                        <div className='condition-container g-2'>
                             <label htmlFor="cadastralFile">Expediente Catastral</label>
                             <input type="text" id='cadastralFile' disabled readOnly value={land.land?.cadastral_file} placeholder='Expediente Catastral' />
                         </div>
-                        <div className='condition-container'>
+                        <div className='condition-container g-2'>
                             <label htmlFor="residentialDevelopment">Domicilio inmueble</label>
                             <input type="text" id='residentialDevelopment' disabled readOnly value={land.land?.address} placeholder='Domicilio inmueble' />
                         </div>
-                        <div className='condition-container'>
+                        <div className='condition-container g-2'>
                             <label htmlFor="totalArea">Superficie total</label>
                             <input type="number" disabled readOnly value={land.land?.area} id='totalArea' placeholder='Superficie total' />
                         </div>
-                        <div className='condition-container'>
+                        <div className='condition-container g-2'>
                             <label htmlFor="areaForLease">Superficie en arrendamiento</label>
-                            <input onChange={handleChange} type="number" name={`land[${index}].area`} value={land.area} id='areaForLease' placeholder='Superficie en arrendamiento' />
+                            <input onBlur={(e) => handleChangeLand(land.id, e)} type="number" name={`area`} defaultValue={land.area} id='areaForLease' placeholder='Superficie en arrendamiento' />
                         </div>
                     </div>
                 </div>

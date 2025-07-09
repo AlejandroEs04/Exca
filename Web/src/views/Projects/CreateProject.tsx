@@ -56,7 +56,7 @@ export default function CreateProject() {
 
         setCadastralFile({
             ...cadastralFile, 
-            [name]: +value
+            [name]: value
         })
     }
 
@@ -256,7 +256,7 @@ export default function CreateProject() {
 
                 <div className="grid grid-cols-3 g-1 mt-2">
                     <SelectGroup disable={landsSelectDisable} name="land_id" label="Expediente Catastral" value={cadastralFile.land_id} placeholder="Seleccione un terreno" onChangeFnc={onChangeCadastralFile} options={landOptions} />
-                    <InputGroup limit={cadastralFile.area} name="area" label="Superficie arrendamiento" value={cadastralFile.area} placeholder="Superficie. ej. 180" onChangeFnc={onChangeCadastralFile} disable={areaDisable} /> 
+                    <InputGroup limit={state.lands.find(l => l.id === +residential)?.area} name="area" label="Superficie arrendamiento" value={cadastralFile.area} placeholder="Superficie. ej. 180" onChangeFnc={onChangeCadastralFile} disable={areaDisable} /> 
                     <SelectGroup disable={areaDisable} name="type_id" label="Tipo de arrendamiento" value={cadastralFile.type_id!} placeholder="Seleccione un tipo" onChangeFnc={onChangeCadastralFile} options={rentOptions} />
                 </div>
 
