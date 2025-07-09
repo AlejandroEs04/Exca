@@ -49,14 +49,15 @@ export default function CreateOrEditLand() {
 
   const breadcrumbList = [
     { name: "Dashboard", url: "/" },
-    { name: "Inventario de terrenos", url: "/lands" },
-    { name: isEditing ? "Editar Propiedad" : "Registrar Propiedad", url: "#" },
+    { name: "Inventario de Propiedades", url: "/lands" },
+    { name: "Formulario de Propiedades", url: "#" },
   ];
   const checkboxFields = [
     { name: "is_trust_owned", label: "¿Pertenece al Fideicomiso?" },
     { name: "has_water_service", label: "¿Tiene servicio de agua?" },
     { name: "has_drainage_service", label: "¿Tiene drenaje?" },
     { name: "has_cfe_service", label: "¿Tiene servicio CFE?" },
+    { name: "seven_percentage", label: "7%" },
     ] as const;
 
 
@@ -86,6 +87,7 @@ export default function CreateOrEditLand() {
     has_water_service: false,
     has_drainage_service: false,
     has_cfe_service: false,
+    num_lot: "",
   };
 
   const [land, setLand] = useState<FormLand>(initial);
@@ -217,7 +219,7 @@ export default function CreateOrEditLand() {
   return (
     <>
       <Breadcrumb list={breadcrumbList} />
-      <h1>{isEditing ? "Editar Propiedad" : "Registrar Propiedad"}</h1>
+      <h1>{"Formulario de Propiedades"}</h1>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         
@@ -228,19 +230,26 @@ export default function CreateOrEditLand() {
         <br/>
         <div className="grid grid-cols-2 gap-4">
           <InputGroup id="cadastral_file" name="cadastral_file" label="Expediente Catastral" value={land.cadastral_file ?? ""} placeholder="Expediente catastral" onChangeFnc={handleChange} />
+          
           <InputGroup id="area" name="area" type="number" label="Superficie terreno (m²)" value={land.area ?? 0} placeholder="0" onChangeFnc={handleChange} />
+          
           <InputGroup id="address" name="address" label="Dirección" value={land.address ?? ""} placeholder="Dirección" onChangeFnc={handleChange} />
           <InputGroup id="built_area" name="built_area" type="number" label="Superficie construcción (m²)" value={land.built_area ?? 0} placeholder="0" onChangeFnc={handleChange} />
-          <InputGroup id="block_lot" name="block_lot" label="Manzana/Lote" value={land.block_lot ?? ""} placeholder="Manzana/Lote" onChangeFnc={handleChange} />
-        
+          
+          <InputGroup id="block_lot" name="block_lot" label="Manzana" value={land.block_lot ?? ""} placeholder="Manzana" onChangeFnc={handleChange} />
+          <InputGroup id="comments" name="comments" label="Observaciones" value={land.comments ?? ""} placeholder="Observaciones" onChangeFnc={handleChange} />
+          
+          <InputGroup id="num_lot" name="num_lot" label="Lote" value={land.num_lot ?? ""} placeholder="Lote" onChangeFnc={handleChange} />
+         
+         
         </div>
         <hr className="mt-2 mb-2" />
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           <SelectGroup id="residential_development_id" name="residential_development_id" label="Fraccionamiento" value={land.residential_development_id ?? 0} options={residentialOptions} placeholder="Selecciona fraccionamiento" onChangeFnc={handleSelect} />
           <SelectGroup id="category_id" name="category_id" label="Categoría" value={land.category_id ?? 0} options={categoryOptions} placeholder="Selecciona categoría" onChangeFnc={handleSelect} />
           <SelectGroup id="owner_company_id" name="owner_company_id" label="Empresa propietaria" value={land.owner_company_id ?? 0} options={companyOptions} placeholder="Selecciona empresa" onChangeFnc={handleSelect} />
-          <SelectGroup id="land_type_id" name="land_type_id" label="Tipo de terreno" value={land.land_type_id ?? 0} options={typeOptions} placeholder="Selecciona tipo" onChangeFnc={handleSelect} />
-          <SelectGroup id="status_id" name="status_id" label="Status actual" value={land.status_id ?? 0} options={statusOptions} placeholder="Selecciona status" onChangeFnc={handleSelect} />
+          <SelectGroup id="land_type_id" name="land_type_id" label="Tipo de propiedad" value={land.land_type_id ?? 0} options={typeOptions} placeholder="Selecciona tipo" onChangeFnc={handleSelect} />
+          <SelectGroup id="status_id" name="status_id" label="Status actual" value={land.status_id ?? 1} options={statusOptions} placeholder="Selecciona status" onChangeFnc={handleSelect} />
           
           <SelectGroup id="tax_payer_company_id" name="tax_payer_company_id" label="Empresa contribuyente" value={land.tax_payer_company_id ?? 0} options={companyOptions} placeholder="Selecciona empresa" onChangeFnc={handleSelect} />
         

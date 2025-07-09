@@ -215,6 +215,8 @@ export type Land = {
   residential_development?: ResidentialDevelopment;
   land_status?: LandStatus 
   project_lands?: ProjectLand[];
+  num_lot?: string;
+  seven_percentage?: boolean;
 
   current_tax_year?: number;
   current_value_per_built_area?: number;

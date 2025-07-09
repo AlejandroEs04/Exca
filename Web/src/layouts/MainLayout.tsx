@@ -64,7 +64,7 @@ export default function MainLayout() {
                          2.25H5.25A2.25 2.25 0 0 1 3 18v-6c0-.98.626-1.813 1.5-2.122"
                     />
                   </svg>
-                  <span className="link-text">Inventario de terrenos</span>
+                  <span className="link-text">Inv. de Propiedades</span>
                 </Link>
                 <Link className={pathname.includes('projects') ? 'active' : ''} to={'/projects'}>
                   <svg
