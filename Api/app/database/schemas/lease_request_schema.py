@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from typing import Optional
 from datetime import datetime
 from app.database.schemas.lease_request_condition_schema import LeaseRequestConditionCreate, LeaseRequestConditionResponse
 from app.database.schemas.individual_schema import IndividualResponse
@@ -11,14 +12,13 @@ class LeaseRequestBase(BaseModel):
     commission_agreement: bool
     assignment_income: bool
     property_file: str
-    guarantee_id: int
+    guarantee_id: Optional[int] = None
 
 class LeaseRequestCreate(LeaseRequestBase):
     conditions: list[LeaseRequestConditionCreate]
     
 class LeaseRequestResponse(LeaseRequestBase):
     id: int
-    guarantee_id: int
     conditions: list[LeaseRequestConditionResponse] = []
     created_at: datetime
     updated_at: datetime

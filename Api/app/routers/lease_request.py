@@ -27,6 +27,8 @@ def create_request(request: LeaseRequestCreate, current_user: User = Depends(get
     if request_exists:
         raise HTTPException(status_code=409, detail="A lease request for this project already exists.")
     
+    print(request.guarantee_id)
+    
     new_request = LeaseRequest(
         project_id=request.project_id,
         guarantee_id=request.guarantee_id,

@@ -83,41 +83,41 @@ export default function ComboBox({
     };
 
     return (
-        <div className={`combo-box ${className} ${isHorizontal && 'horizontal'}`}>
-        {label && <label htmlFor={name}>{label}</label>}
-        
-        <input
-            type="text"
-            name={name}
-            value={inputValue}
-            placeholder={placeholder}
-            disabled={disabled}
-            onChange={handleInputChange}
-            onKeyDown={handleKeyDown}
-            onFocus={() => setShowOptions(true)}
-            onBlur={handleBlur}
-            autoComplete="off"
-        />
+        <div className={`combo-box ${className} ${isHorizontal && 'horizontal g-2'}`}>
+            {label && <label htmlFor={name}>{label}</label>}
+            
+            <input
+                type="text"
+                name={name}
+                value={inputValue}
+                placeholder={placeholder}
+                disabled={disabled}
+                onChange={handleInputChange}
+                onKeyDown={handleKeyDown}
+                onFocus={() => setShowOptions(true)}
+                onBlur={handleBlur}
+                autoComplete="off"
+            />
 
-        {showOptions && filteredOptions.length > 0 && (
-            <ul className="combo-box-options">
-                {filteredOptions.map((option) => (
-                    <li
-                    key={option.id}
-                    onMouseDown={() => handleSelectOption(option)}
-                    className={value === option.id ? "selected" : ""}
-                    >
-                    {option.label}
-                    </li>
-                ))}
-            </ul>
-        )}
+            {showOptions && filteredOptions.length > 0 && (
+                <ul className="combo-box-options">
+                    {filteredOptions.map((option) => (
+                        <li
+                        key={option.id}
+                        onMouseDown={() => handleSelectOption(option)}
+                        className={value === option.id ? "selected" : ""}
+                        >
+                        {option.label}
+                        </li>
+                    ))}
+                </ul>
+            )}
 
-        {showOptions && filteredOptions.length === 0 && inputValue && (
-            <div className="combo-box-create">
-                <span>Crear nuevo: "{inputValue}"</span>
-            </div>
-        )}
-    </div>
-  );
+            {showOptions && filteredOptions.length === 0 && inputValue && (
+                <div className="combo-box-create">
+                    <span>Crear nuevo: "{inputValue}"</span>
+                </div>
+            )}
+        </div>
+    );
 }

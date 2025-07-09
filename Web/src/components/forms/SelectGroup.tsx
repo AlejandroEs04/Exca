@@ -29,7 +29,7 @@ export default function SelectGroup({
     isHorizontal = false
 } : InputGroupProps) {
     return (
-        <div className={isHorizontal ? 'condition-container' : `input-group`}>
+        <div className={isHorizontal ? 'condition-container g-2' : `input-group`}>
             <label htmlFor={id}>{label}</label>
             <select disabled={disable} value={value} onChange={onChangeFnc} name={name} id={id}>
                 <option value="">{placeholder}</option>

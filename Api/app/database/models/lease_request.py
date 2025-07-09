@@ -2,13 +2,14 @@ from sqlalchemy import Column, Integer, ForeignKey, func, DateTime, Boolean, Str
 from sqlalchemy.orm import relationship, Mapped, mapped_column
 from app.database.connection import Base
 from datetime import datetime
+from typing import Optional
 
 class LeaseRequest(Base):
     __tablename__ = "lease_request"
 
     id: Mapped[int] = mapped_column(primary_key=True, index=True)
     project_id: Mapped[int] = mapped_column(ForeignKey("project.id"), nullable=False)
-    guarantee_id: Mapped[int] = mapped_column(ForeignKey("individual.id"), nullable=False)
+    guarantee_id: Mapped[Optional[int]] = mapped_column(ForeignKey("individual.id"), nullable=True)
     guarantee_type_id: Mapped[int] = mapped_column(ForeignKey("guarantee_type.id"), nullable=False)
     owner_id: Mapped[int] = mapped_column(ForeignKey("owner.id"), nullable=False)
     commission_agreement: Mapped[bool] = mapped_column(nullable=False)

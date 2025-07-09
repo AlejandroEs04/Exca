@@ -68,7 +68,7 @@ export default function Project() {
                         </Link>
                         <Link to={`tasks`} className='btn btn-esmerald w-max'>
                             <ActivitiesIcon />
-                            Actividades
+                            Obligaciones
                         </Link>
                     </>
                 )}
@@ -77,9 +77,9 @@ export default function Project() {
 
             <h2 className='mt-2'>Datos del arrendatario</h2>
             <div className='grid grid-cols-3 g-1'>
-                <InputGroup label='Empresa' placeholder='Nombre de la empresa' value={project.brand?.client?.business_name!} name='bussiness_name' />
-                <InputGroup label='Cliente' placeholder='Nombre del cliente' value={project.brand?.name!} name='brand_name' />
-                <InputGroup label='Giro de la empresa' placeholder='Giro de la empresa' value={''} name='business_turn' />
+                <InputGroup disable label='Empresa' placeholder='Nombre de la empresa' value={project.brand?.client?.business_name!} name='bussiness_name' />
+                <InputGroup disable label='Cliente' placeholder='Nombre del cliente' value={project.brand?.name!} name='brand_name' />
+                <InputGroup disable label='Giro de la empresa' placeholder='Giro de la empresa' value={project.brand?.client?.roll?.name ?? ''} name='business_turn' />
             </div>
 
             <h2 className='mt-2'>Datos del inmueble objeto de arrendamiento</h2>

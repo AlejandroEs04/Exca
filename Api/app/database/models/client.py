@@ -14,6 +14,7 @@ class Client(Base):
     turn_id = Column(Integer, ForeignKey("business_turn.id"), nullable=True)
     created_at = Column(DateTime, nullable=False, server_default=func.now())
     updated_at = Column(DateTime, nullable=False, server_default=func.now(), onupdate=func.now())
+    roll_id = Column(Integer, ForeignKey("client_roll.id"), nullable=True) 
     
     client_type = relationship("ClientType", back_populates="clients")
     brands = relationship("Brand", back_populates="client")
@@ -21,3 +22,4 @@ class Client(Base):
     address = relationship("ClientAddress", back_populates="client")
     documents = relationship("ClientDocument", back_populates="client")
     individuals = relationship("Individual", back_populates="client")
+    roll = relationship("ClientRoll", back_populates="clients")

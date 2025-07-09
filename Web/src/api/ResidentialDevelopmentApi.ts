@@ -1,6 +1,6 @@
 import { isAxiosError } from "axios";
 import api from "../lib/axios";
-import { ResidentialDevelopment } from "../types";
+import { ResidentialDevelopment, ResidentialDevelopmentCreate } from "../types";
 
 // Obtener todos los desarrollos residenciales
 export async function getResidentialDevelopments() {
@@ -27,7 +27,7 @@ export async function getResidentialDevelopmentById(id: number) {
 }
 
 // Registrar un nuevo desarrollo
-export async function createResidentialDevelopment(rd: Omit<ResidentialDevelopment, "id">) {
+export async function createResidentialDevelopment(rd: ResidentialDevelopmentCreate) {
   try {
     const { data } = await api.post<ResidentialDevelopment>("/residential-developments", rd);
     return data;

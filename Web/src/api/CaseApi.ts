@@ -5,7 +5,7 @@ import { formatValidationErrors } from "../utils"
 
 export async function createCase(newCase: CaseCreate) {
     try {
-        const { data } = await api.post<Case[]>('/case', newCase)
+        const { data } = await api.post<Case>('/case', newCase)
         return data
     } catch (error) {
         if(isAxiosError(error) && error.response) {
@@ -35,7 +35,7 @@ export async function sendCase(id: number) {
 
 export async function updateCase(id: number, newCase: CaseCreate) {
     try {
-        const { data } = await api.put<Case[]>(`/case/edit/${id}`, newCase)
+        const { data } = await api.put<Case>(`/case/edit/${id}`, newCase)
         return data
     } catch (error) {
         if(isAxiosError(error) && error.response) {

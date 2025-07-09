@@ -19,7 +19,8 @@ def create_client(client: ClientCreate, db: Session = Depends(get_db)):
         phone_number=client.phone_number,
         tax_id=client.tax_id,
         type_id=client.type_id,
-        turn_id=client.turn_id
+        turn_id=client.turn_id,
+        roll_id=client.roll_id
     )
     db.add(new_client)
     db.commit()
