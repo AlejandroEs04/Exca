@@ -2,6 +2,8 @@ from pydantic import BaseModel
 from typing import Optional, List
 from datetime import datetime
 from app.database.schemas.task_message_schema import TaskMessageResponse
+from app.database.schemas.user_schema import UserResponse
+from app.database.schemas.task_status_schema import TaskStatusResponse
 
 class TaskBase(BaseModel):
     title: str
@@ -25,6 +27,9 @@ class TaskResponse(TaskBase):
     updated_at: datetime
     subtasks: list['TaskResponse'] = []
     messages: list[TaskMessageResponse] = []
+    responsible: Optional[UserResponse]
+    originator: UserResponse
+    status: TaskStatusResponse
     
     class config:
         orm_mode=True

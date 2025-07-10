@@ -44,7 +44,7 @@ export default function InputGroup({
 
     const onChange = (e: ChangeEvent<HTMLInputElement>) => {    
         if(limit) {
-            if(limit < +e.target.value) {
+            if(+limit < +e.target.value) {
                 setIsError('Este valor supera el limite')
             } else {
                 setIsError(null)
@@ -82,14 +82,14 @@ export default function InputGroup({
     
     
     return (
-        <div className={isHorizontal ? 'condition-container' : `${className} input-group`}>
+        <div className={isHorizontal ? 'condition-container g-2' : `${className} input-group`}>
             <label htmlFor={id}>{label}</label>
             <input 
                 disabled={disable}
                 type={type} 
                 name={name} 
                 id={id} 
-                value={value} 
+                defaultValue={value} 
                 placeholder={placeholder}
                 onChange={onChange}
                 autoComplete="off"

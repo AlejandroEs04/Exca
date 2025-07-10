@@ -41,9 +41,20 @@ export default function TechnicalCase() {
 
             if(caseId) {
                 response = await updateCase(+caseId!, newTechnicalCase)
+
             } else {
                 response = await createCase(newTechnicalCase)
             }
+
+            if(!response) throw new Error("Hubo un error")
+            
+            dispatch({ 
+                type: 'set-projects', 
+                payload: { projects: state.projects.map(project => project.id !== +projectId! ? project : { ...project, technical_case: response! }) } 
+            })
+
+            navigate(`/technical-case/${projectId}/${response.id}`)
+            
             toast.success("Guardado correctamente")
         } catch (error) {
             setError(error)
@@ -53,7 +64,7 @@ export default function TechnicalCase() {
     const handleSend = async() => {
         try {
             await handleSubmit()
-            const response = await sendTechnicalCase(+projectId!)
+            const response = await sendTechnicalCase(+caseId!)
             dispatch({ 
                 type: 'set-projects', 
                 payload: { projects: state.projects.map(project => project.id !== +projectId! ? project : { ...project, technical_case: response! }) } 
@@ -65,20 +76,30 @@ export default function TechnicalCase() {
     }
 
     const handleGetValue = (id: number) => {
-        const conditionValue = project?.cases?.find(c => c.case_type_id === 1)?.conditions?.find(c => c.condition_id === id)
-        switch(conditionValue?.condition?.type_id) {
+        const fromNew = newConditions.find(c => c.condition_id === id);
+        const fromProject = project?.cases?.find(c => c.case_type_id === 1)?.conditions?.find(c => c.condition_id === id);
+
+        const condition = state.conditions.find(c => c.id === id);
+        const source = fromNew ?? fromProject;
+
+        if (!condition || !source) return undefined;
+
+        switch(condition.type_id) {
             case 1:
-                return conditionValue.text_value
+                return source.text_value || '';
             case 2:
-                return conditionValue.number_value
+                return source.number_value || '';
             case 3:
-                return formatDateToInput(conditionValue.date_value!)
+                return formatDateToInput(source.date_value || '');
             case 4:
-                return conditionValue.boolean_value
+                return source.boolean_value ?? false;
             case 5:
-                return conditionValue.option_id
+                return source.option_id || '';
+            default:
+                return '';
         }
     }
+
 
     useEffect(() => {
         if(state.projects.length) {
@@ -162,6 +183,7 @@ export default function TechnicalCase() {
                                 handleGetValue={handleGetValue}
                                 newConditions={newConditions}
                                 setNewConditions={setNewConditions} 
+                                type="procedures"
                                 conditionsList={state.conditions.filter(c => c.category_id === 9)} 
                                 project={project!} />
                         </div>

@@ -1,6 +1,6 @@
 // src/pages/lands/CreateOrEditLand.tsx
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import Breadcrumb from "../../components/shared/Breadcrumb/Breadcrumb";
 import SaveIcon from "../../components/shared/Icons/SaveIcon";
 import InputGroup from "../../components/forms/InputGroup";
@@ -17,14 +17,13 @@ import {
 } from "../../api/LandApi";
 import { getUsers } from "../../api/UserApi";
 import { getResidentialDevelopments } from "../../api/ResidentialDevelopmentApi";
-import { getCities } from "../../api/CityApi";
-import { getStates } from "../../api/StateApi";
 import { getLandTypes } from "../../api/LandTypeApi";
 import { getLandCategories } from "../../api/LandCategoryApi";
 import { getOwners } from "../../api/OwnerApi";
-import { getLandStatuses } from "../../api/LandStatusApi";
 import PlusIcon from "../../components/shared/Icons/PlusIcon";
 import EditIcon from "../../components/shared/Icons/EditIcon";
+import { handleFormChange } from "../../utils/onChange";
+import ComboBox, { OptionCB } from "../../components/forms/ComboBox";
 
 
 type FormLand = LandCreate & {
@@ -45,6 +44,7 @@ type FormLand = LandCreate & {
 
 export default function CreateOrEditLand() {
   const { id } = useParams();
+  const { pathname } = useLocation()
   const isEditing = !!id;
 
   const breadcrumbList = [
@@ -82,7 +82,7 @@ export default function CreateOrEditLand() {
     owner_company_id: undefined,
     tax_payer_company_id: undefined,
     user_last_update_id: undefined,
-    status_id: undefined,
+    status_id: 1,
     is_trust_owned: false,
     has_water_service: false,
     has_drainage_service: false,
@@ -90,47 +90,36 @@ export default function CreateOrEditLand() {
     num_lot: "",
   };
 
+  const [searchParams] = useSearchParams();
   const [land, setLand] = useState<FormLand>(initial);
-  const [residentialOptions, setResidentialOptions] = useState<Option[]>([]);
-  const [municipalOptions, setMunicipalOptions] = useState<Option[]>([]);
-  const [stateOptions, setStateOptions] = useState<Option[]>([]);
+  const [residentialOptions, setResidentialOptions] = useState<OptionCB[]>([]);
   const [typeOptions, setTypeOptions] = useState<Option[]>([]);
   const [categoryOptions, setCategoryOptions] = useState<Option[]>([]);
   const [companyOptions, setCompanyOptions] = useState<Option[]>([]);
   const [userOptions, setUserOptions] = useState<Option[]>([]);
-  const [statusOptions, setStatusOptions] = useState<Option[]>([]);
   const [residentials, setResidentials] = useState<ResidentialDevelopment[]>([]);
   const [propertyTaxes, setPropertyTaxes] = useState<PropertyTax[]>([]);
 
   useEffect(() => {
     Promise.all([
       getResidentialDevelopments(),
-      getCities(),
-      getStates(),
       getLandTypes(),
       getLandCategories(),
       getOwners(),
       getUsers(),
-      getLandStatuses(),
     ]).then(([
       residentials = [],
-      muns = [],
-      statesArr = [],
       typesArr = [],
       catsArr = [],
       compsArr = [],
       usersArr = [],
-      statusesArr = [],
     ]) => {
       setResidentials(residentials);
-      setResidentialOptions(residentials.map(r => ({ label: r.name, value: r.id })));
-      setMunicipalOptions(muns.map(m => ({ label: m.descripcion, value: m.id })));
-      setStateOptions(statesArr.map(s => ({ label: s.descripcion, value: s.id })));
+      setResidentialOptions(residentials.map(r => ({ label: r.name, id: r.id })));
       setTypeOptions(typesArr.map(t => ({ label: t.description, value: t.id })));
       setCategoryOptions(catsArr.map(c => ({ label: c.description, value: c.id })));
       setCompanyOptions(compsArr.map(c => ({ label: c.name, value: c.id })));
       setUserOptions(usersArr.map(u => ({ label: u.full_name, value: u.id })));
-      setStatusOptions(statusesArr.map(st => ({ label: st.description, value: st.id })));
     });
   }, []);
 
@@ -156,9 +145,22 @@ export default function CreateOrEditLand() {
     }));
   };
 
-  const handleSelect = (e: ChangeEvent<HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setLand(prev => ({ ...prev, [name]: Number(value ?? 0) }));
+  const onChange = (e: ChangeEvent<HTMLElement>) => handleFormChange(e, land, setLand)
+
+  const handleSelect = (id: string | number, name: string) => {
+    setLand(prev => ({
+      ...prev,
+      [name]: id,
+    }));
+  };
+  
+  const handleCreate = async(newLabel: string, name: string) => {
+    switch(name) {
+      case 'residential_development_id':
+        localStorage.setItem('createLandLocal', JSON.stringify(land))
+        navigate(`/residential-development/create?name=${newLabel}&return_url=${pathname}`)  
+      break;
+    }
   };
 
   const handleSubmit = async (e: FormEvent) => {
@@ -185,15 +187,12 @@ export default function CreateOrEditLand() {
       }
 
       if (!result) throw new Error();
-      if (isEditing) 
-      {
-        dispatch({ type: "update-land", payload: result });
 
-      }else
+      if (isEditing) dispatch({ type: "update-land", payload: result });
+      else
       {
         dispatch({ type: "add-land", payload: result });
         navigate("/lands");
-
       }
       
     } catch {
@@ -202,17 +201,34 @@ export default function CreateOrEditLand() {
   };
   const formatCurrency = (value: number | null | undefined) =>
     value != null ? new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN' }).format(value) : '-';
-  const parseCurrencyToNumber= (value: string | number) => {
-      if (typeof value === 'number') return value;
 
-      // Eliminar $ , espacios y cualquier símbolo que no sea número o punto decimal
-      const cleaned = value.replace(/[^0-9.-]+/g, '');
+  useEffect(() => {
+    const backCreate = searchParams.get('back_create')
 
-      const num = parseFloat(cleaned);
-      return isNaN(num) ? 0 : num;
-  }
+    if(backCreate) {
+      const itemName = searchParams.get('item_name')
 
+      const savedItem = localStorage.getItem("createLandLocal")
+      
+      if(savedItem) {
+        let savedLand : FormLand = JSON.parse(savedItem)
 
+        switch(itemName) {
+          case 'residentialDevelopment':
+            const value = searchParams.get('item_id')
+
+            console.log(savedLand)
+
+            if(value) {
+              savedLand = { ...savedLand, residential_development_id: +value }
+            }
+
+            setLand(savedLand)
+            break;
+        }
+      }
+    }
+  }, [])
 
   if (isLoading) return <Loader />;
 
@@ -245,25 +261,50 @@ export default function CreateOrEditLand() {
         </div>
         <hr className="mt-2 mb-2" />
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {
+            /*
           <SelectGroup id="residential_development_id" name="residential_development_id" label="Fraccionamiento" value={land.residential_development_id ?? 0} options={residentialOptions} placeholder="Selecciona fraccionamiento" onChangeFnc={handleSelect} />
           <SelectGroup id="category_id" name="category_id" label="Categoría" value={land.category_id ?? 0} options={categoryOptions} placeholder="Selecciona categoría" onChangeFnc={handleSelect} />
           <SelectGroup id="owner_company_id" name="owner_company_id" label="Empresa propietaria" value={land.owner_company_id ?? 0} options={companyOptions} placeholder="Selecciona empresa" onChangeFnc={handleSelect} />
           <SelectGroup id="land_type_id" name="land_type_id" label="Tipo de propiedad" value={land.land_type_id ?? 0} options={typeOptions} placeholder="Selecciona tipo" onChangeFnc={handleSelect} />
+          
           <SelectGroup id="status_id" name="status_id" label="Status actual" value={land.status_id ?? 1} options={statusOptions} placeholder="Selecciona status" onChangeFnc={handleSelect} />
           
           <SelectGroup id="tax_payer_company_id" name="tax_payer_company_id" label="Empresa contribuyente" value={land.tax_payer_company_id ?? 0} options={companyOptions} placeholder="Selecciona empresa" onChangeFnc={handleSelect} />
-        
+        */
+          }
+          </div>
+        {isEditing && (
+          <p><strong>Última actualización por:</strong> {userOptions.find(u => u.value === land.user_last_update_id)?.label ?? ''}</p>
+        )}
+
+        <div className="grid grid-cols-2 g-1">
+          <InputGroup id="cadastral_file" name="cadastral_file" label="Expediente Catastral" value={land.cadastral_file ?? ""} placeholder="Expediente catastral" onChangeFnc={onChange} />
+          <InputGroup id="area" name="area" type="number" label="Superficie terreno (m²)" value={land.area ?? 0} placeholder="0" onChangeFnc={onChange} />
+          <InputGroup id="address" name="address" label="Dirección" value={land.address ?? ""} placeholder="Dirección" onChangeFnc={onChange} />
+          <InputGroup id="built_area" name="built_area" type="number" label="Superficie construcción (m²)" value={land.built_area ?? 0} placeholder="0" onChangeFnc={onChange} />
+          <InputGroup id="block_lot" name="block_lot" label="Manzana/Lote" value={land.block_lot ?? ""} placeholder="Manzana/Lote" onChangeFnc={onChange} />
+          <ComboBox 
+            name="residential_development_id" 
+            value={land.residential_development_id} 
+            options={residentialOptions} 
+            placeholder="Fraccionamiento" 
+            label="Fraccionamiento" 
+            onCreate={handleCreate}
+            onSelect={handleSelect} />
         </div>
 
-        <div className="mt-2">
-          <p>Estado: {stateOptions.find(e => e.value === residentials.find(a=> a.id ===land.residential_development_id)?.state.id 
-      
-          )?.label ?? ''}</p>
-          <p>Municipio: {municipalOptions.find(e => e.value === residentials.find(a=> a.id ===land.residential_development_id)?.city.id 
-            
-          )?.label ?? ''}</p>
-        </div>
         <hr className="mt-2 mb-2" />
+
+        <div className="grid grid-cols-2 g-1">
+          <SelectGroup id="category_id" name="category_id" label="Categoría" value={land.category_id ?? 0} options={categoryOptions} placeholder="Selecciona categoría" onChangeFnc={onChange} />
+          <SelectGroup id="owner_company_id" name="owner_company_id" label="Empresa propietaria" value={land.owner_company_id ?? 0} options={companyOptions} placeholder="Selecciona empresa" onChangeFnc={onChange} />
+          <SelectGroup id="land_type_id" name="land_type_id" label="Tipo de terreno" value={land.land_type_id ?? 0} options={typeOptions} placeholder="Selecciona tipo" onChangeFnc={onChange} />          
+          <SelectGroup id="tax_payer_company_id" name="tax_payer_company_id" label="Empresa contribuyente" value={land.tax_payer_company_id ?? 0} options={companyOptions} placeholder="Selecciona empresa" onChangeFnc={onChange} />
+        </div>
+
+        <hr className="mt-2 mb-2" />
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
          {checkboxFields.map(field => (
             <div key={field.name} className="checkbox-group">
@@ -277,9 +318,13 @@ export default function CreateOrEditLand() {
                 <label htmlFor={field.name}>{field.label}</label>
             </div>
             ))}
-
         </div>
+
         <hr className="mt-2 mb-2" />
+
+        <button type="submit" className="btn btn-primary">
+          <SaveIcon /> {isEditing ? "Guardar" : "Registrar"}
+        </button>
         {isEditing ?
         <>
             <h2>{"PAGOS DE PREDIALES"}</h2>
@@ -303,26 +348,6 @@ export default function CreateOrEditLand() {
                 <p>Valor por m² construido:</p>
                 {formatCurrency(land.current_value_per_built_area) ?? '-'}
               </div>
-              {
-
-                /*
-                <InputGroup id="current_tax_year" 
-                name="current_tax_year" label="Año" 
-                value={land.current_tax_year ?? 0} 
-                placeholder="AÑO" onChangeFnc={handleChange} disable={true} />
-                <InputGroup id="current_cadastral_value" 
-                name="current_cadastral_value" type="number" 
-                label="Valor Catastral" 
-                value={land.current_cadastral_value ?? 0} 
-                placeholder="0" onChangeFnc={handleChange} 
-                disable={true} />
-
-                <InputGroup id="current_value_per_area" name="current_value_per_area" label="Valor por m²" value={land.current_value_per_area ?? 0} placeholder="Dirección" onChangeFnc={handleChange} disable={true} />
-                <InputGroup id="current_value_per_built_area" name="current_value_per_built_area" type="number" label="Valor por m² construido" value={land.current_value_per_built_area ?? 0} placeholder="0" onChangeFnc={handleChange} disable={true} />
-                
-                
-                */
-              }
               
             </div>
             <h3 className="mt-2 mb-2">{"Historial de Pagos"}</h3>

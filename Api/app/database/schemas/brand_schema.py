@@ -1,7 +1,7 @@
 from pydantic import BaseModel, EmailStr
 from typing import Optional
 from app.database.schemas.client_address_schema import ClientAddressResponse
-
+from app.database.schemas.client_roll_schema import ClientRollResponse
 
 class Client(BaseModel):
     business_name: str
@@ -12,6 +12,7 @@ class Client(BaseModel):
     turn_id: Optional[int]
     id: int
     address: list[ClientAddressResponse] = []
+    roll: Optional[ClientRollResponse]
 
 class BrandBase(BaseModel):
     name: str

@@ -5,7 +5,6 @@ import SaveIcon from "../../components/shared/Icons/SaveIcon"
 import { useAppContext } from "../../hooks/AppContext"
 import SelectGroup from "../../components/forms/SelectGroup"
 import PlusIcon from "../../components/shared/Icons/PlusIcon"
-import { currencyFormat } from "../../utils"
 import { getResidentialDevelopments } from "../../api/LandApi"
 import { ProjectCreate, ProjectLandCreate, ResidentialDevelopment } from "../../types"
 import { getProjectLandTypes, registerProject } from "../../api/ProjectApi"
@@ -57,7 +56,7 @@ export default function CreateProject() {
 
         setCadastralFile({
             ...cadastralFile, 
-            [name]: +value
+            [name]: value
         })
     }
 
@@ -231,12 +230,7 @@ export default function CreateProject() {
             <h1>Registrar Proyecto</h1>
 
             <form onSubmit={onSubmit}>
-                <button disabled={submitDisable} className="btn btn-primary">
-                    <SaveIcon />
-                    Guardar
-                </button>
-
-                <div className="grid grid-cols-2 mt-2 g-1">
+                <div className="grid grid-cols-2 mt-1 g-1">
                     <ComboBox 
                         name="client" 
                         value={clientId} 
@@ -262,7 +256,7 @@ export default function CreateProject() {
 
                 <div className="grid grid-cols-3 g-1 mt-2">
                     <SelectGroup disable={landsSelectDisable} name="land_id" label="Expediente Catastral" value={cadastralFile.land_id} placeholder="Seleccione un terreno" onChangeFnc={onChangeCadastralFile} options={landOptions} />
-                    <InputGroup limit={cadastralFile.area} name="area" label="Superficie arrendamiento" value={cadastralFile.area} placeholder="Superficie. ej. 180" onChangeFnc={onChangeCadastralFile} disable={areaDisable} /> 
+                    <InputGroup limit={state.lands.find(l => l.id === +residential)?.area} name="area" label="Superficie arrendamiento" value={cadastralFile.area} placeholder="Superficie. ej. 180" onChangeFnc={onChangeCadastralFile} disable={areaDisable} /> 
                     <SelectGroup disable={areaDisable} name="type_id" label="Tipo de arrendamiento" value={cadastralFile.type_id!} placeholder="Seleccione un tipo" onChangeFnc={onChangeCadastralFile} options={rentOptions} />
                 </div>
 
@@ -292,6 +286,11 @@ export default function CreateProject() {
                         ))}
                     </tbody>
                 </table>
+
+                <button disabled={submitDisable} className="btn btn-success mt-2">
+                    <SaveIcon />
+                    Guardar
+                </button>
             </form>
         </>
     )

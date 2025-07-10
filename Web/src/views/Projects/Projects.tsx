@@ -16,7 +16,6 @@ export default function Projects() {
     const navigate = useNavigate()
 
     const handleProject = (id: number) => navigate(`/projects/${id}`)
-    console.log(state.projects)
     
     return (
         <>

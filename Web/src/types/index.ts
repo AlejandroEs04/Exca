@@ -91,9 +91,11 @@ export type Client = {
     brands?: Brand[];
     type?: ClientType;
     turn?: BusinessTurn;
+    roll_id: number
+    roll?: ClientRoll
 }
 
-export type ClientCreate = Pick<Client, 'business_name' | 'email' | 'phone_number' | 'tax_id' | 'type_id' | 'turn_id'> & {
+export type ClientCreate = Pick<Client, 'business_name' | 'email' | 'phone_number' | 'tax_id' | 'type_id' | 'turn_id' | 'roll_id'> & {
     address: ClientAddressCreate
 };
 export type ClientUpdate = Partial<ClientCreate>;
@@ -173,8 +175,8 @@ export type IndividualDocumentCreate = Pick<IndividualDocument, 'individual_id' 
 export type ResidentialDevelopment = {
     id: number;
     name: string;
-    id_city: number;
-    id_state: number;
+    city_id: number;
+    state_id: number;
     city:  City;
     state: State;
     created_at: string;
@@ -182,7 +184,7 @@ export type ResidentialDevelopment = {
     lands?: Land[];
 }
 
-export type ResidentialDevelopmentCreate = Pick<ResidentialDevelopment, 'name' | 'id_city' | 'id_state'>;
+export type ResidentialDevelopmentCreate = Pick<ResidentialDevelopment, 'name' | 'city_id' | 'state_id'>;
 export type ResidentialDevelopmentUpdate = Partial<ResidentialDevelopmentCreate>;
 
 // Land
@@ -313,9 +315,10 @@ export type ProjectLand = {
     land?: Land; 
     type?: ProjectLandType;
     build_area: number
+    deed_sale?: string
 }
 
-export type ProjectLandCreate = Pick<ProjectLand, 'project_id' | 'land_id' | 'area' | 'type_id' | 'build_area'>;
+export type ProjectLandCreate = Pick<ProjectLand, 'project_id' | 'land_id' | 'area' | 'type_id' | 'build_area' | 'deed_sale'>;
 export type ProjectLandUpdate = Partial<ProjectLandCreate>;
 
 // Project Event
@@ -683,6 +686,9 @@ export type Task = {
     updated_at: string
     subtasks: Task[]
     messages: TaskMessage[]
+    responsible: User
+    originator: User
+    status: TaskStatus
 }
 
 export type TaskCreate = 
@@ -736,3 +742,10 @@ export type PropertyTaxStatus  = {
   created_at: string;
   updated_at: string;
 };
+
+export type ClientRoll = {
+    id: number
+    name: string
+}
+
+export type ClientRollCreate = Pick<ClientRoll, 'name'>

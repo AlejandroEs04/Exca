@@ -1,4 +1,4 @@
-import { Client, Condition, Individual, Land, NotificationSystem, Project, User } from "../types";
+import { Client, Condition, Individual, Land, NotificationSystem, Project, Task, User } from "../types";
 
 export type AppActions =
     | { type: 'set-lands'; payload: { lands: Land[] } }
@@ -10,6 +10,8 @@ export type AppActions =
     | { type: 'set-auth'; payload: { auth: User } }
     | { type: 'set-individual'; payload: { individuals: Individual[] } }
     | { type: 'set-conditions'; payload: { conditions: Condition[] } }
+    | { type: 'set-tasks'; payload: { tasks: Task[] } }
+    | { type: 'add-task'; payload: { task: Task } }
     | { type: 'set-notification-systems'; payload: { notificationSystems: NotificationSystem[] } };
 
 export type AppState = {
@@ -21,6 +23,7 @@ export type AppState = {
     individuals: Individual[];
     conditions: Condition[];
     notificationSystems: NotificationSystem[];
+    tasks: Task[]
 };
 
 export const initialState: AppState = {
@@ -31,7 +34,8 @@ export const initialState: AppState = {
     auth: null,
     individuals: [],
     conditions: [],
-    notificationSystems: []
+    notificationSystems: [],
+    tasks: []
 };
 
 export const AppReducer = (state: AppState, action: AppActions): AppState => {
@@ -61,7 +65,10 @@ export const AppReducer = (state: AppState, action: AppActions): AppState => {
                     land.id === action.payload.id ? action.payload : land
                 )
             };
-
+        case 'set-tasks':
+            return { ...state, tasks: action.payload.tasks }
+        case 'add-task':
+            return { ...state, tasks: [ ...state.tasks, action.payload.task ] }
         default:
             return state;
     }
