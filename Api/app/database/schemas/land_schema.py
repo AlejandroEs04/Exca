@@ -27,6 +27,8 @@ class LandBase(BaseModel):
     notes: Optional[str] = None
     incorporation: Optional[str] = None
     incorporation_notes: Optional[str] = None
+    num_lot: Optional[str] = None
+    seven_percentage: Optional[bool] = None
 
     current_tax_year: Optional[int] = None
     current_value_per_built_area: Optional[float] = None

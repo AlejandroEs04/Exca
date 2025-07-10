@@ -1,3 +1,4 @@
 "Exca/public/" 
 
 Api/.env
+vite.config.ts

@@ -9,7 +9,7 @@ import EditIcon from "../../components/shared/Icons/EditIcon";
 export default function Lands() {
     const list = [
         { name: "Dashboard", url: '/' },
-        { name: "Inventario de terrenos", url: '/lands' },
+        { name: "Inventario de propiedades", url: '/lands' },
     ];
 
     const { state, isLoading } = useAppContext();

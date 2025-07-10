@@ -29,6 +29,8 @@ class Land(Base):
     notes = Column(String(255), nullable=True)
     incorporation = Column(String(50), nullable=True)
     incorporation_notes = Column(String(255), nullable=True)
+    num_lot = Column(String(30), nullable=True)
+    seven_percentage = Column(Boolean, nullable=True)
     created_at = Column(DateTime, server_default=func.getdate(), nullable=False)
     updated_at = Column(DateTime, server_default=func.getdate(), onupdate=func.getdate(), nullable=False)
 
